@@ -48,7 +48,7 @@ Quelle sichern (HTML → `docs/design/mockup.html`; Claude-Design-Projekt → Na
 `docs/PRD.md`: Vision (2–3 Sätze) · Zielnutzer · Roadmap-Tabelle (P0/P1/P2) · Erfolgsmetriken · Constraints (inkl. Backend- und Design-Entscheid) · Non-Goals. Entwurf zeigen, Feedback einarbeiten, speichern.
 
 ## Feature-Map
-Single Responsibility: jedes Feature = eine testbare, auslieferbare Einheit. Abhängigkeiten und Build-Reihenfolge festlegen. **Verbund-Screens** (ein Screen mit mehreren Funktionen) werden erst in Zutaten-Features zerlegt, das Zusammensetzen ist ein eigenes, spätes Feature.
+Single Responsibility: jedes Feature = eine testbare, auslieferbare Einheit mit eigenem Nutzen, genau ein Ablauf (Definition und Beispiele: `write-spec` → Granularität). Jedes Feature besteht den Satz „Als Nutzer kann ich jetzt …" — Bausteine ohne eigenen Nutzen sind keine Features. Abhängigkeiten und Build-Reihenfolge festlegen. **Verbund-Screens** (ein Screen mit mehreren Funktionen) werden erst in Zutaten-Features zerlegt, das Zusammensetzen ist ein eigenes, spätes Feature.
 
 Eintrag in `features/INDEX.md`: ID · Name · Beschreibung ≤ 120 Zeichen · Prio · Deps · Status Roadmap · Release leer. „Next Available ID" nachziehen.
 

@@ -15,7 +15,8 @@ Vor jeder Arbeit prüfen, ob das Projekt initialisiert ist:
 - `features/INDEX.md` ist die Single Source of Truth — vor jeder Arbeit lesen
 - **Schlankheitsregel:** eine Zeile pro Feature, Beschreibung ≤ 120 Zeichen, **keine Historie** in INDEX. Verlauf gehört in die Spec (Sektion **Verlauf**, 1–3 Zeilen pro Ereignis mit Link), Reports nach `docs/qa/`, Releases nach `docs/RELEASES.md`
 - Specs: `features/<ID>-feature-name.md` — das Kürzel des Projekts steht in `CLAUDE.md`; IDs sequenziell (nächste freie ID in INDEX), alte IDs werden nie neu vergeben
-- Ein Feature pro Spec (Single Responsibility); nie unabhängige Funktionen in einer Spec bündeln
+- Ein Feature pro Spec (Single Responsibility); nie unabhängige Abläufe in einer Spec bündeln
+- **Feature-Definition:** eine testbare, auslieferbare Einheit mit eigenem Nutzen („Als Nutzer kann ich jetzt …"), vertikal geschnitten (Oberfläche, Logik, Daten), genau ein Ablauf — auch über mehrere Screens. Ohne eigenen Nutzen ist es ein Baustein eines anderen Features. Einzige Ausnahme: Infrastruktur-Features
 
 ## Release-Tracking (Sammel-Deploys sind Normalfall)
 - **Deployed = im Release enthalten.** Ein Feature wird erst „Deployed", wenn `docs/RELEASES.md` einen Build nennt, der es enthält; die Spalte **Release** in INDEX trägt diesen Build

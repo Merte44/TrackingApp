@@ -38,7 +38,19 @@ Eine Frage auf einmal, immer mit Empfehlung, dem Gespräch folgen, Codebase vorh
 Entwurf zeigen, Feedback einarbeiten, speichern.
 
 ## Granularität
-Eine Spec = eine testbare, auslieferbare Einheit. Nie mischen: unabhängige Funktionen, CRUD verschiedener Entitäten, User- und Admin-Funktionen, verschiedene Screens. Verbund-Screen → Zutaten-Features zuerst, Composition-Feature zuletzt.
+Eine Spec = eine testbare, auslieferbare Einheit mit eigenem Nutzen.
+
+- **Untergrenze (Nutzen):** besteht den Satz „Als Nutzer kann ich jetzt …". Sonst ist es ein Baustein und gehört in ein anderes Feature
+- **Vertikal:** Oberfläche, Logik und Daten gehören zusammen — nie „nur UI" oder „nur Datenbank" als Feature. Ausnahme: Infrastruktur
+- **Ein Ablauf:** auch über mehrere Screens/Sheets (Liste → Sheet → Eingabe). Nie mischen: unabhängige Abläufe, CRUD verschiedener Entitäten, User- und Admin-Funktionen
+- **Verbund-Screen** → Zutaten-Features zuerst, Composition-Feature zuletzt
+- **Richtwert 80–150 Zeilen** Spec — Überschreitung ist ein Prüfsignal, kein Teilungszwang
+
+| | Beispiel | Warum |
+|---|---|---|
+| ❌ zu klein | „Mengen-Eingabe" | nur ein Baustein, kein Nutzen allein |
+| ✅ richtig | „Eintrag erfassen" | Als Nutzer kann ich jetzt einen Eintrag erfassen |
+| ❌ zu groß | „Alles verwalten" | enthält mehrere unabhängige Abläufe |
 
 ## Akzeptanzkriterien
 Deutsch, testbar: `- [ ] Angenommen [Vorbedingung], wenn [Aktion], dann [Ergebnis]`

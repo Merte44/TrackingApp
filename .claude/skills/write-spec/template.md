@@ -8,7 +8,7 @@
      · Verweise statt Code — Pfade, Funktionsnamen, Tabellen; keine Snippets, keine Spaltenlisten.
      · Kein datierter Implementation-Notes-Block. Was gebaut wurde, steht in den Abschnitten;
        DASS es gebaut wurde, steht als eine Zeile im Verlauf.
-     · Ziel 80–150 Zeilen. Wird es länger, ist das Feature zu groß geschnitten. -->
+     · Ziel 80–150 Zeilen. Wird es länger, prüfen, ob mehrere Abläufe drinstecken — Prüfsignal, kein Teilungszwang. -->
 
 ## Was es tut
 <!-- 3–6 Sätze. Was kann ein Nutzer damit, und warum gibt es das.
