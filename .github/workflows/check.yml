@@ -1,0 +1,25 @@
+name: check
+
+# Läuft bei jedem Push auf main. Kein PR-Zwang (Solo-Modus); im Team-Modus zusätzlich pull_request eintragen.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      # --passWithNoTests: Jest beendet ohne Testdateien mit Exit-Code 1 — damit wäre die Action
+      # auf dem Template und auf jedem frisch geklonten Projekt rot, bevor der erste Test existiert.
+      - run: npm test -- --ci --passWithNoTests
+      # Tote Datei-Verweise in den Specs. Taugt nur als Gate, solange er grün ist —
+      # Regel dazu in features/README.md.
+      - run: python3 scripts/check-spec-refs.py

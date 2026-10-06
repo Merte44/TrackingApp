@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install)",
+      "Bash(npm install:*)",
+      "Bash(npm test:*)",
+      "Bash(npm run lint:*)",
+      "Bash(npx expo:*)",
+      "Bash(npx expo-doctor:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx @react-native-reusables/cli@latest add:*)",
+      "Bash(eas:*)",
+      "Bash(npx eas-cli:*)",
+      "Bash(xcrun simctl:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git tag:*)",
+      "Bash(git log:*)",
+      "Bash(git ls-files:*)",
+      "Bash(git diff:*)",
+      "Bash(git status:*)",
+      "Bash(lsof:*)",
+      "Bash(kill:*)",
+      "Bash(ls:*)",
+      "Bash(cat:*)",
+      "Bash(rsync:*)",
+      "Bash(gh:*)",
+      "Bash(idb:*)"
+    ]
+  }
+}
