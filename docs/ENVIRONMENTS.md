@@ -8,8 +8,9 @@
 
 | Bereich | dev | prod |
 |---------|-----|------|
-| **Supabase-Projekt** | `<project-ref-dev>` (Name) | `<project-ref-prod>` (Name) |
-| **MCP-Server** | `supabase-dev` | `supabase-prod` |
+| **Supabase-Projekt** | entfällt — kein Backend, Daten on-device (`expo-sqlite`), siehe PRD → Constraints | entfällt |
+| **MCP-Server** | `supabase-*` ungenutzt (zeigen per `~/.zshrc` auf eine andere App — nicht verwenden) | ungenutzt |
+| **Externe API** | Open Food Facts (öffentlich, kein Key) | Open Food Facts |
 | **Migrationsstand** | `supabase/migrations/` = Repo | Repo-Liste vs. `list_migrations` vor jedem Submit prüfen |
 | **Vault-Secrets** | — | — |
 | **Edge Functions + Secrets** | — | — |

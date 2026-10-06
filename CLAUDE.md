@@ -1,4 +1,4 @@
-# <App-Name> — Expo AI Starter Kit v3
+# TrackingApp — persönlicher Kalorien- & Nährwert-Tracker (on-device, Expo AI Starter Kit v3)
 
 > Spec-getriebenes Template, um als Solo-Entwickler komplette native iOS-Apps **token-arm** zu bauen — mit Skills für Requirements, Architecture, Design, Frontend, Backend, Abnahme und Deployment. Deckt den ganzen Lebenszyklus ab: neue App, dev/prod-Betrieb, Releases.
 

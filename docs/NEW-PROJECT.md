@@ -14,7 +14,7 @@
 - [ ] `npm install`, `npx expo-doctor` grün
 - [ ] `.env.local` aus `.env.local.example` angelegt (nie committen)
 
-## 3. Supabase (dev + prod)
+## 3. Supabase (dev + prod) — entfällt: on-device (`expo-sqlite`), siehe PRD
 - [ ] Zwei Projekte anlegen: `<app>-dev` und `<app>-prod`
 - [ ] Project-Refs in die Shell-Env (`SUPABASE_PROJECT_REF_DEV` / `_PROD`) — siehe `docs/MCP.md`
 - [ ] `docs/ENVIRONMENTS.md` Matrix befüllen (Refs, Auth-URLs, SMTP-Entscheid)
@@ -33,11 +33,11 @@
 - [ ] Screens-Projekt in Claude Design benannt und in `docs/ENVIRONMENTS.md` eingetragen
 
 ## 6. Gedächtnis
-- [ ] `docs/PRD.md` und `features/INDEX.md` durch `/init` gefüllt
-- [ ] `docs/RELEASES.md` und `docs/ENVIRONMENTS.md` angelegt (leer ist ok)
-- [ ] `CLAUDE.md` Kopf angepasst (App-Name, Kurzbeschreibung)
+- [x] `docs/PRD.md` und `features/INDEX.md` durch `/init` gefüllt
+- [x] `docs/RELEASES.md` und `docs/ENVIRONMENTS.md` angelegt (leer ist ok)
+- [x] `CLAUDE.md` Kopf angepasst (App-Name, Kurzbeschreibung)
 
-## 7. Legal-Gates (vor TestFlight External / App Store)
+## 7. Legal-Gates (vor TestFlight External / App Store) — entfällt: private App, kein App Store
 - [ ] Datenschutzerklärung (öffentliche URL) — Apple-Pflicht
 - [ ] Impressum / Nutzungsbedingungen (öffentliche URL)
 - [ ] App-Privacy-Angaben in App Store Connect aus dem Datenmodell abgeleitet (`/deploy` hilft)
