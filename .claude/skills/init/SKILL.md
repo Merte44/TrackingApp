@@ -38,6 +38,8 @@ Themen: Kernproblem · Zielnutzer und ihr Schmerz · MVP vs. später · Alternat
 - **Supabase:** „Supabase-Infrastruktur" wird **die erste ID, P0**; alle Features mit Auth/Daten/Uploads hängen davon ab. Sie umfasst: zwei Projekte dev/prod, Env-Vars, Basis-Schema, RLS-Baseline, MCP-Anbindung, `docs/ENVIRONMENTS.md` Matrix.
 - **Nur on-device:** kein Infrastruktur-Feature; „Kein Backend — on-device (`expo-sqlite`)" in PRD-Constraints; sensible Werte in `expo-secure-store`.
 
+Den Entscheid in `CLAUDE.md` (Tech Stack) als Zeile `**Backend:**` festhalten — `lokal — expo-sqlite on-device (kein Server)` bzw. `Supabase (…), zwei Projekte dev/prod`. Daran erkennen alle Skills den Backend-Modus (`.claude/rules/general.md`).
+
 ### Pflichtfrage: Design
 Bei B/C schon beantwortet — nur festhalten. Bei A:
 > „Gibt es ein Design-System, Brand-Guidelines, ein Mockup oder ein Claude-Design-Projekt?"

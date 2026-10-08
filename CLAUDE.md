@@ -5,8 +5,8 @@
 ## Tech Stack
 - **Framework:** Expo SDK 54 (managed) + React Native, TypeScript · **Routing:** Expo Router (`app/`)
 - **Styling:** NativeWind v4 + Tokens in `global.css` · **UI:** react-native-reusables als Basis-Primitives, eigene Kompositionen in `components/<domain>/`
-- **Backend:** Supabase (PostgreSQL + Auth + Storage + Edge Functions), zwei Projekte **dev/prod** · **Auth-Storage:** expo-secure-store
-- **Validation:** Zod + react-hook-form · **State:** useState / Context · **Tests:** Jest (Unit) + Rollback-Proben (`supabase/tests/`)
+- **Backend:** lokal — expo-sqlite on-device (kein Server) · **Fremddaten:** Open Food Facts (öffentliche API)
+- **Validation:** Zod + react-hook-form · **State:** useState / Context · **Tests:** Jest (Unit + Migrations-Test)
 - **Deploy:** EAS Build → Dev-Client → TestFlight → App Store · **Plattform:** iOS-first · **Sprache:** Deutsch, kein i18n
 
 ## Die 6 Ebenen
@@ -21,8 +21,7 @@
 ```
 app/                 Expo Router Screens
 components/ui/       reusables-Primitives (on demand)   components/<domain>/  eigene Kompositionen
-hooks/  lib/         Hooks · supabase.ts, utils.ts, <feature>.ts (Data-Access)
-supabase/            migrations/ (versioniert) · tests/ (Rollback-Proben) · functions/
+hooks/  lib/         Hooks · db/ (SQLite + Migrationen), utils.ts, <feature>.ts (Data-Access)
 features/            INDEX.md + PROJ-X-*.md
 docs/                PRD, RELEASES, ENVIRONMENTS, NEW-PROJECT, RELEASE-CHECK, MCP, design-system.md, design/screens/, qa/
 .claude/             rules/ skills/ agents/ settings.json      .mcp.json
@@ -30,6 +29,7 @@ docs/                PRD, RELEASES, ENVIRONMENTS, NEW-PROJECT, RELEASE-CHECK, MC
 
 ## Workflow
 `/init` → `/write-spec` → `/architecture` → `/frontend` ‖ `/backend` → `/qa` → `/deploy`
+- **`/autopilot [PROJ-X]`** fährt ein Feature von Spec bis Approved und hält nur an Checkpoints (Spec, Architektur, Diff-Review, QA-Bugs)
 - `/design tokens | sync | screen PROJ-X` · `/refine PROJ-X` · `/help` · `/ops` · `/check` · `/sync-template`
 - Gevendorte Expo-Skills: `expo-deployment`, `upgrading-expo`, `native-data-fetching`, `eas-update-insights`
 
@@ -41,7 +41,7 @@ docs/                PRD, RELEASES, ENVIRONMENTS, NEW-PROJECT, RELEASE-CHECK, MC
 ## Konventionen
 - Feature-IDs `PROJ-X` · Commits `type(PROJ-X): description` · ein Feature pro Spec · Acceptance Criteria: Angenommen / Wenn / Dann
 - **Tokens, nie Hex** · **Touch statt Click** (`Pressable`, RN-Primitives) · SafeAreaView / KeyboardAvoidingView / FlatList
-- **RLS first**, Zod vor jedem DB-Call · Migration dev → Advisors → Rollback-Probe → prod
+- Zod vor jedem DB-Schreibzugriff · Schema-Migrationen append-only, abgesichert durch den Migrations-Test (`.claude/rules/local-db.md`)
 - **Human-in-the-loop** an jedem Checkpoint · Projektspezifika nur hier, in PRD und ENVIRONMENTS — nie in Skills/Rules
 
 ## Befehle

@@ -1,6 +1,6 @@
 ---
 name: qa
-description: Abnahme eines Features in vier Schritten — /code-review, /security-review, Rollback-Probe (nur Backend), /run-Walkthrough der Akzeptanzkriterien im Dev-Client. Entscheidet READY / NOT READY, routet Bugs. Nach /frontend und /backend.
+description: Abnahme eines Features in vier Schritten — /code-review, /security-review, Rollback-Probe bzw. Migrations-Test (nur Backend), /run-Walkthrough der Akzeptanzkriterien im Dev-Client. Entscheidet READY / NOT READY, routet Bugs. Nach /frontend und /backend.
 argument-hint: "<ID>"
 user-invocable: true
 ---
@@ -13,7 +13,7 @@ Du nimmst ein fertig gebautes Feature ab. Du **fixst nichts** — du belegst, en
 ## Vor dem Start
 1. `features/INDEX.md`, Spec lesen — **Acceptance Criteria**, **Regeln** (dort stehen die Grenzfälle), **Daten & Server**, **Umgebung**; Status → **In Review**
 2. **Ziel des Features bestimmen** — die Basis vor dem ersten Feature-Commit: `git log --oneline --grep="<ID>"` → `<basis>` = Commit davor; Bereich `<basis>..HEAD` (Probe: `git diff <basis>..HEAD --stat`). Alternativ die berührten Pfade. Nötig, weil nach den Commits die Arbeitskopie leer ist — ohne explizites Ziel reviewen die Gates nichts
-3. Dev-Client bereit? `xcrun simctl list devices booted`, Metro auf `:8081` (`npx expo start --dev-client`). Test-Account aus `docs/ENVIRONMENTS.md`
+3. Dev-Client bereit? `xcrun simctl list devices booted`, Metro auf `:8081` (`npx expo start --dev-client`). Modus supabase: Test-Account aus `docs/ENVIRONMENTS.md`; Modus lokal: Ausgangszustand per Seed in der lokalen DB
 
 ## Welche Tore laufen — nach dem, was sich geändert hat
 
@@ -25,6 +25,7 @@ Du nimmst ein fertig gebautes Feature ab. Du **fixst nichts** — du belegst, en
 | Reine UI (Layout, Texte, Navigation) | ✅ | — | — | die **neuen** Screens |
 | `lib/`-Logik ohne DB-Änderung | ✅ | — | — | nur wenn sichtbar |
 | Migration, RLS, RPC, Trigger | ✅ | ✅ | ✅ | nur wenn sichtbar |
+| Lokale Migration (Modus lokal) | ✅ | — | ✅ Migrations-Test | nur wenn sichtbar |
 | Edge Function, Auth, Secrets, Deep-Links | ✅ | ✅ | ✅ (falls DB) | **echtes Gerät** |
 
 Warum abgestuft: In den QA-Runden dieses Projekts fand das Code-Gate die teuersten Fehler, die Rollback-Probe nagelte das DB-Verhalten fest — das Security-Gate meldete bei Nicht-Security-Diffs in fünf von sieben Runden nichts, und der Simulator-Durchgang war das teuerste Tor mit der geringsten Ausbeute. Gleichbehandlung kostet Stunden, ohne Fehler zu finden.
@@ -39,6 +40,8 @@ Immer mit explizitem Ziel (Commit-Bereich oder Pfade, z. B. `/code-review app/ro
 Übersprungen? Im Verlauf-Eintrag der Spec kurz sagen warum („reine UI") — ein stilles Weglassen sieht später aus wie Nachlässigkeit.
 
 ### 3. Server-Beweis — Rollback-Probe (nur bei RPC-/RLS-/Trigger-Änderungen)
+**Modus lokal:** statt Probe und Advisors den Migrations-Test fahren (`.claude/rules/local-db.md`: frisch, Upgrade mit Seed-Daten, Idempotenz) — muss grün sein. Fehlt der Upgrade-Fall für eine neue Migration → Bug (Backend). Rest dieses Abschnitts nur Modus supabase:
+
 `supabase/tests/<id>_*.sql` per `mcp__supabase-dev__execute_sql` fahren (Dateiname kleingeschrieben ohne Bindestrich, z. B. `due2_fixtures_sync.sql`) → muss `REGRESSION_PASS` liefern. Fehlt die Probe bei einer solchen Änderung → Bug (Backend). Dazu `mcp__supabase-dev__get_advisors`: keine neue Warnung.
 
 ### 4. Abnahme — gezielt, nicht flächendeckend
@@ -60,7 +63,7 @@ Bei Zustandsfehlern mit **Kontrollprobe**: derselbe Ausgangszustand einmal **mit
 Dazu einmal `npx tsc --noEmit && npm test` — rot = Bug (High).
 
 ## Verdikt
-- **READY:** die **laut Tabelle nötigen** Tore ohne Critical/High · Probe grün (falls nötig) · jedes AC belegt (Simulator, SQL, Test oder Review — die Methode steht dabei) · tsc/Jest grün · offene „needs device check" an `/deploy` übergeben
+- **READY:** die **laut Tabelle nötigen** Tore ohne Critical/High · Probe bzw. Migrations-Test grün (falls nötig) · jedes AC belegt (Simulator, SQL, Test oder Review — die Methode steht dabei) · tsc/Jest grün · offene „needs device check" an `/deploy` übergeben
 - **NOT READY:** sonst
 
 ## Bug-Routing

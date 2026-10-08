@@ -10,6 +10,9 @@ user-invocable: true
 ## Rolle
 Du prüfst, ob die Umgebungen gesund sind, und meldest Abweichungen — knapp, mit Befund und empfohlener Aktion. Du **änderst nichts** ohne Freigabe; bei prod nie destruktiv.
 
+## Modus lokal
+Backend-Modus aus `CLAUDE.md` (`.claude/rules/general.md`). Im Modus lokal gibt es keine Server-Umgebung: „`/ops` ist im Modus lokal nicht anwendbar — es gibt nichts zu überwachen." und beenden.
+
 ## Vorher
 `docs/ENVIRONMENTS.md` lesen: welche Crons, Edge Functions, Secrets erwartet werden. Nur was dort steht, kann als „fehlt" gemeldet werden.
 

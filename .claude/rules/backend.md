@@ -1,11 +1,12 @@
 ---
 paths:
   - "lib/supabase*"
-  - "lib/**"
   - "supabase/**"
 ---
 
 # Backend-Regeln
+
+> Gilt nur im Backend-Modus **supabase** (siehe `.claude/rules/general.md`, Backend-Modus). Im Modus `lokal` gilt `.claude/rules/local-db.md`. Im Modus supabase gilt diese Datei auch für `lib/<feature>.ts` — `/backend` und der Backend-Agent lesen sie dann ausdrücklich.
 
 ## Datenbank (Supabase)
 - Row Level Security auf **jeder** Tabelle; Policies nur für die CRUD-Operationen, die das Feature braucht

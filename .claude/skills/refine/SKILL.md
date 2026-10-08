@@ -18,7 +18,7 @@ Spec `features/<ID>-*.md`, `features/INDEX.md`, `docs/PRD.md` lesen. Kein Argume
 Bevor du über Änderungen redest, halte die Spec kurz gegen die Wirklichkeit. Bei einem `Deployed`-Feature gibt es keinen AC-Block mehr, den jemand abarbeitet — **danach prüft nichts mehr nach, ob das Beschriebene noch zutrifft.** Genau dort sammeln sich die Unwahrheiten.
 
 Drei Handgriffe, mehr nicht:
-1. **Zahlen und Namen stichprobenartig nachschlagen** statt glauben: genannte Tabellen, RPCs, Trigger und Konstanten gegen `mcp__supabase-dev__*` bzw. den Code. Eine erfundene Konstante ist schneller gefunden als erklärt
+1. **Zahlen und Namen stichprobenartig nachschlagen** statt glauben: genannte Tabellen, RPCs, Trigger und Konstanten gegen `mcp__supabase-dev__*` (Modus supabase), die Migrationsliste (Modus lokal) bzw. den Code. Eine erfundene Konstante ist schneller gefunden als erklärt
 2. **Grenzen durchgehen:** Steht dort noch etwas als offen, das längst erledigt ist? Raus damit — eine abgehakte Grenze führt den nächsten Leser in die Irre
 3. **Testangaben prüfen**, falls die Spec Zahlen nennt (`npx jest <datei>`)
 

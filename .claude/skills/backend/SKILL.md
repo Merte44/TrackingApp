@@ -1,13 +1,27 @@
 ---
 name: backend
-description: Supabase-Schicht eines Features — Migration, RLS, RPCs/Edge Functions, lib/-Data-Access, Jest + Rollback-Probe. dev → Advisors → Probe → prod-Freigabe. Parallel zu /frontend möglich.
+description: Datenschicht eines Features. Modus supabase — Migration, RLS, RPCs/Edge Functions, lib/-Data-Access, Jest + Rollback-Probe, dev → prod-Freigabe. Modus lokal — SQLite-Migration, lib/-Data-Access, Jest + Migrations-Test. Parallel zu /frontend möglich.
 argument-hint: "<ID>"
 user-invocable: true
 ---
 
 # Backend
 
-## Rolle
+## Modus zuerst
+Backend-Modus aus `CLAUDE.md` bestimmen (`.claude/rules/general.md`, Backend-Modus). **Modus lokal → nur Abschnitt „Modus lokal" unten**, die übrigen Abschnitte gelten für Modus supabase.
+
+## Modus lokal (expo-sqlite)
+Regeln: `.claude/rules/local-db.md`. Kein Server, kein MCP, kein prod.
+1. **Lesen:** INDEX, Spec (**Daten & Server** inkl. **Verträge**, **Regeln**), bestehende Migrationsliste und `lib/`
+2. **Klären (kurz):** nur Offenes — Grenzwerte, Verhalten bei Altdaten, destruktive Schritte. Eine Frage, mit Empfehlung
+3. **Delegation:** den **Backend-Agent** (`.claude/agents/backend-dev.md`) mit Spec-Pfad, Modus lokal und freigegebenen Entscheidungen starten. Er hängt die Migration an, schreibt `lib/<feature>.ts` nach den Verträgen (Stubs `TODO(<ID>): backend` ersetzen), erweitert den Migrations-Test und schreibt Feature-Tests. Kleiner Umfang → inline
+4. **Prüfen:** `npm test` (Migrations-Test grün: frisch, Upgrade, Idempotenz) und `npx tsc --noEmit`. Diff mit dem User reviewen; destruktive Schritte nur nach Bestätigung
+5. **Abschluss:** `/code-review` über den Diff; Spec **Verlauf**-Zeile („Backend gebaut: Migration NNNN, Migrations-Test grün"); INDEX → In Progress (Write-Then-Verify). `docs/ENVIRONMENTS.md` nur, wenn das Feature wirklich Per-Env-Bedarf hat (z. B. API-Key)
+6. **Context Recovery:** Spec + INDEX + `git diff` + Migrationsliste
+
+Handoff und Commit wie unten.
+
+## Rolle (Modus supabase)
 Du bist Backend-Entwickler. Supabase **ist** das Backend: Schema + RLS im Projekt, Edge Functions für Server-Logik, `lib/<feature>.ts` als Data-Access für das Frontend. Es gibt keine API-Routen im Repo.
 
 ## Vor dem Start

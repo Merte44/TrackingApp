@@ -13,7 +13,7 @@ Du übersetzt eine Feature-Spec in einen verständlichen Architekturplan. Zielgr
 ## Vor dem Start
 1. `features/INDEX.md` lesen; Status muss **Planned** sein und `features/<ID>-*.md` existieren — sonst: „Zuerst `/write-spec <ID>`." → Stopp
 2. Spec lesen (Was es tut, Regeln, Acceptance Criteria, Grenzen, Umgebung)
-3. Bestehendes lesen: `git ls-files components/ lib/ supabase/`; Schema per `mcp__supabase-dev__list_tables`, falls Supabase im Spiel
+3. Bestehendes lesen: `git ls-files components/ lib/ supabase/`. Backend-Modus aus `CLAUDE.md` (`.claude/rules/general.md`): Modus supabase → Schema per `mcp__supabase-dev__list_tables`; Modus lokal → bestehende Migrationsliste lesen
 
 ## Workflow
 
@@ -24,11 +24,11 @@ Du übersetzt eine Feature-Spec in einen verständlichen Architekturplan. Zielgr
 Kein eigener „Tech Design"-Block. Das Design geht dorthin, wo es später gelesen wird:
 
 - **→ `Screens & Komponenten`:** Screens → Komponenten, welche Primitives, welche neuen Kompositionen in `components/<domain>/`
-- **→ `Daten & Server`:** Entitäten/Felder mit Grenzen und Beziehungen in Worten · Tabellen/Views/RPCs mit Namen und Zweck · Edge Functions / Cron · RLS-Kernregel in einem Satz · **Verträge**, damit `/frontend` und `/backend` **parallel** laufen können: Funktionen in `lib/<feature>.ts` mit Namen, Eingabe, Rückgabe (z. B. „`listProjects()` liefert Projekte des Nutzers mit Aufgabenzahl"). Kein Code.
+- **→ `Daten & Server`:** Entitäten/Felder mit Grenzen und Beziehungen in Worten · Tabellen/Views/RPCs mit Namen und Zweck · Modus supabase: Edge Functions / Cron · RLS-Kernregel in einem Satz · Modus lokal: neuer Migrationsschritt in Worten + Upgrade-Risiko für vorhandene Daten · **Verträge**, damit `/frontend` und `/backend` **parallel** laufen können: Funktionen in `lib/<feature>.ts` mit Namen, Eingabe, Rückgabe (z. B. „`listProjects()` liefert Projekte des Nutzers mit Aufgabenzahl"). Kein Code.
 - **→ `Regeln`:** Fehlerfälle, die das Frontend anzeigen muss; Sperren, Limits, Sichtbarkeit
 - **→ `Umgebung`:** was in `docs/ENVIRONMENTS.md` eingetragen werden muss (oder „Kein Per-Env-Setup")
 - **→ `Grenzen`:** was das Design bewusst nicht löst, plus noch offene Punkte
-- Sicherheitsrelevantes benennen: DEFINER-Funktionen, neue Policies, Edge Functions → Hinweis, dass `/security-review` vor prod Pflicht ist
+- Sicherheitsrelevantes benennen: DEFINER-Funktionen, neue Policies, Edge Functions → Hinweis, dass `/security-review` vor prod Pflicht ist. Modus lokal: Fremd-APIs, Kamera/Permissions, destruktive Migrationen
 - Benötigte Pakete (Name + Zweck) im Review nennen; in die Spec nur, wenn sie eine Entscheidung tragen
 
 ### 3. Entscheidungen loggen

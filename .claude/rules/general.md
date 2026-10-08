@@ -1,6 +1,6 @@
 # Allgemeine Projektregeln
 
-> **Stack:** Expo / React Native (siehe `CLAUDE.md`). iOS-first, NativeWind v4 + react-native-reusables, Supabase dev/prod. Deutsch, kein i18n.
+> **Stack:** Expo / React Native (siehe `CLAUDE.md`). iOS-first, NativeWind v4 + react-native-reusables, Backend laut Backend-Modus (unten). Deutsch, kein i18n.
 
 ## Projekt-Erkennung (PFLICHT)
 Vor jeder Arbeit prüfen, ob das Projekt initialisiert ist:
@@ -10,6 +10,13 @@ Vor jeder Arbeit prüfen, ob das Projekt initialisiert ist:
 **Nicht initialisiert:** keinen Code schreiben, nicht vorgreifen. Sagen: „Dieses Projekt ist noch nicht aufgesetzt. Starte mit `/init <Idee>` oder `/init docs/design/mockup.html`." Hat der User seine Idee schon beschrieben, `/init` direkt damit starten.
 
 **Initialisiert, aber Feature fehlt in INDEX.md:** erst `/write-spec`, dann Implementierung.
+
+## Backend-Modus
+Die Zeile `**Backend:**` im Tech Stack von `CLAUDE.md` legt den Modus fest — Skills lesen sie, statt ihn anzunehmen:
+- beginnt mit **`lokal`** → Modus **lokal**: Daten on-device (`expo-sqlite`), kein Server, keine prod-Umgebung. Regeln: `.claude/rules/local-db.md`
+- sonst (**Supabase …**) → Modus **supabase**: dev/prod-Projekte, RLS, Rollback-Proben. Regeln: `.claude/rules/backend.md`
+
+Skills mit Server-Schritten (Migration auf prod, Advisors, Rollback-Probe, Test-Account, `/ops`) führen sie nur im Modus supabase aus und nennen im Modus lokal den Ersatz.
 
 ## Feature-Tracking
 - `features/INDEX.md` ist die Single Source of Truth — vor jeder Arbeit lesen
@@ -37,6 +44,7 @@ Vor jeder Arbeit prüfen, ob das Projekt initialisiert ist:
 - Vor dem Finalisieren eines Deliverables Freigabe einholen; Optionen als klare Auswahl anbieten
 - Nie ohne Bestätigung in die nächste Workflow-Phase. Die Bestätigung kann **vorab im Auftrag** stehen („danach /backend …", „bis QA durchziehen"): dann den Handoff kurz nennen und ohne Rückfrage weitermachen. Fehlt sie, ist der Handoff ein Vorschlag („Nächster Schritt: /<skill> …"), nie automatisch
 - Eine Vorab-Freigabe deckt nur die genannten Phasen ab und endet an jedem Checkpoint mit eigener Freigabe (Architektur-Review, prod-Migration, Deploy/Submit) — dort wird trotzdem gefragt
+- **`/autopilot <ID>`** gilt als Vorab-Freigabe für die Phasen `/write-spec` bis `/qa` dieses einen Features. Die Freigaben innerhalb der Skills (Spec-Entwurf, Architektur-Review, Diff-Review, destruktive Migration) bleiben; `/deploy` und prod nie
 
 ## Status-Updates (Write-Then-Verify)
 1. Spec und `features/INDEX.md` **lesen** vor dem Editieren

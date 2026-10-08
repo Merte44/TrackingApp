@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Sammel-Release fahren — Gates (tsc/lint/Jest + Klick gegen prod), prod-Migrationen verifizieren, EAS-Build/Submit via expo-deployment, RELEASES-Eintrag, alle enthaltenen Features → Deployed, Design-System nachziehen.
+description: Sammel-Release fahren — Gates (tsc/lint/Jest + Klick gegen prod bzw. Upgrade-Gate), prod-Migrationen verifizieren (Modus supabase), EAS-Build/Submit via expo-deployment, RELEASES-Eintrag, alle enthaltenen Features → Deployed, Design-System nachziehen.
 argument-hint: "'testflight' | 'appstore' | 'dev-client' (optional: <ID>, wenn nur ein Feature)"
 user-invocable: true
 ---
@@ -21,11 +21,14 @@ npx tsc --noEmit && npm run lint && npm test
 git status --short   # muss leer sein
 ```
 - **Gerätedurchgang — die offenen „needs device check" aus `/qa`:** `/qa` kann Push, Mail-Links, Deep-Links und Haptik im Simulator nicht beweisen und sammelt sie als offene Punkte. Hier werden sie abgearbeitet, **einmal pro Release auf einem echten Gerät** statt einmal pro Feature. In diesem Projekt saßen genau dort die teuersten Fehler (fehlende Push-Abfrage beim Einladen, kaputte Mail-Deep-Links)
-- **Ein echter Klick gegen prod:** Anmelden mit dem Demo-Account aus `docs/ENVIRONMENTS.md` und eine Kernfunktion auslösen (z. B. Datensatz öffnen, Eintrag speichern). Das ist der Gate, der in der Praxis Fehler gefunden hat — ein abgelaufener Schlüssel oder eine fehlende prod-Migration fällt hier auf, nicht im Typecheck
+- **Modus lokal — Upgrade-Gate statt Klick gegen prod:** den neuen Build **über** den zuletzt installierten installieren (nicht frisch), App starten: vorhandene Daten sind noch da, eine Kernfunktion auslösen (z. B. Eintrag speichern). Hier fällt eine kaputte Migration auf — auf dem Gerät gibt es keinen Server, der die Daten zurückholt
+- **Modus supabase — ein echter Klick gegen prod:** Anmelden mit dem Demo-Account aus `docs/ENVIRONMENTS.md` und eine Kernfunktion auslösen (z. B. Datensatz öffnen, Eintrag speichern). Das ist der Gate, der in der Praxis Fehler gefunden hat — ein abgelaufener Schlüssel oder eine fehlende prod-Migration fällt hier auf, nicht im Typecheck
 - **Optionaler Tiefen-Durchlauf:** bei einem Release mit viel UI die betroffenen Screens per `/run` im Dev-Client durchgehen, Screenshots nach `docs/release-checks/<version>-build<N>/`. Kein Pflicht-Gate — ein vollständiger Klickpfad-Katalog wurde in sieben Releases kein einziges Mal gefahren und am 2026-09-21 deshalb abgeschafft. Fehlschlag = Bug → Routing wie in `/qa`, kein Build
-- **Vor External / App Store zusätzlich:** `/security-review` über den ganzen Branch + `mcp__supabase-prod__get_advisors`; Legal-Gates aus `docs/NEW-PROJECT.md` §7 (Datenschutz-URL, Impressum, Account-Löschung, App-Privacy-Angaben aus dem Datenmodell ableiten und in App Store Connect eintragen)
+- **Vor External / App Store zusätzlich:** `/security-review` über den ganzen Branch + (Modus supabase) `mcp__supabase-prod__get_advisors`; Legal-Gates aus `docs/NEW-PROJECT.md` §7 (Datenschutz-URL, Impressum, Account-Löschung, App-Privacy-Angaben aus dem Datenmodell ableiten und in App Store Connect eintragen)
 
-## Backend auf prod
+## Backend auf prod (nur Modus supabase)
+Modus lokal: entfällt — Migrationen laufen beim App-Start auf dem Gerät und sind durch Migrations-Test und Upgrade-Gate abgesichert.
+
 1. Fehlende Migrationen in Reihenfolge: `mcp__supabase-prod__apply_migration` (Datei aus `supabase/migrations/`); DEFINER/RLS/Edge Function → vorher `/security-review`; destruktive Ops bestätigen lassen
 2. `mcp__supabase-prod__get_advisors` — keine neue Warnung
 3. Rollback-Proben der enthaltenen Features auf prod fahren — nur solche, die am selben Tag auf dev `REGRESSION_PASS` lieferten und **keine** externen Nebenwirkungen anstoßen (`DEV_ONLY`-Proben auslassen; Regeln in `.claude/rules/backend.md`)
