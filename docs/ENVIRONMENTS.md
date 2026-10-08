@@ -33,9 +33,9 @@
 
 | Verweis | Wert |
 |---------|------|
-| **Design-System-Projekt** (Tokens + Komponenten, Ziel von `/design sync`) | Name: `<App-Name>` · projectId: `<uuid>` |
+| **Design-System-Projekt** (Tokens + Komponenten, Ziel von `/design sync`) | Name: `TrackingApp` · projectId: `79eb669c-618f-4288-8e6b-c38d38d44980` |
 | **Screens-Projekt** (Quelle von `/design screen PROJ-X`) | Name: `<Projektname in Claude Design>` |
-| Letzter Sync | YYYY-MM-DD (Release / Re-Theme) |
+| Letzter Sync | 2026-10-08 (Erst-Sync nach `/design tokens`: Tokens, Typo, Radius/Spacing, Makro-Referenz — noch keine Komponenten) |
 
 ## Per-Feature-Setup
 
