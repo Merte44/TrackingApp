@@ -11,7 +11,7 @@
 
 ## 2. Repo
 - [ ] Template geklont, `git remote` auf das neue Repo gesetzt
-- [ ] `npm install`, `npx expo-doctor` grün
+- [x] `npm install`, `npx expo-doctor` grün
 - [ ] `.env.local` aus `.env.local.example` angelegt (nie committen)
 
 ## 3. Supabase (dev + prod) — entfällt: on-device (`expo-sqlite`), siehe PRD

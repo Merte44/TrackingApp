@@ -36,7 +36,7 @@ Nur der Entwickler selbst, auf einem iPhone. Bedürfnis: Ernährung täglich und
   - Eingetragene Einträge sind Schnappschüsse: Bearbeiten oder Löschen eigener Lebensmittel und Vorlagen ändert keine bereits eingetragenen Tage
   - Eine Mahlzeiten-Vorlage wird als einzelne Lebensmittel eingetragen (einzeln änderbar/löschbar)
   - Barcode nicht gefunden oder unvollständig → „Neues Lebensmittel" mit Barcode und bekannten Werten vorausgefüllt; danach ist es ein eigenes Lebensmittel
-- **Design:** Quelle ist die handgezeichnete Skizze (`docs/design/skizze.pdf`). Hintergrund `linear-gradient(to bottom, #E1F1FB 0%, #EBEBF0 100%)`; alle Unter-Screens als `formSheet`; Farben Carbs türkis, Fette lila, Eiweiß orange; Kürzel C / F / E; Kopfzeile je Mahlzeit nur in Gramm; Wisch-Löschen mit rotem Papierkorb; Hinzufügen-Sheet mit Suche und Reitern „Verwendet" · „Lebensmittel" (nur eigene) · „Mahlzeiten" (Vorlagen); Detail-Sheet mit Nährwerttabelle (Menge und pro 100 g) sowie änderbarer Menge und Mahlzeit
+- **Design:** Hintergrund `linear-gradient(to bottom, #E1F1FB 0%, #EBEBF0 100%)`; alle Unter-Screens als `formSheet`; Farben Carbs türkis, Fette lila, Eiweiß orange; Kürzel C / F / E; Kopfzeile je Mahlzeit nur in Gramm; Wisch-Löschen mit rotem Papierkorb; Hinzufügen-Sheet mit Suche und Reitern „Verwendet" · „Lebensmittel" (nur eigene) · „Mahlzeiten" (Vorlagen); Detail-Sheet mit Nährwerttabelle (Menge und pro 100 g) sowie änderbarer Menge und Mahlzeit
 - iOS-only, Deutsch, kein i18n
 
 ## Non-Goals

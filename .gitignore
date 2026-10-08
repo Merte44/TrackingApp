@@ -38,3 +38,6 @@ yarn-error.*
 
 # EAS
 .easignore
+
+# Claude Code lokale Einstellungen
+.claude/settings.local.json
