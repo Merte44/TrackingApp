@@ -15,7 +15,7 @@ Regeln: `.claude/rules/local-db.md`. Kein Server, kein MCP, kein prod.
 1. **Lesen:** INDEX, Spec (**Daten & Server** inkl. **Verträge**, **Regeln**), bestehende Migrationsliste und `lib/`
 2. **Klären (kurz):** nur Offenes — Grenzwerte, Verhalten bei Altdaten, destruktive Schritte. Eine Frage, mit Empfehlung
 3. **Delegation:** den **Backend-Agent** (`.claude/agents/backend-dev.md`) mit Spec-Pfad, Modus lokal und freigegebenen Entscheidungen starten. Er hängt die Migration an, schreibt `lib/<feature>.ts` nach den Verträgen (Stubs `TODO(<ID>): backend` ersetzen), erweitert den Migrations-Test und schreibt Feature-Tests. Kleiner Umfang → inline
-4. **Prüfen:** `npm test` (Migrations-Test grün: frisch, Upgrade, Idempotenz) und `npx tsc --noEmit`. Diff mit dem User reviewen; destruktive Schritte nur nach Bestätigung
+4. **Prüfen:** `npm test` (Migrations-Test grün: frisch, Upgrade, Idempotenz) und `npx tsc --noEmit`. Jede AC mit Logik in `lib/` oder der Migration hat mindestens einen Test, der ihre ID im Namen trägt (`features/README.md` → Nachverfolgbarkeit). Diff mit dem User reviewen; destruktive Schritte nur nach Bestätigung
 5. **Abschluss:** `/code-review` über den Diff; Spec **Verlauf**-Zeile („Backend gebaut: Migration NNNN, Migrations-Test grün"); INDEX → In Progress (Write-Then-Verify). `docs/ENVIRONMENTS.md` nur, wenn das Feature wirklich Per-Env-Bedarf hat (z. B. API-Key)
 6. **Context Recovery:** Spec + INDEX + `git diff` + Migrationsliste
 
@@ -45,7 +45,7 @@ Nur Offenes: Rechte (owner-only / geteilt), gleichzeitige Änderungen, Server-on
 ### 4. Data-Access + Tests
 - `lib/<feature>.ts` **exakt nach den Verträgen** der Spec: Zod vor jedem Call, `{ data, error }`, `.limit()` auf Listen; Frontend-Stubs (`TODO(<ID>): backend`) ersetzen
 - Edge Functions in `supabase/functions/<name>/`; Secrets pro Umgebung setzen und in `docs/ENVIRONMENTS.md` eintragen
-- Jest co-located `lib/<feature>.test.ts`: Happy Path, Validierungsfehler, keine Session; Supabase-Client gemockt. `npm test`, `npx tsc --noEmit`
+- Jest co-located `lib/<feature>.test.ts`: Happy Path, Validierungsfehler, keine Session; Supabase-Client gemockt. Testnamen tragen die AC-IDs (`it("AC-2: …")`, `features/README.md` → Nachverfolgbarkeit). `npm test`, `npx tsc --noEmit`
 
 ### 5. Delegation — Standard für den Entwurfsbrocken
 Migration + Probe + `lib/` + Tests sind ein abgegrenzter Auftrag: den **Backend-Agent** (`.claude/agents/backend-dev.md`) per Agent-Tool starten. Er hat `mcp__supabase-dev__*` (nie prod) und schreibt die Rollback-Probe mit. Ergebnis = Diff + Advisors-Befund + Probe-Ergebnis; du reviewst mit dem User. Produktentscheidungen und destruktive Ops bleiben interaktiv.

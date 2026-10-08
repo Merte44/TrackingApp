@@ -46,10 +46,11 @@
      was bei Fehlern/Leerzuständen passiert. Das Warum als Halbsatz, nicht als eigener Abschnitt. -->
 
 ## Acceptance Criteria
-<!-- Nur solange das Feature nicht Deployed ist — /qa arbeitet diese Liste ab.
-     Beim Deploy verdichtet /deploy sie zu `Regeln` und entfernt diesen Abschnitt. -->
+<!-- Jede AC hat eine stabile ID (nie umnummerieren, nie wiederverwenden; gestrichen = Lücke).
+     Tests nennen die IDs im Namen ("AC-3: …"). Regeln: features/README.md → Nachverfolgbarkeit.
+     Bis zur Abnahme Checkboxen; nach dem Deploy bleibt der Block ohne Checkboxen als Prüfvertrag. -->
 
-- [ ] Angenommen [Vorbedingung], wenn [Aktion], dann [Ergebnis]
+- [ ] **AC-1** Angenommen [Vorbedingung], wenn [Aktion], dann [Ergebnis]
 
 ## Grenzen
 <!-- Was bewusst NICHT drin ist — und wohin es stattdessen gehört (Feature-ID oder "offen").

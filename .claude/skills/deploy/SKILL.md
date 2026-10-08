@@ -45,7 +45,7 @@ Modus lokal: entfällt — Migrationen laufen beim App-Start auf dem Gerät und 
 ## Nach dem Build
 - `docs/RELEASES.md`: Eintrag nach Vorlage (Version/Build, Datum, Tier, Enthalten, prod-Migrationen, Release-Check, offene Gerätetests)
 - Jedes enthaltene Feature: INDEX Status → **Deployed**, Spalte **Release** = Build; Spec **Verlauf**-Zeile (Write-Then-Verify)
-- **AC-Block verdichten:** die abgenommenen Acceptance Criteria in `Regeln` überführen (sofern die Regel dort noch nicht steht) und den Abschnitt `Acceptance Criteria` entfernen. Eine deployte Spec beschreibt, was gilt — keine Liste abgehakter Kästchen
+- **AC-Block abschließen:** Checkboxen entfernen (`- [x] **AC-n**` → `- **AC-n**`), IDs und Text bleiben — die Tests verweisen dauerhaft darauf (`features/README.md`, Nachverfolgbarkeit). Steht eine abgenommene Regel noch nicht in `Regeln`, dort verdichtet ergänzen
 - Tag: `git tag -a v<X.Y.Z>-build<N> -m "Release <N>"`; push
 - Offene Gerätetests (Push, Deep-Links) auf dem TestFlight-Gerät durchführen und im RELEASES-Eintrag schließen
 - **Design-System nachziehen:** `/design sync` (Repo → Claude Design), damit neue Screens im Ist-Look entworfen werden

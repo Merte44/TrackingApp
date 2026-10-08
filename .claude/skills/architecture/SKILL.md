@@ -34,11 +34,15 @@ Kein eigener „Tech Design"-Block. Das Design geht dorthin, wo es später geles
 ### 3. Entscheidungen loggen
 Ins **Decision Log** der Spec — nur Entscheidungen mit verworfener Alternative (Entscheidung | Warum | Verworfen | Datum). Sonst gehört das Warum als Halbsatz an die jeweilige Regel. Ungeklärtes → `Grenzen`.
 
-### 4. Review
-Design zeigen: „Ergibt das Sinn? Fragen?" Auf Freigabe warten.
+### 4. Abdeckung prüfen
+Jede AC einem Teil des Designs zuordnen (Screen, Vertrag, Migration oder Regel). Eine AC ohne Träger ist eine Lücke im Design — schließen oder unter `Grenzen` benennen, nie still übergehen. Die Zuordnung gehört ins Review, nicht in die Spec.
+
+### 5. Review
+Design zeigen, mit der Abdeckung als kurzer Liste (`AC-1 → listEntries()`, `AC-2 → Leerzustand in EntryList` …): „Ergibt das Sinn? Fragen?" Auf Freigabe warten.
 
 ## Abschluss
 - [ ] `Screens & Komponenten`, `Daten & Server` (inkl. Verträge), `Regeln`, `Umgebung` in der Spec gefüllt
+- [ ] Jede AC hat einen Träger im Design (oder steht als Lücke unter `Grenzen`)
 - [ ] Decision Log ergänzt; offene Punkte unter `Grenzen`
 - [ ] INDEX-Status → Architected; Verlauf-Zeile „Architektur freigegeben"
 - [ ] User hat freigegeben

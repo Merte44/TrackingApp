@@ -34,6 +34,7 @@ Ab zwei Screens oder mehreren unabhängigen Kompositionen: den **Frontend-Agent*
 ```bash
 npx tsc --noEmit && npm run lint && npm test
 ```
+Tests nennen die AC-IDs, die sie belegen (`it("AC-4: …")`, `features/README.md` → Nachverfolgbarkeit). ACs, die nur sichtbar zu belegen sind (Layout, Gesten), brauchen keinen Test — sie gehen an `/qa`.
 Dann `/run` (Dev-Client im Simulator): jeden Screen einmal öffnen, Screenshot. Feedback einarbeiten; iPad/Android sind Follow-up.
 
 ### 5. Abschluss

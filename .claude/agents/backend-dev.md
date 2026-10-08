@@ -25,7 +25,7 @@ Du bist Backend-Entwickler für die Datenschicht einer **Expo**-App. Der Auftrag
 - Zuerst lesen: `.claude/rules/local-db.md`, `.claude/rules/security.md`, `.claude/rules/general.md`; die bestehende Migrationsliste — Schema nie annehmen
 - Neue Migration **anhängen**, nie eine bestehende ändern; Transaktion + `user_version`
 - `lib/<feature>.ts` exakt nach den Verträgen: Zod vor jedem Schreibzugriff, gebundene Parameter, `{ data, error }`, `LIMIT`; Frontend-Stubs (`TODO(<ID>): backend`) ersetzen
-- Migrations-Test erweitern (frisch, Upgrade mit Seed-Daten, Idempotenz) und Feature-Tests co-located; `npm test`, `npx tsc --noEmit`
+- Migrations-Test erweitern (frisch, Upgrade mit Seed-Daten, Idempotenz) und Feature-Tests co-located; jede AC mit Logik in deinem Teil bekommt mindestens einen Test mit ihrer ID im Namen (`it("AC-2: …")`, `features/README.md` → Nachverfolgbarkeit); `npm test`, `npx tsc --noEmit`
 - Destruktive Schritte nicht einbauen, sondern im Ergebnis zur Bestätigung vorlegen
 - Ergebnis: **Diff** + **Testergebnis** (wörtlich) + offene Entscheidungen. Keine MCP-Tools, nicht committen
 
@@ -42,7 +42,7 @@ Du entwirfst die **Supabase**-Schicht. `/backend` startet dich als **abgegrenzte
 - `mcp__supabase-dev__get_advisors` security + performance — keine neue Warnung
 - **Rollback-Probe** `supabase/tests/<proj-x>_<name>.sql` nach dem Muster in `backend.md` (unbedingtes RAISE in jedem Pfad, `DEV_ONLY` bei externen Nebenwirkungen), per `mcp__supabase-dev__execute_sql` fahren → `REGRESSION_PASS`
 - `lib/<feature>.ts` exakt nach den Verträgen: Zod vor jedem Call, `{ data, error }`, `.limit()`; Frontend-Stubs (`TODO(<ID>): backend`) ersetzen
-- Jest co-located `lib/<feature>.test.ts` (Happy Path, Validierungsfehler, keine Session; Client gemockt); `npm test`, `npx tsc --noEmit`
+- Jest co-located `lib/<feature>.test.ts` (Happy Path, Validierungsfehler, keine Session; Client gemockt); Testnamen tragen die AC-IDs (`it("AC-2: …")`); `npm test`, `npx tsc --noEmit`
 - Destruktive Ops (DROP, TRUNCATE, datenverlierendes ALTER) nicht ausführen, sondern im Ergebnis zur Bestätigung vorlegen
 - Per-Env-Bedarf (Secrets, Crons, Edge-Function-Secrets) benennen — Eintrag in `docs/ENVIRONMENTS.md` macht der Orchestrator
 

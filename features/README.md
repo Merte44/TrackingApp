@@ -29,13 +29,28 @@ Erzeugt von `/write-spec` aus [`.claude/skills/write-spec/template.md`](../.clau
 | **Decision Log** | `/write-spec`, `/architecture`, `/refine` |
 | **Verlauf** (eine Zeile pro Ereignis) | `/refine`, `/frontend`, `/backend`, `/qa`, `/deploy` |
 
-**Acceptance Criteria** immer testbar, auf Deutsch:
+**Acceptance Criteria** immer testbar, auf Deutsch, jede mit eigener ID:
 ```markdown
-- [ ] Angenommen [Vorbedingung], wenn [Aktion], dann [Ergebnis]
+- [ ] **AC-1** Angenommen [Vorbedingung], wenn [Aktion], dann [Ergebnis]
 ```
 
+### Nachverfolgbarkeit: AC-IDs
+Jede Anforderung lässt sich von der Spec bis zum Prüfergebnis verfolgen: **AC → Test → QA-Ergebnis**. Die AC-ID ist das Bindeglied.
+
+- **Vergabe:** fortlaufend pro Spec (`AC-1`, `AC-2` …). Neue ACs bekommen die nächste freie Nummer — auch nach dem Deploy
+- **Stabil:** nie umnummerieren, nie wiederverwenden. Eine gestrichene AC hinterlässt eine Lücke. Ändert sich die **Bedeutung** einer AC (nicht nur die Formulierung), wird sie gestrichen und das Neue bekommt eine neue ID — sonst prüft ein alter Test stillschweigend etwas anderes
+- **Zitieren** außerhalb der Spec: `<ID>/AC-n` (QA-Report, Commit, Verlauf)
+- **Tests** nennen die ACs, die sie belegen, am Anfang des Testnamens; der `describe`-Block nennt die Feature-ID:
+  ```ts
+  describe("<ID> …", () => {
+    it("AC-3: …", …)
+    it("AC-7, AC-8: …", …)
+  ```
+  Tests ohne AC-Bezug (reine Technik, Regressionen) sind erlaubt. Eine AC, die kein automatischer Test belegen kann (Layout, Gerät), wird in der QA manuell belegt — mit Methode
+- **Abdeckung prüfen:** `grep -rn "AC-[0-9]" --include="*.test.ts*" <Pfade des Features>`
+
 ### Lebenszyklus der Acceptance Criteria
-Der AC-Block existiert nur, **solange das Feature nicht `Deployed` ist** — `/qa` arbeitet ihn ab. Beim Deploy verdichtet `/deploy` die abgenommenen Kriterien zu `Regeln` und entfernt den Abschnitt. Eine deployte Spec beschreibt, was gilt, statt Kästchen zu zeigen, die nie jemand abhakt.
+Bis zur Abnahme sind die ACs **Checkboxen** — `/qa` arbeitet sie ab. Beim Deploy entfernt `/deploy` die Checkboxen, der Block **bleibt** als Prüfvertrag stehen: Die Tests verweisen dauerhaft auf ihn, und ein späterer `/refine` ergänzt ihn mit neuen IDs. Was die ACs als Ganzes sagen, steht zusätzlich verdichtet in `Regeln`.
 
 ### Was es nicht gibt
 Keine datierten `Implementation Notes`-Blöcke, keine angehängten `Refinement`-Abschnitte, kein `Tech Design`-Block, keine `Open Questions` (offene Punkte stehen unter `Grenzen`), keine `User Stories`. Änderungen werden **in die bestehenden Abschnitte eingearbeitet**; dass etwas passiert ist, steht als eine Zeile im Verlauf.

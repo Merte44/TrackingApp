@@ -53,7 +53,10 @@ Eine Spec = eine testbare, auslieferbare Einheit mit eigenem Nutzen.
 | ❌ zu groß | „Alles verwalten" | enthält mehrere unabhängige Abläufe |
 
 ## Akzeptanzkriterien
-Deutsch, testbar: `- [ ] Angenommen [Vorbedingung], wenn [Aktion], dann [Ergebnis]`
+Deutsch, testbar, mit Ja/Nein entscheidbar: `- [ ] **AC-1** Angenommen [Vorbedingung], wenn [Aktion], dann [Ergebnis]`
+- IDs fortlaufend ab `AC-1`; Regeln zur Stabilität und zu Testnamen: `features/README.md`, Abschnitt **Nachverfolgbarkeit**
+- Eine AC prüft **ein** Verhalten — zwei „dann" in einem Satz sind zwei ACs
+- Fehler-, Leer- und Grenzfälle aus dem Interview bekommen eigene ACs, nicht nur eine Zeile in `Regeln`
 
 ## Tracking
 - INDEX: Status Roadmap → Planned (bei B: Next Available ID)

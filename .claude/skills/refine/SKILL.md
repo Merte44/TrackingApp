@@ -15,12 +15,13 @@ Spec `features/<ID>-*.md`, `features/INDEX.md`, `docs/PRD.md` lesen. Kein Argume
 
 ## Zuerst: stimmt die Spec überhaupt noch? (5 Minuten, immer)
 
-Bevor du über Änderungen redest, halte die Spec kurz gegen die Wirklichkeit. Bei einem `Deployed`-Feature gibt es keinen AC-Block mehr, den jemand abarbeitet — **danach prüft nichts mehr nach, ob das Beschriebene noch zutrifft.** Genau dort sammeln sich die Unwahrheiten.
+Bevor du über Änderungen redest, halte die Spec kurz gegen die Wirklichkeit. Nach dem Deploy arbeitet niemand mehr die ACs ab — **was die Tests nicht festhalten, prüft danach nichts mehr nach.** Genau dort sammeln sich die Unwahrheiten.
 
-Drei Handgriffe, mehr nicht:
+Vier Handgriffe, mehr nicht:
 1. **Zahlen und Namen stichprobenartig nachschlagen** statt glauben: genannte Tabellen, RPCs, Trigger und Konstanten gegen `mcp__supabase-dev__*` (Modus supabase), die Migrationsliste (Modus lokal) bzw. den Code. Eine erfundene Konstante ist schneller gefunden als erklärt
 2. **Grenzen durchgehen:** Steht dort noch etwas als offen, das längst erledigt ist? Raus damit — eine abgehakte Grenze führt den nächsten Leser in die Irre
 3. **Testangaben prüfen**, falls die Spec Zahlen nennt (`npx jest <datei>`)
+4. **AC-Bezüge prüfen:** Verweisen Testnamen auf AC-IDs, die es in der Spec nicht (mehr) gibt? (`grep -rn "AC-[0-9]"` über die Tests des Features)
 
 Gefundene Abweichungen **sofort in die Spec einarbeiten** und als eigene Verlauf-Zeile führen — getrennt von dem, was der User eigentlich wollte. Findest du dabei einen echten Fehler im Code, ist das ein Bug und gehört an `/frontend` bzw. `/backend`, nicht in diesen Lauf.
 
@@ -28,7 +29,7 @@ Gefundene Abweichungen **sofort in die Spec einarbeiten** und als eigene Verlauf
 > „Was bringt dich zurück zu dieser Spec?"
 
 ## Drei Pfade
-- **1 — Etwas hat sich geändert** (Scope, Nutzerfeedback, Regeln): gezieltes Interview nur zu den betroffenen Stellen — was ändert sich an **Was es tut**, **Regeln**, **Dependencies**, **Grenzen** (und an den ACs, falls das Feature noch nicht Deployed ist)?
+- **1 — Etwas hat sich geändert** (Scope, Nutzerfeedback, Regeln): gezieltes Interview nur zu den betroffenen Stellen — was ändert sich an **Was es tut**, **Regeln**, **Dependencies**, **Grenzen** und an den **ACs**?
 - **2 — Umsetzung hat Lücken gezeigt:** fehlendes Szenario → neues AC oder Edge Case; verwandte Lücken gleich mit schließen
 - **3 — Grundsätzliche Infragestellung:** Annahme prüfen, Split/Merge erwägen, Minimalversion finden. Split → neue Spec über den `/write-spec`-Ablauf, INDEX anpassen
 
@@ -45,7 +46,8 @@ Grill-Me wie in `/write-spec`: eine Frage, Empfehlung, Codebase vorher lesen.
 ## Spec aktualisieren
 - Änderungen **in die bestehenden Abschnitte einarbeiten** — nie einen datierten Refine-Block anhängen. Die Spec bleibt Gegenwartsform; dass refined wurde, steht als **eine** Verlauf-Zeile: `YYYY-MM-DD | Refine: <Grund> | <was sich änderte>`
 - Erledigte Punkte aus **Grenzen** entfernen, neue dort ergänzen; Entscheidungen mit verworfener Alternative ins **Decision Log**
-- Ist das Feature schon `Deployed`, gibt es keinen AC-Block mehr: der Refine ändert `Regeln`. Muss neu abgenommen werden, legt er einen AC-Block nur für das Geänderte an
+- **ACs nach den ID-Regeln ändern** (`features/README.md`, Nachverfolgbarkeit): neue ACs mit der nächsten freien Nummer und Checkbox; geänderte Bedeutung → alte AC streichen, neue ID; nie umnummerieren. Tests, die eine gestrichene AC nennen, sind ein Auftrag an `/frontend` bzw. `/backend` (umbenennen oder löschen)
+- Ist das Feature schon `Deployed`, bekommen nur die neuen bzw. geänderten ACs eine Checkbox — genau die muss die nächste QA abnehmen
 - Ändert sich die UI: Screen-Datei in **Design** prüfen — neuer Export per `/design screen <ID>` nötig?
 - Ändert sich Per-Env-Bedarf: **Umgebung** + `docs/ENVIRONMENTS.md`
 - Datei nach dem Edit erneut lesen (Write-Then-Verify)

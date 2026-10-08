@@ -13,7 +13,8 @@ Du nimmst ein fertig gebautes Feature ab. Du **fixst nichts** — du belegst, en
 ## Vor dem Start
 1. `features/INDEX.md`, Spec lesen — **Acceptance Criteria**, **Regeln** (dort stehen die Grenzfälle), **Daten & Server**, **Umgebung**; Status → **In Review**
 2. **Ziel des Features bestimmen** — die Basis vor dem ersten Feature-Commit: `git log --oneline --grep="<ID>"` → `<basis>` = Commit davor; Bereich `<basis>..HEAD` (Probe: `git diff <basis>..HEAD --stat`). Alternativ die berührten Pfade. Nötig, weil nach den Commits die Arbeitskopie leer ist — ohne explizites Ziel reviewen die Gates nichts
-3. Dev-Client bereit? `xcrun simctl list devices booted`, Metro auf `:8081` (`npx expo start --dev-client`). Modus supabase: Test-Account aus `docs/ENVIRONMENTS.md`; Modus lokal: Ausgangszustand per Seed in der lokalen DB
+3. **AC-Abdeckung ermitteln:** `grep -rn "AC-[0-9]"` über die Tests im Diff-Bereich → pro AC-ID der Spec: welcher Test nennt sie? ACs mit Test sind Kandidaten für „belegt durch Test", ACs ohne Test brauchen einen anderen Beleg (Abschnitt 4). Ein Test, der eine AC-ID nennt, die es in der Spec nicht gibt → Befund (Low)
+4. Dev-Client bereit? `xcrun simctl list devices booted`, Metro auf `:8081` (`npx expo start --dev-client`). Modus supabase: Test-Account aus `docs/ENVIRONMENTS.md`; Modus lokal: Ausgangszustand per Seed in der lokalen DB
 
 ## Welche Tore laufen — nach dem, was sich geändert hat
 
@@ -45,7 +46,7 @@ Immer mit explizitem Ziel (Commit-Bereich oder Pfade, z. B. `/code-review app/ro
 `supabase/tests/<id>_*.sql` per `mcp__supabase-dev__execute_sql` fahren (Dateiname kleingeschrieben ohne Bindestrich, z. B. `due2_fixtures_sync.sql`) → muss `REGRESSION_PASS` liefern. Fehlt die Probe bei einer solchen Änderung → Bug (Backend). Dazu `mcp__supabase-dev__get_advisors`: keine neue Warnung.
 
 ### 4. Abnahme — gezielt, nicht flächendeckend
-Nicht jedes Akzeptanzkriterium durchklicken. **Im Dev-Client nur das, was neu und sichtbar ist** — ein Screen, den es vorher nicht gab, ein geänderter Ablauf, ein Zustand, den man sehen muss, um ihn zu glauben. Alles andere belegst du dort, wo es billiger und sicherer geht: per SQL, per Test, per Code-Review.
+Nicht jedes Akzeptanzkriterium durchklicken. Eine AC mit Test gilt als belegt, wenn der Test grün ist **und** beim Lesen tatsächlich prüft, was die AC sagt — ein Testname ist eine Behauptung, kein Beleg. **Im Dev-Client nur das, was neu und sichtbar ist** — ein Screen, den es vorher nicht gab, ein geänderter Ablauf, ein Zustand, den man sehen muss, um ihn zu glauben. Alles andere belegst du dort, wo es billiger und sicherer geht: per SQL, per Test, per Code-Review.
 - Ausgangszustand per Seed/SQL herstellen, nicht klicken; per Deep-Link direkt auf die Zielroute
 - Edge Cases nur, wenn die Spec sie nennt
 - **Screenshot nur, wenn er eine Frage beantwortet, die Text nicht beantworten kann.** „Der Button ist da" braucht kein Bild. Ein Layout-Überlauf schon
@@ -63,7 +64,7 @@ Bei Zustandsfehlern mit **Kontrollprobe**: derselbe Ausgangszustand einmal **mit
 Dazu einmal `npx tsc --noEmit && npm test` — rot = Bug (High).
 
 ## Verdikt
-- **READY:** die **laut Tabelle nötigen** Tore ohne Critical/High · Probe bzw. Migrations-Test grün (falls nötig) · jedes AC belegt (Simulator, SQL, Test oder Review — die Methode steht dabei) · tsc/Jest grün · offene „needs device check" an `/deploy` übergeben
+- **READY:** die **laut Tabelle nötigen** Tore ohne Critical/High · Probe bzw. Migrations-Test grün (falls nötig) · **jede AC-ID hat ein Ergebnis** — bestanden (mit Methode: Test, Simulator, SQL oder Review), nicht bestanden (= Bug, mit Repro) oder nicht prüfbar (mit Grund, z. B. „needs device check") · tsc/Jest grün · offene „needs device check" an `/deploy` übergeben
 - **NOT READY:** sonst
 
 ## Bug-Routing
@@ -87,7 +88,7 @@ Warnzeichen im Diff, auch schon beim ersten Mal: **Rettungsmechanik** — Code, 
 Ein Abschnitt „Offen" im Report, der nirgendwo sonst auftaucht, ist ein Fehler — dort verschwindet er. (2026-09-21 kam so ein echter Bug ans Licht, drei Monate nachdem er notiert wurde.)
 
 - **Nur bei Bugs** ein kurzer Report `docs/qa/<ID>-qa-YYYY-MM-DD.md` ([test-template.md](test-template.md)) — er hält den Verlauf **dieser Runde** fest, nicht den Zustand des Features
-- Spec **Verlauf**: eine Zeile — `YYYY-MM-DD | QA | READY (Screenshots)` oder `NOT READY: n Bugs → docs/qa/…`
+- Spec **Verlauf**: eine Zeile — `YYYY-MM-DD | QA | READY — AC 12/12 (Test 9 · Simulator 2 · Review 1)` oder `NOT READY: n Bugs (AC-3, AC-7) → docs/qa/…`
 - INDEX: **Approved** bei READY, sonst bleibt **In Review** (Write-Then-Verify)
 - **Nach READY aufräumen:** Screenshots der bestandenen Runde aus `docs/qa/shots/` löschen und den Report der Vorrunde entfernen, sobald seine Bugs behoben sind. Belege sind Arbeitsmaterial, kein Archiv — die Git-Historie hält sie fest
 

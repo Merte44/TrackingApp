@@ -39,7 +39,7 @@ docs/                PRD, RELEASES, ENVIRONMENTS, NEW-PROJECT, RELEASE-CHECK, MC
 - Per-Env-Setup (Secrets, Crons, Auth-Templates, SMTP, Push) steht in `docs/ENVIRONMENTS.md`, nie nur im Chat.
 
 ## Konventionen
-- Feature-IDs `PROJ-X` · Commits `type(PROJ-X): description` · ein Feature pro Spec · Acceptance Criteria: Angenommen / Wenn / Dann
+- Feature-IDs `PROJ-X` · Commits `type(PROJ-X): description` · ein Feature pro Spec · Acceptance Criteria `AC-n`: Angenommen / Wenn / Dann, Tests nennen die AC-ID (`features/README.md`)
 - **Tokens, nie Hex** · **Touch statt Click** (`Pressable`, RN-Primitives) · SafeAreaView / KeyboardAvoidingView / FlatList
 - Zod vor jedem DB-Schreibzugriff · Schema-Migrationen append-only, abgesichert durch den Migrations-Test (`.claude/rules/local-db.md`)
 - **Human-in-the-loop** an jedem Checkpoint · Projektspezifika nur hier, in PRD und ENVIRONMENTS — nie in Skills/Rules
