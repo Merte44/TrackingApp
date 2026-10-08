@@ -24,7 +24,7 @@ Du übersetzt eine Feature-Spec in einen verständlichen Architekturplan. Zielgr
 Kein eigener „Tech Design"-Block. Das Design geht dorthin, wo es später gelesen wird:
 
 - **→ `Screens & Komponenten`:** Screens → Komponenten, welche Primitives, welche neuen Kompositionen in `components/<domain>/`
-- **→ `Daten & Server`:** Entitäten/Felder mit Grenzen und Beziehungen in Worten · Tabellen/Views/RPCs mit Namen und Zweck · Edge Functions / Cron · RLS-Kernregel in einem Satz · **Verträge**, damit `/frontend` und `/backend` **parallel** laufen können: Funktionen in `lib/<feature>.ts` mit Namen, Eingabe, Rückgabe (z. B. „`listRounds()` liefert Runden des Nutzers mit Mitgliederzahl"). Kein Code.
+- **→ `Daten & Server`:** Entitäten/Felder mit Grenzen und Beziehungen in Worten · Tabellen/Views/RPCs mit Namen und Zweck · Edge Functions / Cron · RLS-Kernregel in einem Satz · **Verträge**, damit `/frontend` und `/backend` **parallel** laufen können: Funktionen in `lib/<feature>.ts` mit Namen, Eingabe, Rückgabe (z. B. „`listProjects()` liefert Projekte des Nutzers mit Aufgabenzahl"). Kein Code.
 - **→ `Regeln`:** Fehlerfälle, die das Frontend anzeigen muss; Sperren, Limits, Sichtbarkeit
 - **→ `Umgebung`:** was in `docs/ENVIRONMENTS.md` eingetragen werden muss (oder „Kein Per-Env-Setup")
 - **→ `Grenzen`:** was das Design bewusst nicht löst, plus noch offene Punkte

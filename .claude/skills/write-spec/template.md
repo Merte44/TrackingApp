@@ -1,6 +1,6 @@
 # <ID>: Feature-Name
 
-**Status:** Planned · **Release:** — · **Bereich:** _Fundament | Konto | Runden | Tippen | Social | Ansichten_ · **Stand:** YYYY-MM-DD
+**Status:** Planned · **Release:** — · **Bereich:** _<Bereich aus der Feature-Map, z. B. Fundament | Konto | Kernfunktion | Ansichten>_ · **Stand:** YYYY-MM-DD
 **Design:** `docs/design/screens/<ID>.html` — oder der Screen im Mockup, wenn nichts exportiert ist. Backend-only: „—"
 
 <!-- Spec-Regeln (gelten für alle Abschnitte):
@@ -12,7 +12,7 @@
 
 ## Was es tut
 <!-- 3–6 Sätze. Was kann ein Nutzer damit, und warum gibt es das.
-     Der Titel oben sagt konkret WOFÜR — „Tipprunden-Einladungen", nicht „Einladungen". -->
+     Der Titel oben sagt konkret WOFÜR — „Projekt-Einladungen", nicht „Einladungen". -->
 
 ## Dependencies
 <!-- Eine Zeile pro Abhängigkeit MIT Grund — was genau dieses Feature von dort bezieht.
