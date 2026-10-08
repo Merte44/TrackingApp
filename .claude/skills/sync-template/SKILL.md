@@ -19,7 +19,7 @@ Beide Repos haben einen sauberen Arbeitsbaum (`git status --short` leer). Sonst 
 .claude/settings.json       .mcp.json                   docs/MCP.md
 docs/NEW-PROJECT.md         docs/design/README.md       docs/design/screens/README.md
 features/README.md          AGENTS.md                   .github/workflows/**
-scripts/check-spec-refs.py
+scripts/check-spec-refs.py   scripts/spec-brief.py
 .env.local.example          eslint.config.js  babel.config.js  metro.config.js  components.json  tsconfig.json
 ```
 Gevendorte Expo-Skills (`expo-deployment`, `upgrading-expo`, `native-data-fetching`, `eas-update-insights`) gehören dazu — sie werden nur im Template aktualisiert.

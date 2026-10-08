@@ -86,7 +86,7 @@ Alle Wege erzeugen `docs/PRD.md` + `features/INDEX.md`, legen `docs/ENVIRONMENTS
 | `/architecture PROJ-X` | Architect | Technisches Design, kein Code | Komponentenbaum, Datenmodell, **Verträge** (lib-Funktionen, Tabellen, RPCs) → Frontend und Backend laufen parallel |
 | `/frontend PROJ-X` | Frontend-Dev | UI aus `docs/design/screens/PROJ-X.html` | Screens/Kompositionen; ab 2 Screens Frontend-Agent im Worktree, Diff-Review |
 | `/backend PROJ-X` | Backend-Dev | Supabase-Schicht auf dev | Migration + RLS, Rollback-Probe, `lib/<feature>.ts`, Jest; Backend-Agent mit dev-MCP |
-| `/qa PROJ-X` | Abnahme | **Vier Schritte:** `/code-review` → `/security-review` → Rollback-Probe (nur Backend) → `/run`-Walkthrough aller ACs im Dev-Client mit Screenshots | READY / NOT READY, Bug-Routing an `/frontend` / `/backend` |
+| `/qa PROJ-X` | Abnahme | `/code-review` + `/security-review` über den Diff; ein **unabhängiger QA-Agent** (frischer Kontext, kennt den Build-Verlauf nicht) belegt jede AC per Test, Migrations-Test/Probe oder Dev-Client | READY / NOT READY, Bug-Routing an `/frontend` / `/backend` |
 | `/deploy` | Release-Orchestrator | Sammel-Release: Release-Check per `/run`, prod-Migrationen verifizieren, EAS via `expo-deployment` | Eintrag in `docs/RELEASES.md`, alle enthaltenen Features → Deployed |
 
 ### Jederzeit-Helfer
@@ -228,7 +228,7 @@ docs/design/            mockup.html (Archiv) · screens/PROJ-X.html (eine Datei 
 docs/qa/                QA-Reports (nur bei Bugs) · docs/release-checks/ Screenshots
 .claude/rules/          general, frontend, backend, security, design (path-scoped)
 .claude/skills/         Workflow-Skills + gevendorte Expo-Skills
-.claude/agents/         frontend-dev, backend-dev
+.claude/agents/         frontend-dev, backend-dev, qa
 .claude/settings.json   Permissions (expo/eas/tsc/git/rsync/gh/idb …)
 .github/workflows/      check.yml (Typecheck + Jest)
 .mcp.json               supabase-dev, supabase-prod, expo

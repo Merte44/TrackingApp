@@ -13,7 +13,7 @@
 1. **Gedächtnis** — `docs/PRD.md`, `features/INDEX.md` (schlank), Specs mit Verlauf, `docs/RELEASES.md`, `docs/ENVIRONMENTS.md`, `docs/design-system.md`
 2. **Rules** — `.claude/rules/` general / frontend / backend / security / design, path-scoped
 3. **Skills** — `.claude/skills/` Workflow + gevendorte Expo-Skills
-4. **Agents** — `.claude/agents/` Frontend/Backend-Ausführer (Worktree, MCP-dev)
+4. **Agents** — `.claude/agents/` Frontend/Backend-Ausführer (Worktree, MCP-dev), unabhängiger QA-Prüfer (frischer Kontext, read-only)
 5. **MCP** — `.mcp.json`: `supabase-dev`, `supabase-prod`, `expo` (Setup: `docs/MCP.md`)
 6. **Design-Kopplung** — Repo ⇄ Claude Design; ein Screen pro Feature in `docs/design/screens/`
 
