@@ -1,6 +1,6 @@
 # PROJ-2: Eigene Lebensmittel
 
-**Status:** Planned · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-08
+**Status:** Architected · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-08
 **Design:** `docs/design/screens/PROJ-2.html` (Liste) · `docs/design/screens/PROJ-2-form.html` (Formular) — noch nicht vorhanden, vor `/frontend` per `/design screen PROJ-2`
 
 ## Was es tut
@@ -16,29 +16,66 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | **PROJ-7** Haupt-Screen (Roadmap) | Abgrenzung: entfernt den vorläufigen Zugang |
 
 ## Screens & Komponenten
-<!-- füllt /architecture -->
-Skizze: Liste eigener Lebensmittel (formSheet, mit Suchfeld im vorläufigen Zugang) · Formular-Sheet Neu/Bearbeiten (formSheet) · vorläufiger Zugang auf `app/index.tsx`.
+**Routen** (Expo Router, beide `presentation: formSheet`, im Root-Stack registriert):
+- `app/foods.tsx` — vorläufiger Listen-Screen: Suchfeld oben, darunter `FoodList`, Knopf „Neues Lebensmittel“ in der Kopfzeile. Wird in PROJ-3 durch den Reiter ersetzt
+- `app/food-form.tsx` — Formular-Sheet. Parameter: `id` (Bearbeiten) **oder** `name` (Neu, vorausgefüllt aus dem Suchbegriff). Ohne Parameter: leeres Neu-Formular. Öffnet als Sheet über dem Listen-Sheet
+- `app/index.tsx` — vorläufiger Knopf „Eigene Lebensmittel“ → `foods` (entfernt PROJ-7)
+
+**Neue Kompositionen in `components/foods/`** (wiederverwendbar, PROJ-3 bettet sie ein):
+- `FoodList` — nimmt Suchbegriff und `onSelect`; zeigt Zeilen, Leer- und Kein-Treffer-Zustand, Wisch-Löschen. Kennt keine Navigation: Tipp auf Zeile ruft `onSelect(food)` (hier → Bearbeiten, in PROJ-3 → Mengenabfrage), „Neues Lebensmittel“ ruft `onCreate(suchbegriff)`
+- `FoodRow` — Name, darunter klein „kcal · C · F · E pro 100 g“ mit den Makro-Farben (`carbs`/`fat`/`protein`); umschlossen von `ReanimatedSwipeable` (react-native-gesture-handler) mit rotem Papierkorb (`destructive`)
+- `FoodEmptyState` — Text + Knopf „Neues Lebensmittel“, je nach Fall „Noch keine eigenen Lebensmittel“ oder „Kein Lebensmittel gefunden“
+- `FoodForm` — die Felder mit react-hook-form + Zod: Name, kcal, C, F, E, Stückgewicht; Barcode nur als Anzeigezeile mit „Entfernen“, wenn gesetzt. Fehlertext je Feld, Fehlerhinweis bei Speicherfehler oben im Formular, „Lebensmittel löschen“ (nur Bearbeiten) unten
+- `DecimalField` — Textfeld mit `decimal-pad`; weil das iOS-Zahlenfeld keine Eingabetaste hat, trägt es eine Tastatur-Leiste (`InputAccessoryView`) mit „Weiter“ bzw. „Fertig“ im letzten Feld
+
+**Hook:** `hooks/useFoods.ts` — lädt `listFoods(suchbegriff)`, lädt neu, wenn `lib/foods.ts` eine Änderung meldet; liefert Liste, Ladezustand, Fehler.
+
+**Primitives:** vorhandene `Button`, `Text`; neu per reusables `Input` (Textfeld) und `Separator`. Dialoge („Änderungen verwerfen?“, „Lebensmittel löschen?“) als natives `Alert` — iOS-üblich, kein eigenes Primitive.
 
 ## Daten & Server
-<!-- füllt /architecture -->
-- **Tabellen:** eigene Lebensmittel (erste Migration `0001_proj-2_…`)
-- **Data-Access:** `lib/foods.ts` — Liste (mit Filter), anlegen, ändern, löschen
-- **Server:** keiner (Backend-Modus lokal)
+**Tabelle `foods`** (Migration `0001_proj-2_foods`, erste Fach-Migration):
+- `id` — fortlaufende Ganzzahl, Primärschlüssel
+- `name` — Text, Pflicht, getrimmt, wie eingegeben gespeichert
+- `name_key` — Text, Pflicht: Name kleingeschrieben und ohne Umlaute/Akzente („Äpfel“ → „apfel“). Wird von `lib/foods.ts` beim Schreiben gesetzt, nie vom Frontend. Grund: SQLites eigenes Kleinschreiben kennt keine Umlaute
+- `kcal`, `carbs`, `fat`, `protein` — Kommazahl, Pflicht, pro 100 g
+- `piece_grams` — Kommazahl, optional (Stückgewicht in g)
+- `barcode` — Text, optional, **eindeutig** unter allen eigenen Lebensmitteln
+- `created_at`, `updated_at` — Zeitstempel
+- **Prüfregeln in der Tabelle** als zweite Sicherung hinter Zod: dieselben Wertgrenzen wie unter Regeln
+- **Indizes:** auf `name_key` (Sortierung, Filter); eindeutiger Index auf `barcode` (leere Barcodes zählen nicht)
+- **Upgrade-Risiko:** keins — neue Tabelle, bestehende PROJ-1-Datenbanken haben keine Fachdaten. Nicht destruktiv
+
+**Verträge `lib/foods.ts`** (alle Rückgaben `{ data, error }`; Fehler haben eine Art und einen deutschen Nutzertext):
+- `Food` — `id`, `name`, `kcal`, `carbs`, `fat`, `protein`, `pieceGrams` (oder leer), `barcode` (oder leer)
+- `FoodInput` — dieselben Felder ohne `id`, Zahlen als Zahlen (Komma-Umwandlung macht das Formular)
+- `foodInputSchema` — das Zod-Schema mit allen Grenzen; **Formular und Datenschicht nutzen dasselbe**, damit sie nie auseinanderlaufen
+- `parseDecimal(text)` — „12,5“ / „12.5“ → 12.5, leer oder unlesbar → ungültig
+- `listFoods(suchbegriff?)` — eigene Lebensmittel, nach `name_key` sortiert, gefiltert nach Teilstring im `name_key` (Suchbegriff wird gleich normalisiert); höchstens 500
+- `getFood(id)` — ein Lebensmittel oder Fehler „nicht gefunden“
+- `createFood(input)` — prüft per Zod, prüft Barcode-Vergabe, speichert; liefert das neue `Food`
+- `updateFood(id, input)` — wie `createFood`, der eigene Barcode zählt nicht als vergeben; „nicht gefunden“, wenn gelöscht
+- `deleteFood(id)` — löscht endgültig; schon gelöscht zählt als Erfolg
+- `subscribeFoods(listener)` — meldet jede erfolgreiche Änderung, liefert eine Abmelde-Funktion
+- **Fehlerarten:** `validation` (mit Fehlern je Feld), `barcode_taken` („Dieser Barcode gehört schon zu „<Name>“.“), `not_found`, `db` („Speichern fehlgeschlagen. Bitte erneut versuchen.“)
+
+**Server:** keiner (Backend-Modus lokal).
 
 ## Regeln
 - **Felder:** Name, kcal, C, F, E (alle Pflicht, pro 100 g) · Stückgewicht in g (optional) · Barcode (optional)
 - **kcal werden eingegeben**, nicht aus C/F/E berechnet — Etikettwerte weichen ab (Ballaststoffe, Alkohol)
 - **Grenzen:** Name nach Trimmen nicht leer · kcal 0–900 · C, F, E je 0–100 g und C + F + E ≤ 100 g · Stückgewicht > 0 · Dezimalkomma erlaubt
 - Zod prüft vor jedem Schreibzugriff dieselben Grenzen wie das Formular
-- **Barcode:** im Formular nur sichtbar und entfernbar, nicht eintippbar; gesetzt wird er nur über PROJ-4. Ein Barcode gehört zu höchstens einem eigenen Lebensmittel — die Datenschicht lehnt ein Speichern mit vergebenem Barcode mit klarer Meldung ab
+- **Barcode:** im Formular nur sichtbar und entfernbar, nicht eintippbar; gesetzt wird er nur über PROJ-4 (dafür nimmt `createFood` ihn schon jetzt an: nur Ziffern, 8–14 Stellen). Ein Barcode gehört zu höchstens einem eigenen Lebensmittel — die Datenschicht lehnt ein Speichern mit vergebenem Barcode mit klarer Meldung ab (Prüfung vorab plus eindeutiger Index als Sicherung)
 - **Doppelte Namen** sind erlaubt (z. B. gleiche Sorte, zwei Marken)
 - **Liste:** alphabetisch nach Name, ohne Beachtung der Groß-/Kleinschreibung. Zeile: Name, darunter klein „kcal · C · F · E pro 100 g“. Tipp → Bearbeiten-Sheet (in PROJ-3: Mengenabfrage)
 - **Filter:** Teilstring im Namen, unabhängig von Groß-/Kleinschreibung und Umlauten
 - **Leer:** „Noch keine eigenen Lebensmittel“ + „Neues Lebensmittel“ · **Kein Treffer:** „Kein Lebensmittel gefunden“ + „Neues Lebensmittel“, Suchbegriff als Name vorausgefüllt
 - **Formular:** formSheet mit „Abbrechen“ (links) und „Sichern“ (rechts). „Sichern“ ist deaktiviert, solange ein Pflichtfeld leer oder ein Wert ungültig ist; Fehlertext direkt am Feld. Numerisches Tastenfeld mit Dezimalkomma, „Weiter“ springt zum nächsten Feld
-- **Verwerfen:** Abbrechen oder Herunterwischen mit ungespeicherten Änderungen fragt „Änderungen verwerfen?“; ohne Änderungen schließt das Sheet sofort
-- **Nach dem Sichern** schließt das Sheet, die Liste zeigt den neuen Stand sofort
-- **Speicherfehler:** Sheet bleibt offen mit Eingaben, Fehlerhinweis erscheint
+- **Verwerfen:** Abbrechen oder Herunterwischen mit ungespeicherten Änderungen fragt „Änderungen verwerfen?“; ohne Änderungen schließt das Sheet sofort. Herunterwischen wird abgefangen, solange das Formular geändert ist (Navigation verhindert das Entfernen und zeigt den Dialog)
+- **Nach dem Sichern** schließt das Sheet, die Liste zeigt den neuen Stand sofort — sie hört auf `subscribeFoods`, nicht auf Navigations-Ereignisse
+- **Speicherfehler:** Sheet bleibt offen mit Eingaben, Fehlerhinweis erscheint. `barcode_taken` zeigt den Text der Datenschicht, `validation` die Fehler am Feld, `db` den allgemeinen Hinweis
+- **Bearbeiten eines inzwischen gelöschten Lebensmittels** (`not_found`): Hinweis „Lebensmittel nicht mehr vorhanden“, Sheet schließt
+- **Liste lädt nicht** (`db`): Hinweis „Lebensmittel konnten nicht geladen werden“ statt Leerzustand
 - **Löschen:** Wischen nach links → roter Papierkorb → löscht sofort ohne Rückfrage. Im Bearbeiten-Sheet „Lebensmittel löschen“ mit Bestätigung. Endgültig, kein Rückgängig
 - **Schnappschüsse:** Ändern oder Löschen eines eigenen Lebensmittels ändert keine bereits eingetragenen Tage (PRD)
 - Alle Unter-Screens als `formSheet`; Tokens, nie Hex; C türkis, F lila, E orange
@@ -74,16 +111,22 @@ Skizze: Liste eigener Lebensmittel (formSheet, mit Suchfeld im vorläufigen Zuga
 - Keine weiteren Nährwerte (Zucker, Ballaststoffe, Salz), keine Marke, kein Foto
 - Kein Papierkorb/Rückgängig nach dem Löschen; kein Import/Export
 - iPad nicht berücksichtigt (nur iPhone)
-- Design-Dateien fehlen noch; ohne Claude-Design-Projekt erstellt `/architecture` eine schlichte Vorlage nach PRD-Design-Regeln (offen)
+- Höchstens 500 Lebensmittel in der Liste/Trefferliste; bei Bedarf später Nachladen
+- AC-20 (Speicherfehler) lässt sich im Dev-Client nicht auslösen — belegt durch Jest (`db`-Fehler der Datenschicht) plus Review des Formulars
+- Design-Dateien fehlen noch: vor T3 per `/design screen PROJ-2`, ohne Claude-Design-Projekt schlichte Vorlage nach PRD-Design-Regeln (offen)
+- Sicherheit (Modus lokal): keine Fremd-API, keine Kamera, keine destruktive Migration — kein `/security-review`-Sonderbedarf
 
 ## Umgebung
 - Kein Per-Env-Setup
 
 ## Plan
-<!-- füllt /architecture -->
 
 | # | Aufgabe | ACs | Ebene | Nach | Status |
 |---|---------|-----|-------|------|--------|
+| T1 | Migration `0001_proj-2_foods` + Frisch/Upgrade/Idempotenz im Migrations-Test | AC-21 | Backend | — | offen |
+| T2 | `lib/foods.ts` nach Verträgen (Schema, `parseDecimal`, Normalisierung, CRUD, `subscribeFoods`) + `lib/foods.test.ts` | AC-6, AC-7, AC-8, AC-9, AC-17, AC-18, AC-19, AC-20 | Backend | T1 | offen |
+| T3 | Liste: `FoodList`, `FoodRow` (Wisch-Löschen), `FoodEmptyState`, `hooks/useFoods.ts`, Route `foods`, Zugang auf `index` | AC-1, AC-8, AC-9, AC-10, AC-15 | Frontend | — (Vertrag reicht) | offen |
+| T4 | Formular: `FoodForm`, `DecimalField`, Route `food-form` (Neu/Bearbeiten/vorausgefüllt), Verwerfen-Dialog, Löschen im Sheet, Speicherfehler | AC-2, AC-3, AC-4, AC-5, AC-6, AC-11, AC-12, AC-13, AC-14, AC-16, AC-17, AC-19, AC-20 | Frontend | T3 | offen |
 
 ## Tests
 - **Jest:** `lib/foods.test.ts` (Validierung, Sortierung, Filter, Barcode-Eindeutigkeit) · Migrations-Test `lib/db/migrations.test.ts`
@@ -101,9 +144,14 @@ Skizze: Liste eigener Lebensmittel (formSheet, mit Suchfeld im vorläufigen Zuga
 | Doppelte Namen erlaubt | gleiche Sorte, verschiedene Marken | eindeutige Namen | 2026-10-08 |
 | Wisch-Löschen ohne Rückfrage, Löschen im Sheet mit Bestätigung | iOS-üblich; Knopf im Sheet leichter versehentlich | überall Rückfrage | 2026-10-08 |
 | Endgültig löschen | Einträge sind Schnappschüsse, nichts hängt daran | Soft-Delete/Papierkorb | 2026-10-08 |
+| Normalisierte Namensspalte `name_key`, in JS berechnet | SQLite kennt keine Umlaute beim Kleinschreiben; Sortierung und Filter laufen so per Index | Filtern/Sortieren in JS nach Laden aller Zeilen; ICU-Erweiterung | 2026-10-08 |
+| Ein Zod-Schema für Formular und Datenschicht | Grenzen können nicht auseinanderlaufen (AC-4/5 vs. AC-7) | getrennte Schemas | 2026-10-08 |
+| Liste aktualisiert sich über `subscribeFoods` | funktioniert unabhängig davon, wo PROJ-3 die Liste einbettet | Neuladen bei Screen-Fokus | 2026-10-08 |
+| Komponenten ohne Navigation (`onSelect`/`onCreate`) | PROJ-3 hängt eigene Ziele an (Mengenabfrage) | Navigation fest in der Liste | 2026-10-08 |
 
 ## Verlauf
 
 | Datum | Ereignis | Link |
 |-------|----------|------|
 | 2026-10-08 | Spec geschrieben | — |
+| 2026-10-08 | Architektur freigegeben | — |
