@@ -17,7 +17,7 @@ Beide Repos haben einen sauberen Arbeitsbaum (`git status --short` leer). Sonst 
 ```
 .claude/rules/**            .claude/skills/**           .claude/agents/**
 .claude/settings.json       .mcp.json                   docs/MCP.md
-docs/NEW-PROJECT.md         docs/design/README.md       docs/design/screens/README.md
+docs/design/README.md             docs/design/screens/README.md
 features/README.md          AGENTS.md                   .github/workflows/**
 scripts/check-spec-refs.py   scripts/spec-brief.py
 .env.local.example          eslint.config.js  babel.config.js  metro.config.js  components.json  tsconfig.json
@@ -31,7 +31,7 @@ docs/INBOX.md   docs/design-system.md   docs/design/mockup.html   docs/design/sc
 docs/qa/**   docs/release-checks/**   global.css   tailwind.config.js   app.json   eas.json   package.json
 app/**   components/**   lib/**   hooks/**   supabase/**
 ```
-Vorlagen mit Projektinhalt (RELEASES, ENVIRONMENTS, INBOX) werden nur angelegt, wenn sie **fehlen**.
+Vorlagen mit Projektinhalt (RELEASES, ENVIRONMENTS, INBOX, NEW-PROJECT — die Checkliste wird pro Projekt abgehakt) werden nur angelegt, wenn sie **fehlen**.
 
 ## Ablauf
 1. Richtung aus dem Argument; Quelle und Ziel benennen und bestätigen lassen
