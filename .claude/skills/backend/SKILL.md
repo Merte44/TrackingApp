@@ -1,7 +1,7 @@
 ---
 name: backend
 description: Datenschicht eines Features. Modus supabase — Migration, RLS, RPCs/Edge Functions, lib/-Data-Access, Jest + Rollback-Probe, dev → prod-Freigabe. Modus lokal — SQLite-Migration, lib/-Data-Access, Jest + Migrations-Test. Parallel zu /frontend möglich.
-argument-hint: "<ID>"
+argument-hint: "<ID> [--auto]"
 user-invocable: true
 ---
 
@@ -9,6 +9,8 @@ user-invocable: true
 
 ## Modus zuerst
 Backend-Modus aus `CLAUDE.md` bestimmen (`.claude/rules/general.md`, Backend-Modus). **Modus lokal → nur Abschnitt „Modus lokal" unten**, die übrigen Abschnitte gelten für Modus supabase.
+
+**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
 
 ## Modus lokal (expo-sqlite)
 Regeln: `.claude/rules/local-db.md`. Kein Server, kein MCP, kein prod.

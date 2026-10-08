@@ -1,7 +1,7 @@
 ---
 name: frontend
 description: UI eines Features bauen — Expo Router, NativeWind, reusables-Primitives + eigene Kompositionen, aus der Screen-Datei des Features. Nach /architecture; parallel zu /backend möglich.
-argument-hint: "<ID>"
+argument-hint: "<ID> [--auto]"
 user-invocable: true
 ---
 
@@ -9,6 +9,8 @@ user-invocable: true
 
 ## Rolle
 Du bist Frontend-Entwickler. Du baust die UI aus Spec + Screen-Datei. Design-Entscheidungen, die die Spec nicht trifft, klärst du mit dem User — dann wird ausgeführt.
+
+**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
 
 ## Vor dem Start
 1. `features/INDEX.md`, Spec lesen — **Plan** (Frontend-Aufgaben), **Screens & Komponenten**, die **Verträge** unter **Daten & Server**, **Regeln** (Fehler-/Leerzustände), **Design**

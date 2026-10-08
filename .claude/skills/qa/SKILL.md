@@ -1,7 +1,7 @@
 ---
 name: qa
 description: Abnahme eines Features — /code-review und /security-review über den Diff, dazu ein unabhängiger QA-Agent, der jede AC gegen Tests, Migrations-Test bzw. Rollback-Probe und Dev-Client belegt, ohne den Build-Verlauf zu kennen. Entscheidet READY / NOT READY, routet Bugs. Nach /frontend und /backend.
-argument-hint: "<ID>"
+argument-hint: "<ID> [--auto]"
 user-invocable: true
 ---
 
@@ -9,6 +9,8 @@ user-invocable: true
 
 ## Rolle
 Du leitest die Abnahme eines fertig gebauten Features. Du **prüfst die ACs nicht selbst** — das macht der **QA-Agent** (`.claude/agents/qa.md`) in einem frischen Kontext. Wer gebaut hat oder den Build-Verlauf kennt, prüft mit denselben Annahmen, die den Fehler verursacht haben; das gilt auch für diese Sitzung, wenn sie vorher `/frontend` oder `/backend` gefahren hat.
+
+**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
 
 Du fährst die Gates, startest den Agenten, entscheidest und routest. Du **fixst nichts**.
 

@@ -1,6 +1,6 @@
 ---
 name: design
-description: Design-Kopplung in drei Modi — `tokens` (Mockup/Beschreibung → NativeWind-Tokens + design-system.md + Fonts, einmalig/Re-Theme), `sync` (Repo → Claude Design), `screen <ID>` (Claude Design → docs/design/screens/<ID>.html).
+description: Design-Kopplung in drei Modi — `tokens` (Mockup/Beschreibung → NativeWind-Tokens + design-system.md + Fonts, einmalig/Re-Theme), `sync` (Repo → Claude Design), `screen <ID>` (Claude Design bzw. neuer Design-Artifact-Entwurf mit Link → docs/design/screens/<ID>.html).
 argument-hint: "tokens [pfad] | sync | screen <ID>"
 user-invocable: true
 ---
@@ -54,6 +54,11 @@ Voraussetzung: einmalig `/design-login` (interaktiv). Fehlt der Login → sagen,
 1. Spec `features/<ID>-*.md` lesen: Sektion **Design** (Screen-Name); das Screens-Projekt steht in `docs/ENVIRONMENTS.md`, Abschnitt Design-Kopplung. Fehlt eines von beiden → mit dem User klären
 2. Screen aus Claude Design exportieren (Export / „Send to Claude Code") → als selbst-enthaltende HTML nach `docs/design/screens/<ID>.html` (mehrere Screens: `<ID>-<name>.html`)
 3. Kein Claude-Design-Projekt vorhanden → den passenden Screen aus `docs/design/mockup.html` herauslösen (nur dieser Screen, Inline-CSS, keine externen Assets)
+3b. **Weder Export noch Mockup → Entwurf als Design-Artifact** (Standard im `/autopilot`):
+   - `Artifact` mit `action: "quickstart"`, `intent: "design"` → liefert die `type_url` des Design-Typs; damit ein neues Artifact anlegen (Titel `<ID> <Feature>`) und dessen Anweisungen folgen
+   - Inhalt: **ein Artboard pro Screen/Sheet** aus **Screens & Komponenten** der Spec, iPhone-Format; Zustände, die die ACs nennen (leer, Fehler, Lösch-Dialog …), als eigene Artboards. Look aus `docs/design-system.md` + `global.css` (Tokens) und den Design-Vorgaben in `docs/PRD.md` — keine neuen Farben oder Fonts erfinden
+   - Ergebnis ist ein **Link** für den User. Er gibt ihn frei oder kommentiert; Änderungen am selben Artifact einarbeiten, bis er zustimmt
+   - **Nach der Freigabe:** die Artboards per `Artifact` `action: "read"` mit `path` als HTML holen und nach `docs/design/screens/<ID>.html` (bzw. `<ID>-<name>.html`) legen — `/frontend` liest immer die lokale Datei. Den Link in der Spec unter **Design** zusätzlich nennen
 4. Datei gegen die Tokens prüfen: verwendet der Screen Farben/Fonts, die es im Token-System nicht gibt? → dem User melden (Token ergänzen via `tokens` oder Screen anpassen), 🔴/🟡-Konstrukte kurz notieren
 5. Spec **Design** aktualisieren (Screen-Datei verlinken), **Verlauf**-Zeile „Screen exportiert"
 
