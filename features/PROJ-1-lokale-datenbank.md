@@ -1,6 +1,6 @@
 # PROJ-1: Lokale Datenbank (SQLite on-device)
 
-**Status:** In Progress · **Release:** — · **Bereich:** Fundament · **Stand:** 2026-10-08
+**Status:** Approved · **Release:** — · **Bereich:** Fundament · **Stand:** 2026-10-08
 **Design:** —
 
 ## Was es tut
@@ -57,18 +57,18 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 - Neue native Module (`expo-sqlite`) und ein entferntes Plugin erfordern einen neuen Dev-Client-Build (`npx expo run:ios`)
 
 ## Acceptance Criteria
-- [ ] **AC-1** Angenommen eine frische Installation, wenn die App startet, dann wird die Datenbank angelegt, alle Migrationen laufen und der Haupt-Screen erscheint ohne sichtbare Verzögerung nach dem Splash
-- [ ] **AC-2** Angenommen eine Datenbank auf dem aktuellen Stand, wenn die App erneut startet, dann läuft keine Migration und nichts ändert sich
-- [ ] **AC-3** Angenommen eine Datenbank einer Vorversion mit Daten, wenn neue Migrationen laufen, dann sind alle vorhandenen Daten danach unverändert vorhanden und lesbar
-- [ ] **AC-4** Angenommen eine Migration schlägt fehl, wenn die App startet, dann bleibt der Stand vor dieser Migration erhalten, der Fehler-Hinweis erscheint und der Haupt-Screen lädt nicht
-- [ ] **AC-5** Angenommen der Fehler-Hinweis ist sichtbar, wenn ich „Erneut versuchen" tippe, dann läuft die Migration erneut und bei Erfolg erscheint der Haupt-Screen
-- [ ] **AC-6** Angenommen der gespeicherte Versionsstand ist höher als der der App, wenn die App startet, dann bleibt die Datenbank unverändert und der Fehler-Hinweis erscheint
-- [ ] **AC-7** Angenommen ein Init-Lauf ist fehlgeschlagen, wenn „Erneut versuchen“ läuft, dann arbeitet er auf einer neu geöffneten Verbindung — auch wenn das Schließen der alten gescheitert ist — und nach Erfolg gilt `foreign_keys = 1`
-- [ ] **AC-8** Angenommen eine Datenbank auf dem aktuellen Stand, wenn `foreign_keys` auf der Verbindung aus ist, dann meldet `initDatabase()` keinen Erfolg, sondern einen Fehler
-- [ ] **AC-9** Angenommen alle Migrationen sind committet und das Wiedereinschalten der Foreign Keys scheitert, wenn der Hinweis erscheint, dann zeigt er den `check_failed`-Text (nicht „Deine Daten sind unverändert“)
-- [ ] **AC-10** Angenommen eine Verbindung ist geöffnet, wenn ein Eintrag auf einen nicht existierenden Fremdschlüssel verweist, dann wird das Schreiben abgelehnt
-- [ ] **AC-11** Angenommen der Migrations-Test läuft unter Jest, dann bestehen die Fälle Frisch, Upgrade und Idempotenz
-- [ ] **AC-12** Angenommen PROJ-1 ist gebaut, dann enthält das Repo keinen Supabase-Client mehr, und `npx tsc --noEmit` sowie `npm test` laufen grün
+- [x] **AC-1** Angenommen eine frische Installation, wenn die App startet, dann wird die Datenbank angelegt, alle Migrationen laufen und der Haupt-Screen erscheint ohne sichtbare Verzögerung nach dem Splash
+- [x] **AC-2** Angenommen eine Datenbank auf dem aktuellen Stand, wenn die App erneut startet, dann läuft keine Migration und nichts ändert sich
+- [x] **AC-3** Angenommen eine Datenbank einer Vorversion mit Daten, wenn neue Migrationen laufen, dann sind alle vorhandenen Daten danach unverändert vorhanden und lesbar
+- [x] **AC-4** Angenommen eine Migration schlägt fehl, wenn die App startet, dann bleibt der Stand vor dieser Migration erhalten, der Fehler-Hinweis erscheint und der Haupt-Screen lädt nicht
+- [x] **AC-5** Angenommen der Fehler-Hinweis ist sichtbar, wenn ich „Erneut versuchen" tippe, dann läuft die Migration erneut und bei Erfolg erscheint der Haupt-Screen
+- [x] **AC-6** Angenommen der gespeicherte Versionsstand ist höher als der der App, wenn die App startet, dann bleibt die Datenbank unverändert und der Fehler-Hinweis erscheint
+- [x] **AC-7** Angenommen ein Init-Lauf ist fehlgeschlagen, wenn „Erneut versuchen“ läuft, dann arbeitet er auf einer neu geöffneten Verbindung — auch wenn das Schließen der alten gescheitert ist — und nach Erfolg gilt `foreign_keys = 1`
+- [x] **AC-8** Angenommen eine Datenbank auf dem aktuellen Stand, wenn `foreign_keys` auf der Verbindung aus ist, dann meldet `initDatabase()` keinen Erfolg, sondern einen Fehler
+- [x] **AC-9** Angenommen alle Migrationen sind committet und das Wiedereinschalten der Foreign Keys scheitert, wenn der Hinweis erscheint, dann zeigt er den `check_failed`-Text (nicht „Deine Daten sind unverändert“)
+- [x] **AC-10** Angenommen eine Verbindung ist geöffnet, wenn ein Eintrag auf einen nicht existierenden Fremdschlüssel verweist, dann wird das Schreiben abgelehnt
+- [x] **AC-11** Angenommen der Migrations-Test läuft unter Jest, dann bestehen die Fälle Frisch, Upgrade und Idempotenz
+- [x] **AC-12** Angenommen PROJ-1 ist gebaut, dann enthält das Repo keinen Supabase-Client mehr, und `npx tsc --noEmit` sowie `npm test` laufen grün
 
 ## Grenzen
 - Keine Fachtabellen — jedes Feature bringt seine eigene Migration mit (PROJ-2 ff.)
@@ -82,6 +82,8 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 - Hält eine verworfene Verbindung noch eine Schreibsperre (offene Transaktion), scheitert jeder Retry, bis die App beendet ist — bewusst sichtbar statt still; kein Erzwingen des Schließens
 - `tsconfig.json` nimmt noch `supabase/functions` in `include` auf (Template-Rest, ohne Wirkung — kein Ordner vorhanden)
 - Restrisiken aus QA (Low, hingenommen): Root-Layout rendert während Laden/Fehler keinen Navigator — unkritisch, solange es keine Deep-Links gibt (sonst neu prüfen); `setDbForTesting` kann einen laufenden `initDatabase()` nicht abbrechen (nur Tests)
+- Restrisiken aus QA Runde 3 (Medium, unter „scheitert sichtbar statt still“ gefasst): ein fehlgeschlagenes ROLLBACK wird verschluckt und erst beim Retry als Sperre sichtbar; `close()` der verworfenen Verbindung läuft durch dieselbe Warteschlange und erreicht bei einem hängenden Aufruf nie das native Schließen; jeder Retry öffnet eine weitere native Verbindung, ohne dass die alten sicher geschlossen werden. Low: Fast Refresh von `lib/db/index.ts` setzt den Modul-Zustand zurück, während das Root-Layout „bereit“ bleibt (nur Dev); `foreign_keys` wird bis zu dreimal pro Lauf geprüft; eine offene Transaktion nach gescheitertem ROLLBACK erscheint als `check_failed`
+- AC-1 „ohne sichtbare Verzögerung“ hat keine Schwelle; AC-4/5 im Dev-Client nur mit einer nicht committeten fehlerhaften Migration prüfbar — in Runde 3 per Test + Review belegt
 - `check_failed`-Text sagt „Die Datenbank ist umgestellt“ auch im Pfad ohne ausstehende Migration (AC-8), wo nichts umgestellt wurde — Text ist so spezifiziert (offen, `/refine`)
 
 ## Umgebung
@@ -123,3 +125,4 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 | 2026-10-08 | Reality-Check | Spec deckt sich mit Code (31 Tests); `supabase/functions` in `tsconfig.json` als Grenze vermerkt | — |
 | 2026-10-08 | AC-IDs vergeben (AC-1–12), Tests zugeordnet | AC-7–9 noch ohne Test (Refine-Umsetzung offen) | — |
 | 2026-10-08 | Backend gebaut: Retry mit `useNewConnection`, Schließen nicht abgewartet, FK-Prüfung in jedem Lauf, `check_failed`; Tests zuerst rot, dann grün (34) | — |
+| 2026-10-08 | QA Runde 3 | READY — AC 12/12 (Test 12 · Simulator 2 · Probe 3); BUG-2/3 per Probe gegengeprüft; Code-Gate 9 Findings, kein Critical/High (Restrisiken → Grenzen); Security-Gate übersprungen (nur lokale DB) | — |
