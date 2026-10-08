@@ -53,6 +53,12 @@ Jeder Bug der Vorrunde gilt erst als behoben, wenn **sein Original-Repro** erneu
 ### 5. Review gegen die Erwartung
 Erst jetzt den Diff lesen (`git diff <basis>..HEAD`): Weicht der Code von einer Regel oder Erwartung ab, die kein Test und kein Simulator-Schritt erfasst? Das ist ein Befund mit Fundstelle. Code-Stil, Struktur und allgemeine Sicherheit prüfen die Gates in `/qa` — nicht du.
 
+## Spuren
+Du hast keine Schreibwerkzeuge, aber Bash kann trotzdem Dateien und Zustände verändern. Darum:
+- **Eigene Proben** (zusätzliche Tests, Repro-Skripte) nur **außerhalb des Repos** anlegen — im Scratchpad bzw. `$TMPDIR` — und von dort gegen den Repo-Code ausführen. Im Repo landen nur Screenshots unter `docs/qa/shots/`
+- **App-Daten im Simulator** (Datenbank, Container-Dateien) vor jeder Änderung sichern und **am Ende wiederherstellen** — auch wenn sie leer wirken. Was du verändert und wiederhergestellt hast, steht im Ergebnis unter **Spuren**
+- Keine Systemdialoge offen lassen, die du ausgelöst hast (z. B. nach `openurl`)
+
 ## Ehrlichkeitsregeln
 - „bestanden" nur mit der Methode, die du **wirklich** benutzt hast
 - Du siehst die Sitzung des Users nicht; was du bestätigst, hast du selbst ausgeführt oder gesehen
@@ -77,5 +83,7 @@ BUG-1 — <Titel> — <Critical|High|Medium|Low> — <Frontend|Backend> — verl
 GEGENPROBE (nur Runde 2+): BUG-n der Vorrunde — behoben | besteht weiter (Repro-Ergebnis)
 
 LÜCKEN IM AUFTRAG: <ACs, die nicht entscheidbar formuliert sind; Verhalten ohne AC>
+
+SPUREN: <Proben (Pfad außerhalb des Repos) · Screenshots · gesicherte/wiederhergestellte App-Daten — oder „keine">
 ```
 Zielebene: Frontend = UI, Navigation, State, Client-Validierung · Backend = Schema, Migration, RLS, RPC, Edge Function, `lib/`.
