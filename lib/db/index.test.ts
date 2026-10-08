@@ -45,7 +45,7 @@ function handle(db: TestDb, overrides: Partial<TestDb> = {}): TestDb {
   return { ...db, close: jest.fn(async () => undefined), ...overrides };
 }
 
-describe("lib/db index", () => {
+describe("PROJ-1 lib/db index", () => {
   let testDb: TestDb;
 
   beforeEach(() => {
@@ -76,7 +76,7 @@ describe("lib/db index", () => {
     expect(() => getDb()).toThrow();
   });
 
-  it("initDatabase(): frisch → migriert, getDb() danach nutzbar; zweiter Aufruf öffnet nicht neu", async () => {
+  it("AC-1: initDatabase(): frisch → migriert, getDb() danach nutzbar; zweiter Aufruf öffnet nicht neu", async () => {
     mockMigrations.push(ok);
     const { initDatabase, getDb } = loadIndex();
 
@@ -125,7 +125,7 @@ describe("lib/db index", () => {
     expect(await getDb().getFirst("SELECT 1 AS one")).toEqual({ one: 1 });
   });
 
-  it("initDatabase(): migration_failed mit Name, getDb() bleibt gesperrt, Retry möglich", async () => {
+  it("AC-4, AC-5: initDatabase(): migration_failed mit Name, getDb() bleibt gesperrt, Retry möglich", async () => {
     mockMigrations.push(ok, broken);
     const { initDatabase, getDb } = loadIndex();
 
@@ -174,7 +174,7 @@ describe("lib/db index", () => {
     expect(await getDb().getFirst("PRAGMA foreign_keys")).toEqual({ foreign_keys: 1 });
   });
 
-  it("initDatabase(): newer_than_app", async () => {
+  it("AC-6: initDatabase(): newer_than_app", async () => {
     await testDb.exec("PRAGMA user_version = 5");
     const { initDatabase } = loadIndex();
 

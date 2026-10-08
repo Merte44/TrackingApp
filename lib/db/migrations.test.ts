@@ -65,7 +65,7 @@ async function columns(db: TestDb, table: "parent" | "child"): Promise<string[]>
   return rows.map((r) => r.name);
 }
 
-describe("runMigrations", () => {
+describe("PROJ-1 runMigrations", () => {
   let db: TestDb;
 
   beforeEach(() => {
@@ -76,7 +76,7 @@ describe("runMigrations", () => {
     await db.close();
   });
 
-  it("Frisch: fährt alle Migrationen von 0 bis aktuell", async () => {
+  it("AC-1, AC-11: Frisch: fährt alle Migrationen von 0 bis aktuell", async () => {
     const result = await runMigrations(db, [m1, m2]);
 
     expect(result).toEqual({ data: { from: 0, to: 2 }, error: null });
@@ -85,7 +85,7 @@ describe("runMigrations", () => {
     expect(await columns(db, "parent")).toEqual(["id", "name", "note"]);
   });
 
-  it("Upgrade: Seed-Daten der Vorversion bleiben unverändert und lesbar", async () => {
+  it("AC-3, AC-11: Upgrade: Seed-Daten der Vorversion bleiben unverändert und lesbar", async () => {
     expect((await runMigrations(db, [m1])).error).toBeNull();
     await db.run("INSERT INTO parent (id, name) VALUES (?, ?)", [1, "Haferflocken"]);
     await db.run("INSERT INTO parent (id, name) VALUES (?, ?)", [2, "Apfel"]);
@@ -106,7 +106,7 @@ describe("runMigrations", () => {
     ]);
   });
 
-  it("Idempotenz: zweiter Lauf ändert nichts und meldet keinen Fehler", async () => {
+  it("AC-2, AC-11: Idempotenz: zweiter Lauf ändert nichts und meldet keinen Fehler", async () => {
     await runMigrations(db, [m1, m2]);
     await db.run("INSERT INTO parent (name) VALUES (?)", ["Reis"]);
     const up = jest.fn(m1.up);
@@ -119,7 +119,7 @@ describe("runMigrations", () => {
     expect(await db.getAll("SELECT name FROM parent LIMIT 10")).toEqual([{ name: "Reis" }]);
   });
 
-  it("Fehlschlag: rollt die fehlerhafte Migration zurück, vorherige bleiben", async () => {
+  it("AC-4: Fehlschlag: rollt die fehlerhafte Migration zurück, vorherige bleiben", async () => {
     const result = await runMigrations(db, [m1, brokenM2]);
 
     expect(result.data).toBeNull();
@@ -134,7 +134,7 @@ describe("runMigrations", () => {
     expect(await db.getAll("SELECT * FROM parent LIMIT 10")).toEqual([]);
   });
 
-  it("Fehlschlag: Retry mit korrigierter Liste läuft danach durch", async () => {
+  it("AC-5: Fehlschlag: Retry mit korrigierter Liste läuft danach durch", async () => {
     await runMigrations(db, [m1, brokenM2]);
 
     const result = await runMigrations(db, [m1, m2]);
@@ -143,7 +143,7 @@ describe("runMigrations", () => {
     expect(await userVersion(db)).toBe(2);
   });
 
-  it("Neuere DB als App: meldet newer_than_app und ändert nichts", async () => {
+  it("AC-6: Neuere DB als App: meldet newer_than_app und ändert nichts", async () => {
     await runMigrations(db, [m1, m2]);
     await db.run("INSERT INTO parent (name) VALUES (?)", ["Brot"]);
     const up = jest.fn(m1.up);
@@ -158,7 +158,7 @@ describe("runMigrations", () => {
     expect(await db.getAll("SELECT name FROM parent LIMIT 10")).toEqual([{ name: "Brot" }]);
   });
 
-  it("Foreign Keys sind an: Verweis auf nicht existierenden Eintrag wird abgelehnt", async () => {
+  it("AC-10: Foreign Keys sind an: Verweis auf nicht existierenden Eintrag wird abgelehnt", async () => {
     await runMigrations(db, [m1]);
 
     await expect(
@@ -169,7 +169,7 @@ describe("runMigrations", () => {
     });
   });
 
-  it("Tabellen-Rebuild einer Parent-Tabelle behält Kindzeilen trotz ON DELETE CASCADE", async () => {
+  it("AC-3: Tabellen-Rebuild einer Parent-Tabelle behält Kindzeilen trotz ON DELETE CASCADE", async () => {
     const v1: Migration = {
       version: 1,
       name: "0001_test-1_cascade",
@@ -216,7 +216,7 @@ describe("runMigrations", () => {
     expect(await db.getAll("SELECT id FROM entry LIMIT 10")).toEqual([]);
   });
 
-  it("Migration, die eine FK-Verletzung hinterlässt → migration_failed, Rollback, FKs wieder an", async () => {
+  it("AC-4: Migration, die eine FK-Verletzung hinterlässt → migration_failed, Rollback, FKs wieder an", async () => {
     const orphan: Migration = {
       version: 2,
       name: "0002_test-2_orphan",
@@ -260,7 +260,7 @@ describe("runMigrations", () => {
   });
 });
 
-describe("App-Migrationsliste (lib/db/migrations.ts)", () => {
+describe("PROJ-1 App-Migrationsliste (lib/db/migrations.ts)", () => {
   it("ist valide", () => {
     expect(validateMigrations(appMigrations)).toBeNull();
   });
@@ -283,7 +283,7 @@ describe("App-Migrationsliste (lib/db/migrations.ts)", () => {
   });
 });
 
-describe("Transaktion", () => {
+describe("PROJ-1 Transaktion", () => {
   it("serialisiert Zugriffe: ein paralleler Schreibzugriff landet nicht in der Transaktion", async () => {
     const db = createTestDb();
     try {
@@ -350,7 +350,7 @@ describe("Transaktion", () => {
   });
 });
 
-describe("Test-Implementierung (expo-sqlite-Semantik)", () => {
+describe("PROJ-1 Test-Implementierung (expo-sqlite-Semantik)", () => {
   it("run() akzeptiert INSERT … RETURNING; getFirst/getAll akzeptieren Statements ohne Ergebnis", async () => {
     const db = createTestDb();
     try {

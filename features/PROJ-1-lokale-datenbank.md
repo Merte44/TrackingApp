@@ -57,18 +57,18 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 - Neue native Module (`expo-sqlite`) und ein entferntes Plugin erfordern einen neuen Dev-Client-Build (`npx expo run:ios`)
 
 ## Acceptance Criteria
-- [ ] Angenommen eine frische Installation, wenn die App startet, dann wird die Datenbank angelegt, alle Migrationen laufen und der Haupt-Screen erscheint ohne sichtbare Verzögerung nach dem Splash
-- [ ] Angenommen eine Datenbank auf dem aktuellen Stand, wenn die App erneut startet, dann läuft keine Migration und nichts ändert sich
-- [ ] Angenommen eine Datenbank einer Vorversion mit Daten, wenn neue Migrationen laufen, dann sind alle vorhandenen Daten danach unverändert vorhanden und lesbar
-- [ ] Angenommen eine Migration schlägt fehl, wenn die App startet, dann bleibt der Stand vor dieser Migration erhalten, der Fehler-Hinweis erscheint und der Haupt-Screen lädt nicht
-- [ ] Angenommen der Fehler-Hinweis ist sichtbar, wenn ich „Erneut versuchen" tippe, dann läuft die Migration erneut und bei Erfolg erscheint der Haupt-Screen
-- [ ] Angenommen der gespeicherte Versionsstand ist höher als der der App, wenn die App startet, dann bleibt die Datenbank unverändert und der Fehler-Hinweis erscheint
-- [ ] Angenommen ein Init-Lauf ist fehlgeschlagen, wenn „Erneut versuchen“ läuft, dann arbeitet er auf einer neu geöffneten Verbindung — auch wenn das Schließen der alten gescheitert ist — und nach Erfolg gilt `foreign_keys = 1`
-- [ ] Angenommen eine Datenbank auf dem aktuellen Stand, wenn `foreign_keys` auf der Verbindung aus ist, dann meldet `initDatabase()` keinen Erfolg, sondern einen Fehler
-- [ ] Angenommen alle Migrationen sind committet und das Wiedereinschalten der Foreign Keys scheitert, wenn der Hinweis erscheint, dann zeigt er den `check_failed`-Text (nicht „Deine Daten sind unverändert“)
-- [ ] Angenommen eine Verbindung ist geöffnet, wenn ein Eintrag auf einen nicht existierenden Fremdschlüssel verweist, dann wird das Schreiben abgelehnt
-- [ ] Angenommen der Migrations-Test läuft unter Jest, dann bestehen die Fälle Frisch, Upgrade und Idempotenz
-- [ ] Angenommen PROJ-1 ist gebaut, dann enthält das Repo keinen Supabase-Client mehr, und `npx tsc --noEmit` sowie `npm test` laufen grün
+- [ ] **AC-1** Angenommen eine frische Installation, wenn die App startet, dann wird die Datenbank angelegt, alle Migrationen laufen und der Haupt-Screen erscheint ohne sichtbare Verzögerung nach dem Splash
+- [ ] **AC-2** Angenommen eine Datenbank auf dem aktuellen Stand, wenn die App erneut startet, dann läuft keine Migration und nichts ändert sich
+- [ ] **AC-3** Angenommen eine Datenbank einer Vorversion mit Daten, wenn neue Migrationen laufen, dann sind alle vorhandenen Daten danach unverändert vorhanden und lesbar
+- [ ] **AC-4** Angenommen eine Migration schlägt fehl, wenn die App startet, dann bleibt der Stand vor dieser Migration erhalten, der Fehler-Hinweis erscheint und der Haupt-Screen lädt nicht
+- [ ] **AC-5** Angenommen der Fehler-Hinweis ist sichtbar, wenn ich „Erneut versuchen" tippe, dann läuft die Migration erneut und bei Erfolg erscheint der Haupt-Screen
+- [ ] **AC-6** Angenommen der gespeicherte Versionsstand ist höher als der der App, wenn die App startet, dann bleibt die Datenbank unverändert und der Fehler-Hinweis erscheint
+- [ ] **AC-7** Angenommen ein Init-Lauf ist fehlgeschlagen, wenn „Erneut versuchen“ läuft, dann arbeitet er auf einer neu geöffneten Verbindung — auch wenn das Schließen der alten gescheitert ist — und nach Erfolg gilt `foreign_keys = 1`
+- [ ] **AC-8** Angenommen eine Datenbank auf dem aktuellen Stand, wenn `foreign_keys` auf der Verbindung aus ist, dann meldet `initDatabase()` keinen Erfolg, sondern einen Fehler
+- [ ] **AC-9** Angenommen alle Migrationen sind committet und das Wiedereinschalten der Foreign Keys scheitert, wenn der Hinweis erscheint, dann zeigt er den `check_failed`-Text (nicht „Deine Daten sind unverändert“)
+- [ ] **AC-10** Angenommen eine Verbindung ist geöffnet, wenn ein Eintrag auf einen nicht existierenden Fremdschlüssel verweist, dann wird das Schreiben abgelehnt
+- [ ] **AC-11** Angenommen der Migrations-Test läuft unter Jest, dann bestehen die Fälle Frisch, Upgrade und Idempotenz
+- [ ] **AC-12** Angenommen PROJ-1 ist gebaut, dann enthält das Repo keinen Supabase-Client mehr, und `npx tsc --noEmit` sowie `npm test` laufen grün
 
 ## Grenzen
 - Keine Fachtabellen — jedes Feature bringt seine eigene Migration mit (PROJ-2 ff.)
@@ -87,7 +87,9 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 - Kein Per-Env-Setup
 
 ## Tests
-- **Jest:** Migrations-Test `lib/db/migrations.test.ts` (Frisch, Upgrade, Idempotenz, Fehlschlag mit Rollback, neuere DB als App); `lib/db/index.test.ts` (Retry öffnet neue Verbindung auch bei scheiterndem `close()`, FK-Prüfung im Pfad „DB aktuell“, `check_failed` bei scheiterndem Wiedereinschalten). Der Mock für `openExpoDatabase` darf die Pragmas nicht selbst setzen, sonst prüft der Test nichts
+- **Jest:** Migrations-Test `lib/db/migrations.test.ts` (Frisch, Upgrade, Idempotenz, Fehlschlag mit Rollback, neuere DB als App, Foreign Keys) und `lib/db/index.test.ts` (Start-Gate: Init, Fehlerarten, Retry). Testnamen nennen die AC-IDs: AC-1–6, AC-10, AC-11 sind belegt
+- **Noch ohne Test:** AC-7 (Retry auf neuer Verbindung bei scheiterndem `close()`), AC-8 (FK-Prüfung im Pfad „DB aktuell“), AC-9 (`check_failed`) — Umsetzung aus dem Refine steht aus. Der Mock für `openExpoDatabase` darf die Pragmas dort nicht selbst setzen, sonst prüft der Test nichts
+- **Manuell (QA):** AC-1/4/5/6 sichtbarer Teil (Haupt-Screen bzw. Hinweis) im Dev-Client; AC-12 per Review + `npx tsc --noEmit && npm test`
 - **Rollback-Probe:** entfällt (Modus lokal; Ersatz ist der Migrations-Test)
 
 ## Decision Log
@@ -118,3 +120,4 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 | 2026-10-08 | QA Runde 2 | NOT READY: 2 Bugs (Backend), zweiter Fehlschlag am selben Ort → `/refine` → [Report](../docs/qa/PROJ-1-qa-2026-10-08.md) |
 | 2026-10-08 | Refine: QA-Abbruchregel (BUG-2/3) | Verbindung vertrauenswürdig = FK-Prüfung am Ende jedes Laufs + Retry mit `useNewConnection`; neue Fehlerart `check_failed`; 3 neue ACs; Status → Architected | [Report](../docs/qa/PROJ-1-qa-2026-10-08.md) |
 | 2026-10-08 | Reality-Check | Spec deckt sich mit Code (31 Tests); `supabase/functions` in `tsconfig.json` als Grenze vermerkt | — |
+| 2026-10-08 | AC-IDs vergeben (AC-1–12), Tests zugeordnet | AC-7–9 noch ohne Test (Refine-Umsetzung offen) | — |
