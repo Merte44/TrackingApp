@@ -4,8 +4,8 @@
 > Reihenfolge ist Empfehlung; Abhängigkeiten sind markiert.
 
 ## 1. Identität (einmalig, danach nie mehr ändern)
-- [ ] App-Name (Anzeigename) und Slug in `app.json`
-- [ ] **Bundle-ID** (`ios.bundleIdentifier`) — bleibt für immer; Rename der App ändert sie NICHT
+- [x] App-Name (Anzeigename) und Slug in `app.json` — TrackingApp / trackingapp
+- [x] **Bundle-ID** (`ios.bundleIdentifier`) — bleibt für immer; Rename der App ändert sie NICHT — `com.merte98.trackingapp`
 - [ ] Deep-Link-Schema (`scheme`) in `app.json`
 - [ ] Icon + Splash in `assets/images/`
 

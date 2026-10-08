@@ -74,7 +74,15 @@ async function doInit(): Promise<InitResult> {
       });
     }
   }
-  const result = await runMigrations(db, migrations);
+  let result: Awaited<ReturnType<typeof runMigrations>>;
+  try {
+    result = await runMigrations(db, migrations);
+  } catch (cause) {
+    // runMigrations meldet Fehler als Ergebnis; das hier fängt nur Unerwartetes ab.
+    return initError("migration_failed", cause instanceof Error ? cause.message : String(cause), {
+      cause,
+    });
+  }
   if (result.error) {
     if (result.error.kind === "version_read_failed") {
       // Verbindung ist unbrauchbar — schließen, damit ein Retry neu öffnet.

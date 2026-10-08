@@ -72,6 +72,7 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 - Template-Doku, die Supabase beschreibt (README, BLUEPRINT, Skills), bleibt unverändert — sie ist generisch
 - Keine Verschlüsselung der DB-Datei — iOS-Datenschutz des Geräts genügt für eine private App (offen, falls sich das ändert)
 - Der echte Fehlerfall auf dem Gerät lässt sich nur per Jest sicher erzeugen; der Fehler-Hinweis wird im Dev-Client über eine absichtlich fehlerhafte Test-Migration geprüft, die nicht committet wird
+- Dark Mode: `tailwind.config.js` nutzt `darkMode: 'class'`, ohne dass das System-Erscheinungsbild gesetzt wird — die `.dark`-Tokens greifen app-weit nicht (Design-System, offen; nicht PROJ-1)
 
 ## Umgebung
 - Kein Per-Env-Setup
@@ -100,3 +101,4 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 | 2026-10-08 | Spec geschrieben | — |
 | 2026-10-08 | Architektur freigegeben | — |
 | 2026-10-08 | Backend gebaut: `lib/db/` (leere Migrationsliste), Migrations-Test grün (30 Tests) | — |
+| 2026-10-08 | Frontend gebaut: Start-Gate `app/_layout.tsx`, `components/db/DatabaseError.tsx`; im Simulator geprüft (Start + Fehler-Hinweis) | — |
