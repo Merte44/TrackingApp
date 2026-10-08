@@ -87,6 +87,7 @@ Ein Abschnitt „Offen" im Report, der nirgendwo sonst auftaucht, ist ein Fehler
 - Spec **Acceptance Criteria**: bei READY die bestandenen ACs abhaken (`- [x]`)
 - INDEX: **Approved** bei READY, sonst bleibt **In Review** (Write-Then-Verify)
 - **Nach READY aufräumen:** Screenshots aus `docs/qa/shots/` löschen und den Report der Vorrunde entfernen, sobald seine Bugs behoben sind. Belege sind Arbeitsmaterial, kein Archiv — die Git-Historie hält sie fest
+- **Links mitziehen:** Verlauf-Zeilen, die auf einen gelöschten Report zeigen, bekommen statt des Links den letzten Commit, der ihn enthält: `Report: Commit <hash>` (`git rev-parse --short HEAD` vor dem Löschen). Sonst hinterlässt jede zweite QA-Runde einen toten Verweis — `python3 scripts/check-spec-refs.py` muss danach so grün sein wie vorher
 
 ## Nicht tun
 ACs selbst prüfen statt den Agenten · dem Agenten Build-Wissen mitgeben · Bugs fixen (`/frontend` / `/backend`) · Spec ändern (`/refine`) · Maestro-Flows schreiben · Prüfkataloge abarbeiten, die hier nicht stehen

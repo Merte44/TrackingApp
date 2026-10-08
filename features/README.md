@@ -7,7 +7,7 @@ Zentrale Übersicht & Status: [`INDEX.md`](INDEX.md). Diese README erklärt Aufb
 | Ort | Beantwortet |
 |-----|-------------|
 | [`INDEX.md`](INDEX.md) | Welche Features gibt es, in welchem Zustand, in welchem Release |
-| [`MAPPING.md`](MAPPING.md) | Welche alte ID heute welche aktuelle ID ist (nur nach einer Umnummerierung) |
+| `MAPPING.md` | Welche alte ID heute welche aktuelle ID ist — wird erst beim ersten Merge/Umnummerieren angelegt |
 | `<ID>-*.md` | Was tut das Feature, wo liegt es im Code, welche Regeln gelten, was ist bewusst nicht drin |
 | `docs/qa/`, `docs/RELEASES.md`, `git log` | Wie es dazu kam — **nicht** in der Spec |
 
@@ -69,7 +69,7 @@ Status steht im Spec-Header **und** in `INDEX.md` — beide müssen übereinstim
 | Deployed | im Release enthalten (`docs/RELEASES.md`, Spalte Release in INDEX) |
 
 ## Zusammengeführte Features
-Geht ein Feature in einem anderen auf, bekommt die aufnehmende Spec eine Zeile **Entstanden aus** und einen Eintrag in [`MAPPING.md`](MAPPING.md). Eine eigene Datei bleibt nicht zurück — das Mapping trägt die Zuordnung.
+Geht ein Feature in einem anderen auf, bekommt die aufnehmende Spec eine Zeile **Entstanden aus** und einen Eintrag in `MAPPING.md` (beim ersten Mal anlegen). Eine eigene Datei bleibt nicht zurück — das Mapping trägt die Zuordnung.
 
 Alte IDs werden **nie** neu vergeben. Wo eine alte ID weiterlebt (Git-Historie, QA-Berichte, Migrations-Dateinamen), bleibt sie unverändert stehen; `MAPPING.md` erklärt, welcher Bestand warum seine alten Nummern behält.
 
@@ -84,5 +84,5 @@ Das ist kein Formalismus, sondern die Bedingung dafür, dass die Prüfung etwas 
 - **Spec → Verlauf:** eine Zeile pro Ereignis (Refine, QA-Verdikt, Release) mit Link
 - **`docs/qa/<ID>-qa-YYYY-MM-DD.md`:** QA-Report, nur wenn Bugs gefunden wurden
 - **`docs/RELEASES.md`:** was in welchem Build live ging
-- **`git log --grep="<ID>"`:** Implementierungsdetails — Features von vor einer Umnummerierung tragen dort noch ihre **alte** ID (siehe [`MAPPING.md`](MAPPING.md))
+- **`git log --grep="<ID>"`:** Implementierungsdetails — Features von vor einer Umnummerierung tragen dort noch ihre **alte** ID (siehe `MAPPING.md`, falls vorhanden)
 - **Nie in `INDEX.md`**
