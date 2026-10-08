@@ -1,6 +1,6 @@
 # PROJ-1: Lokale Datenbank (SQLite on-device)
 
-**Status:** In Review · **Release:** — · **Bereich:** Fundament · **Stand:** 2026-10-08
+**Status:** In Progress · **Release:** — · **Bereich:** Fundament · **Stand:** 2026-10-08
 **Design:** —
 
 ## Was es tut
@@ -104,3 +104,4 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 | 2026-10-08 | Backend gebaut: `lib/db/` (leere Migrationsliste), Migrations-Test grün (30 Tests) | — |
 | 2026-10-08 | Frontend gebaut: Start-Gate `app/_layout.tsx`, `components/db/DatabaseError.tsx`; im Simulator geprüft (Start + Fehler-Hinweis) | — |
 | 2026-10-08 | QA | NOT READY: 1 Bug (Backend) → [Report](../docs/qa/PROJ-1-qa-2026-10-08.md); Security-Gate übersprungen (nur lokale DB + UI) |
+| 2026-10-08 | Backend-Fix BUG-1: Verbindung nach jedem fehlgeschlagenen Start verworfen; Migrations-Test grün (31 Tests) | [Report](../docs/qa/PROJ-1-qa-2026-10-08.md) |

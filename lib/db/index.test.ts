@@ -41,13 +41,19 @@ const broken: Migration = {
   },
 };
 
+function handle(db: TestDb, overrides: Partial<TestDb> = {}): TestDb {
+  return { ...db, close: jest.fn(async () => undefined), ...overrides };
+}
+
 describe("lib/db index", () => {
   let testDb: TestDb;
 
   beforeEach(() => {
     testDb = createTestDb();
     mockOpen.mockReset();
-    mockOpen.mockResolvedValue(testDb);
+    // Jedes Öffnen liefert einen eigenen Handle auf dieselbe In-Memory-DB; close() lässt die
+    // Daten stehen — wie die Datei auf dem Gerät, die ein Neu-Öffnen überlebt.
+    mockOpen.mockImplementation(async () => handle(testDb));
     mockMigrations.length = 0;
   });
 
@@ -116,7 +122,7 @@ describe("lib/db index", () => {
 
     expect(await initDatabase()).toEqual({ data: { version: 0 }, error: null });
     expect(mockOpen).toHaveBeenCalledTimes(2);
-    expect(getDb()).toBe(testDb);
+    expect(await getDb().getFirst("SELECT 1 AS one")).toEqual({ one: 1 });
   });
 
   it("initDatabase(): migration_failed mit Name, getDb() bleibt gesperrt, Retry möglich", async () => {
@@ -136,7 +142,36 @@ describe("lib/db index", () => {
 
     mockMigrations.pop();
     expect(await initDatabase()).toEqual({ data: { version: 1 }, error: null });
-    expect(mockOpen).toHaveBeenCalledTimes(1);
+    // Retry öffnet frisch statt die Verbindung des Fehlschlags weiterzuverwenden.
+    expect(mockOpen).toHaveBeenCalledTimes(2);
+  });
+
+  it("initDatabase(): Foreign Keys nicht wiederherstellbar → Verbindung verworfen, Retry läuft mit Foreign Keys an", async () => {
+    mockMigrations.push(ok);
+    const close = jest.fn(async () => undefined);
+    const failing = handle(testDb, {
+      exec: (sql: string) =>
+        sql === "PRAGMA foreign_keys = ON"
+          ? Promise.reject(new Error("foreign_keys lässt sich nicht setzen"))
+          : testDb.exec(sql),
+      close,
+    });
+    mockOpen.mockResolvedValueOnce(failing);
+    // Ein frisches Öffnen setzt die Pragmas neu (wie openExpoDatabase).
+    mockOpen.mockImplementationOnce(async () => {
+      await testDb.exec("PRAGMA foreign_keys = ON");
+      return handle(testDb);
+    });
+    const { initDatabase, getDb } = loadIndex();
+
+    const failed = await initDatabase();
+    expect(failed.error).toMatchObject({ kind: "migration_failed" });
+    expect(close).toHaveBeenCalledTimes(1);
+    expect(() => getDb()).toThrow();
+
+    expect(await initDatabase()).toEqual({ data: { version: 1 }, error: null });
+    expect(mockOpen).toHaveBeenCalledTimes(2);
+    expect(await getDb().getFirst("PRAGMA foreign_keys")).toEqual({ foreign_keys: 1 });
   });
 
   it("initDatabase(): newer_than_app", async () => {

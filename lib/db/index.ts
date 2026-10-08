@@ -61,6 +61,12 @@ function fromMigrationError(error: MigrationError): InitResult {
   }
 }
 
+async function dropConnection(): Promise<void> {
+  const current = db;
+  db = null;
+  await current?.close().catch(() => undefined);
+}
+
 async function doInit(): Promise<InitResult> {
   if (ready && db) {
     return { data: { version: readyVersion }, error: null };
@@ -79,17 +85,15 @@ async function doInit(): Promise<InitResult> {
     result = await runMigrations(db, migrations);
   } catch (cause) {
     // runMigrations meldet Fehler als Ergebnis; das hier fängt nur Unerwartetes ab.
+    await dropConnection();
     return initError("migration_failed", cause instanceof Error ? cause.message : String(cause), {
       cause,
     });
   }
   if (result.error) {
-    if (result.error.kind === "version_read_failed") {
-      // Verbindung ist unbrauchbar — schließen, damit ein Retry neu öffnet.
-      const broken = db;
-      db = null;
-      await broken.close().catch(() => undefined);
-    }
+    // Nach jedem Fehlschlag ist der Zustand der Verbindung ungewiss (Pragmas, offene
+    // Transaktion) — verwerfen, damit ein Retry frisch öffnet und die Pragmas neu setzt.
+    await dropConnection();
     return fromMigrationError(result.error);
   }
   ready = true;
