@@ -1,6 +1,6 @@
 # PROJ-1: Lokale Datenbank (SQLite on-device)
 
-**Status:** Architected · **Release:** — · **Bereich:** Fundament · **Stand:** 2026-10-08
+**Status:** In Progress · **Release:** — · **Bereich:** Fundament · **Stand:** 2026-10-08
 **Design:** —
 
 ## Was es tut
@@ -82,13 +82,14 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 - Hält eine verworfene Verbindung noch eine Schreibsperre (offene Transaktion), scheitert jeder Retry, bis die App beendet ist — bewusst sichtbar statt still; kein Erzwingen des Schließens
 - `tsconfig.json` nimmt noch `supabase/functions` in `include` auf (Template-Rest, ohne Wirkung — kein Ordner vorhanden)
 - Restrisiken aus QA (Low, hingenommen): Root-Layout rendert während Laden/Fehler keinen Navigator — unkritisch, solange es keine Deep-Links gibt (sonst neu prüfen); `setDbForTesting` kann einen laufenden `initDatabase()` nicht abbrechen (nur Tests)
+- `check_failed`-Text sagt „Die Datenbank ist umgestellt“ auch im Pfad ohne ausstehende Migration (AC-8), wo nichts umgestellt wurde — Text ist so spezifiziert (offen, `/refine`)
 
 ## Umgebung
 - Kein Per-Env-Setup
 
 ## Tests
-- **Jest:** Migrations-Test `lib/db/migrations.test.ts` (Frisch, Upgrade, Idempotenz, Fehlschlag mit Rollback, neuere DB als App, Foreign Keys) und `lib/db/index.test.ts` (Start-Gate: Init, Fehlerarten, Retry). Testnamen nennen die AC-IDs: AC-1–6, AC-10, AC-11 sind belegt
-- **Noch ohne Test:** AC-7 (Retry auf neuer Verbindung bei scheiterndem `close()`), AC-8 (FK-Prüfung im Pfad „DB aktuell“), AC-9 (`check_failed`) — Umsetzung aus dem Refine steht aus. Der Mock für `openExpoDatabase` darf die Pragmas dort nicht selbst setzen, sonst prüft der Test nichts
+- **Jest:** Migrations-Test `lib/db/migrations.test.ts` (Frisch, Upgrade, Idempotenz, Fehlschlag mit Rollback, neuere DB als App, Foreign Keys) und `lib/db/index.test.ts` (Start-Gate: Init, Fehlerarten, Retry). Testnamen nennen die AC-IDs: AC-1–11 sind belegt
+- **Hinweis:** In den Tests zu AC-7/AC-8 darf der Mock für `openExpoDatabase` die Pragmas nicht selbst setzen, sonst prüft der Test nichts. `lib/db/expo.ts` (nativ) ist unter Jest nicht ausführbar — `useNewConnection` und das nicht abgewartete Schließen dort belegt nur das Review
 - **Manuell (QA):** AC-1/4/5/6 sichtbarer Teil (Haupt-Screen bzw. Hinweis) im Dev-Client; AC-12 per Review + `npx tsc --noEmit && npm test`
 - **Rollback-Probe:** entfällt (Modus lokal; Ersatz ist der Migrations-Test)
 
@@ -121,3 +122,4 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 | 2026-10-08 | Refine: QA-Abbruchregel (BUG-2/3) | Verbindung vertrauenswürdig = FK-Prüfung am Ende jedes Laufs + Retry mit `useNewConnection`; neue Fehlerart `check_failed`; 3 neue ACs; Status → Architected | [Report](../docs/qa/PROJ-1-qa-2026-10-08.md) |
 | 2026-10-08 | Reality-Check | Spec deckt sich mit Code (31 Tests); `supabase/functions` in `tsconfig.json` als Grenze vermerkt | — |
 | 2026-10-08 | AC-IDs vergeben (AC-1–12), Tests zugeordnet | AC-7–9 noch ohne Test (Refine-Umsetzung offen) | — |
+| 2026-10-08 | Backend gebaut: Retry mit `useNewConnection`, Schließen nicht abgewartet, FK-Prüfung in jedem Lauf, `check_failed`; Tests zuerst rot, dann grün (34) | — |

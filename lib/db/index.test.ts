@@ -6,7 +6,7 @@ import type { Migration } from "./types";
 
 // expo-sqlite ist nativ — der Öffner wird durch die In-Memory-DB ersetzt.
 const mockOpen = jest.fn();
-jest.mock("./expo", () => ({ openExpoDatabase: () => mockOpen() }));
+jest.mock("./expo", () => ({ openExpoDatabase: (...args: unknown[]) => mockOpen(...args) }));
 
 const mockMigrations: Migration[] = [];
 jest.mock("./migrations", () => ({
@@ -146,7 +146,51 @@ describe("PROJ-1 lib/db index", () => {
     expect(mockOpen).toHaveBeenCalledTimes(2);
   });
 
-  it("initDatabase(): Foreign Keys nicht wiederherstellbar → Verbindung verworfen, Retry läuft mit Foreign Keys an", async () => {
+  it("AC-7: Retry öffnet eine neue native Verbindung, auch wenn close() der alten hängt", async () => {
+    // Alte Verbindung: neuere DB als App (sofortiger Fehlschlag) und ein close(), das nie zurückkehrt.
+    await testDb.exec("PRAGMA user_version = 9");
+    const hanging = handle(testDb, { close: jest.fn(() => new Promise<void>(() => undefined)) });
+    mockOpen.mockResolvedValueOnce(hanging);
+    const { initDatabase, getDb } = loadIndex();
+
+    const failed = await initDatabase();
+    expect(failed.error).toMatchObject({ kind: "newer_than_app" });
+    expect(hanging.close).toHaveBeenCalledTimes(1);
+
+    await testDb.exec("PRAGMA user_version = 0");
+    expect(await initDatabase()).toEqual({ data: { version: 0 }, error: null });
+    expect(mockOpen).toHaveBeenNthCalledWith(1, { fresh: false });
+    expect(mockOpen).toHaveBeenNthCalledWith(2, { fresh: true });
+    expect(await getDb().getFirst("PRAGMA foreign_keys")).toEqual({ foreign_keys: 1 });
+  });
+
+  it("AC-7: Retry öffnet eine neue native Verbindung, auch wenn close() der alten scheitert", async () => {
+    await testDb.exec("PRAGMA user_version = 9");
+    const failingClose = handle(testDb, {
+      close: jest.fn(() => Promise.reject(new Error("database is locked"))),
+    });
+    mockOpen.mockResolvedValueOnce(failingClose);
+    const { initDatabase } = loadIndex();
+
+    expect((await initDatabase()).error).toMatchObject({ kind: "newer_than_app" });
+
+    await testDb.exec("PRAGMA user_version = 0");
+    expect(await initDatabase()).toEqual({ data: { version: 0 }, error: null });
+    expect(mockOpen).toHaveBeenNthCalledWith(2, { fresh: true });
+  });
+
+  it("AC-8: DB aktuell, aber foreign_keys aus → kein Erfolg, check_failed", async () => {
+    // Der Öffner setzt die Pragmas hier bewusst NICHT — sonst prüft der Test nichts.
+    await testDb.exec("PRAGMA foreign_keys = OFF");
+    const { initDatabase, getDb } = loadIndex();
+
+    const result = await initDatabase();
+    expect(result.data).toBeNull();
+    expect(result.error).toMatchObject({ kind: "check_failed" });
+    expect(() => getDb()).toThrow();
+  });
+
+  it("AC-7, AC-9: Foreign Keys nach committeter Migration nicht wiederherstellbar → check_failed, Retry läuft mit Foreign Keys an", async () => {
     mockMigrations.push(ok);
     const close = jest.fn(async () => undefined);
     const failing = handle(testDb, {
@@ -165,12 +209,19 @@ describe("PROJ-1 lib/db index", () => {
     const { initDatabase, getDb } = loadIndex();
 
     const failed = await initDatabase();
-    expect(failed.error).toMatchObject({ kind: "migration_failed" });
+    expect(failed.error).toMatchObject({
+      kind: "check_failed",
+      message:
+        "Die Datenbank ist umgestellt, die abschließende Prüfung ist fehlgeschlagen. Bitte „Erneut versuchen“ oder die App neu starten. Deine Daten sind erhalten.",
+    });
+    expect(failed.error?.message).not.toContain("unverändert");
+    // Die Migration ist committet — genau deshalb wäre „unverändert“ falsch.
+    expect(await testDb.getFirst("PRAGMA user_version")).toEqual({ user_version: 1 });
     expect(close).toHaveBeenCalledTimes(1);
     expect(() => getDb()).toThrow();
 
     expect(await initDatabase()).toEqual({ data: { version: 1 }, error: null });
-    expect(mockOpen).toHaveBeenCalledTimes(2);
+    expect(mockOpen).toHaveBeenNthCalledWith(2, { fresh: true });
     expect(await getDb().getFirst("PRAGMA foreign_keys")).toEqual({ foreign_keys: 1 });
   });
 

@@ -8,7 +8,9 @@ export type MigrationErrorKind =
   /** Gespeicherte Version > höchste bekannte Migration (Downgrade) — nichts geändert. */
   | "newer_than_app"
   /** Eine Migration ist fehlgeschlagen; ihre Transaktion wurde zurückgerollt. */
-  | "migration_failed";
+  | "migration_failed"
+  /** Alle Migrationen sind committet, aber Foreign Keys ließen sich nicht wieder einschalten. */
+  | "check_failed";
 
 export type MigrationError = {
   kind: MigrationErrorKind;
@@ -79,7 +81,7 @@ async function restoreForeignKeys(db: Db): Promise<MigrationError | null> {
     return null;
   } catch (cause) {
     return {
-      kind: "migration_failed",
+      kind: "check_failed",
       message: `Foreign Keys konnten nicht wieder aktiviert werden: ${messageOf(cause)}`,
       cause,
     };
@@ -94,7 +96,8 @@ async function restoreForeignKeys(db: Db): Promise<MigrationError | null> {
  * Stehen Migrationen aus, laufen sie mit `foreign_keys = OFF`; vor jedem COMMIT
  * prüft `PRAGMA foreign_key_check` die Integrität (Verletzung → Rollback,
  * `migration_failed`). Danach wird `foreign_keys = ON` wiederhergestellt und
- * verifiziert — auch im Fehlerfall.
+ * verifiziert — auch im Fehlerfall. Scheitert nur das (alle Migrationen
+ * committet), ist das `check_failed`; ein früherer Migrationsfehler hat Vorrang.
  */
 export async function runMigrations(db: Db, list: readonly Migration[]): Promise<MigrationResult> {
   const invalid = validateMigrations(list);
