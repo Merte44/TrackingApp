@@ -53,7 +53,7 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 - Die Datenbankdatei liegt an einem Ort, der im iCloud-Gerätebackup enthalten ist — sie ist die einzige Kopie der Daten
 - Kein Feature greift direkt auf SQLite zu, sondern nur über die gemeinsame Schnittstelle; Werte werden nur als gebundene Parameter übergeben
 - Fehlertexte im Hinweis (Deutsch): `migration_failed` → „Die Daten konnten nicht auf die neue App-Version umgestellt werden. Deine Daten sind unverändert." · `check_failed` → „Die Datenbank ist umgestellt, die abschließende Prüfung ist fehlgeschlagen. Bitte „Erneut versuchen“ oder die App neu starten. Deine Daten sind erhalten.“ · `newer_than_app` → „Die Daten stammen von einer neueren App-Version. Bitte die aktuelle Version installieren." · `open_failed` → „Die Datenbank konnte nicht geöffnet werden." Technische Details (Migrationsname, Original-Meldung) stehen klein darunter
-- Supabase-Reste aus dem Template (`lib/supabase.ts`, `@supabase/supabase-js`, `expo-secure-store` samt Config-Plugin in `app.json`, `.env.local.example`) werden entfernt; die App hat keinen Server
+- Supabase-Reste aus dem Template (`supabase.ts` aus `lib/`, `@supabase/supabase-js`, `expo-secure-store` samt Config-Plugin in `app.json`, `.env.local.example`) werden entfernt; die App hat keinen Server
 - Neue native Module (`expo-sqlite`) und ein entferntes Plugin erfordern einen neuen Dev-Client-Build (`npx expo run:ios`)
 
 ## Acceptance Criteria
@@ -80,7 +80,7 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 - Der echte Fehlerfall auf dem Gerät lässt sich nur per Jest sicher erzeugen; der Fehler-Hinweis wird im Dev-Client über eine absichtlich fehlerhafte Test-Migration geprüft, die nicht committet wird
 - Dark Mode: `tailwind.config.js` nutzt `darkMode: 'class'`, ohne dass das System-Erscheinungsbild gesetzt wird — die `.dark`-Tokens greifen app-weit nicht (Design-System, offen; nicht PROJ-1)
 - Hält eine verworfene Verbindung noch eine Schreibsperre (offene Transaktion), scheitert jeder Retry, bis die App beendet ist — bewusst sichtbar statt still; kein Erzwingen des Schließens
-- `tsconfig.json` nimmt noch `supabase/functions` in `include` auf (Template-Rest, ohne Wirkung — kein Ordner vorhanden)
+- `tsconfig.json` nimmt in `include` noch den Ordner `functions` im nie angelegten Supabase-Ordner auf (Template-Rest, ohne Wirkung — der Ordner existiert nicht)
 - Restrisiken aus QA (Low, hingenommen): Root-Layout rendert während Laden/Fehler keinen Navigator — unkritisch, solange es keine Deep-Links gibt (sonst neu prüfen); `setDbForTesting` kann einen laufenden `initDatabase()` nicht abbrechen (nur Tests)
 - Restrisiken aus QA Runde 3 (Medium, unter „scheitert sichtbar statt still“ gefasst): ein fehlgeschlagenes ROLLBACK wird verschluckt und erst beim Retry als Sperre sichtbar; `close()` der verworfenen Verbindung läuft durch dieselbe Warteschlange und erreicht bei einem hängenden Aufruf nie das native Schließen; jeder Retry öffnet eine weitere native Verbindung, ohne dass die alten sicher geschlossen werden. Low: Fast Refresh von `lib/db/index.ts` setzt den Modul-Zustand zurück, während das Root-Layout „bereit“ bleibt (nur Dev); `foreign_keys` wird bis zu dreimal pro Lauf geprüft; eine offene Transaktion nach gescheitertem ROLLBACK erscheint als `check_failed`
 - AC-1 „ohne sichtbare Verzögerung“ hat keine Schwelle; AC-4/5 im Dev-Client nur mit einer nicht committeten fehlerhaften Migration prüfbar — in Runde 3 per Test + Review belegt
@@ -118,11 +118,11 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 | 2026-10-08 | Architektur freigegeben | — |
 | 2026-10-08 | Backend gebaut: `lib/db/` (leere Migrationsliste), Migrations-Test grün (30 Tests) | — |
 | 2026-10-08 | Frontend gebaut: Start-Gate `app/_layout.tsx`, `components/db/DatabaseError.tsx`; im Simulator geprüft (Start + Fehler-Hinweis) | — |
-| 2026-10-08 | QA | NOT READY: 1 Bug (Backend) → [Report](../docs/qa/PROJ-1-qa-2026-10-08.md); Security-Gate übersprungen (nur lokale DB + UI) |
-| 2026-10-08 | Backend-Fix BUG-1: Verbindung nach jedem fehlgeschlagenen Start verworfen; Migrations-Test grün (31 Tests) | [Report](../docs/qa/PROJ-1-qa-2026-10-08.md) |
-| 2026-10-08 | QA Runde 2 | NOT READY: 2 Bugs (Backend), zweiter Fehlschlag am selben Ort → `/refine` → [Report](../docs/qa/PROJ-1-qa-2026-10-08.md) |
-| 2026-10-08 | Refine: QA-Abbruchregel (BUG-2/3) | Verbindung vertrauenswürdig = FK-Prüfung am Ende jedes Laufs + Retry mit `useNewConnection`; neue Fehlerart `check_failed`; 3 neue ACs; Status → Architected | [Report](../docs/qa/PROJ-1-qa-2026-10-08.md) |
-| 2026-10-08 | Reality-Check | Spec deckt sich mit Code (31 Tests); `supabase/functions` in `tsconfig.json` als Grenze vermerkt | — |
+| 2026-10-08 | QA | NOT READY: 1 Bug (Backend) → Report: Commit `e538aee`; Security-Gate übersprungen (nur lokale DB + UI) |
+| 2026-10-08 | Backend-Fix BUG-1: Verbindung nach jedem fehlgeschlagenen Start verworfen; Migrations-Test grün (31 Tests) | Report: Commit `e538aee` |
+| 2026-10-08 | QA Runde 2 | NOT READY: 2 Bugs (Backend), zweiter Fehlschlag am selben Ort → `/refine` → Report: Commit `e538aee` |
+| 2026-10-08 | Refine: QA-Abbruchregel (BUG-2/3) | Verbindung vertrauenswürdig = FK-Prüfung am Ende jedes Laufs + Retry mit `useNewConnection`; neue Fehlerart `check_failed`; 3 neue ACs; Status → Architected | Report: Commit `e538aee` |
+| 2026-10-08 | Reality-Check | Spec deckt sich mit Code (31 Tests); Template-Rest `functions` im nie angelegten Supabase-Ordner in `tsconfig.json` als Grenze vermerkt | — |
 | 2026-10-08 | AC-IDs vergeben (AC-1–12), Tests zugeordnet | AC-7–9 noch ohne Test (Refine-Umsetzung offen) | — |
 | 2026-10-08 | Backend gebaut: Retry mit `useNewConnection`, Schließen nicht abgewartet, FK-Prüfung in jedem Lauf, `check_failed`; Tests zuerst rot, dann grün (34) | — |
 | 2026-10-08 | QA Runde 3 | READY — AC 12/12 (Test 12 · Simulator 2 · Probe 3); BUG-2/3 per Probe gegengeprüft; Code-Gate 9 Findings, kein Critical/High (Restrisiken → Grenzen); Security-Gate übersprungen (nur lokale DB) | — |
