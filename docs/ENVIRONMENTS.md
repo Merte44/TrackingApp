@@ -11,7 +11,7 @@
 | **Supabase-Projekt** | entfällt — kein Backend, Daten on-device (`expo-sqlite`), siehe PRD → Constraints | entfällt |
 | **MCP-Server** | `supabase-*` für dieses Projekt deaktiviert (`.claude/settings.local.json` → `disabledMcpjsonServers`) | deaktiviert |
 | **Externe API** | Open Food Facts (öffentlich, kein Key) | Open Food Facts |
-| **Migrationsstand** | `supabase/migrations/` = Repo | Repo-Liste vs. `list_migrations` vor jedem Submit prüfen |
+| **Migrationsstand** | on-device: `lib/db/migrations.ts` (`PRAGMA user_version`), läuft beim App-Start | gleich — kein Server-Abgleich |
 | **Vault-Secrets** | — | — |
 | **Edge Functions + Secrets** | — | — |
 | **Crons (pg_cron)** | — | — |
@@ -20,7 +20,7 @@
 | **Auth: SMTP** | Supabase-Default | Custom-SMTP (Anbieter, Absender) |
 | **Auth: Password Policy / Rate Limits** | — | — |
 | **Push (APNs-Key / Expo-Credentials)** | — | — |
-| **EAS-Secrets (`EXPO_PUBLIC_*`)** | `.env.local` | `eas env:list` |
+| **EAS-Secrets (`EXPO_PUBLIC_*`)** | — (keine; kein `.env.local`) | — |
 | **EAS-Projekt / Build-Profile** | `development` | `preview` / `production` |
 | **App Store Connect** | — | App-ID, Bundle-ID, TestFlight-Gruppen |
 | **Test-Accounts** | Liste (E-Mail, Rolle) | — |

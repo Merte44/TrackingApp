@@ -10,7 +10,7 @@ Nur der Entwickler selbst, auf einem iPhone. Bedürfnis: Ernährung täglich und
 
 | Priority | Feature | Status |
 |----------|---------|--------|
-| P0 (MVP) | Lokale Datenbank | Architected |
+| P0 (MVP) | Lokale Datenbank | In Progress |
 | P0 (MVP) | Eigene Lebensmittel | Roadmap |
 | P0 (MVP) | Ernährungstagebuch | Roadmap |
 | P0 (MVP) | Produktsuche & Barcode-Scan | Roadmap |

@@ -1,6 +1,6 @@
 # PROJ-1: Lokale Datenbank (SQLite on-device)
 
-**Status:** Architected · **Release:** — · **Bereich:** Fundament · **Stand:** 2026-10-08
+**Status:** In Progress · **Release:** — · **Bereich:** Fundament · **Stand:** 2026-10-08
 **Design:** —
 
 ## Was es tut
@@ -42,7 +42,8 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 ## Regeln
 - Beim App-Start werden alle Migrationen oberhalb des gespeicherten Versionsstands der Reihe nach ausgeführt, jede in einer eigenen Transaktion zusammen mit dem Hochsetzen der Version — so gibt es nie einen halb migrierten Stand
 - Ausgelieferte Migrationen werden nie geändert, nur neue angehängt; jede Migration trägt die Feature-ID, die sie eingeführt hat
-- Foreign Keys sind auf jeder Verbindung eingeschaltet
+- Foreign Keys sind auf jeder Verbindung eingeschaltet. Nur während ausstehender Migrationen sind sie aus, damit Tabellen-Umbauten keine Kindzeilen per CASCADE löschen; vor jedem Commit prüft `foreign_key_check` die Integrität (Verletzung → Rollback), danach werden sie wieder eingeschaltet und geprüft
+- Transaktionen (`Db.transaction`) sind strikt: Schlägt ein Schritt fehl — auch abgefangen oder nicht awaited — wird alles zurückgerollt. Innerhalb einer Transaktion nur `tx` benutzen, nie `getDb()` (blockiert sich selbst)
 - Der Splash-Screen bleibt stehen, bis die Datenbank bereit ist; es gibt keinen eigenen Lade-Screen, weil das im Normalfall nur Millisekunden dauert
 - **Fehlschlag:** Die Transaktion der fehlgeschlagenen Migration rollt zurück. Bereits erfolgreich gelaufene Migrationen davor bleiben bestehen, weil jede für sich vollständig ist. Die App zeigt einen Vollbild-Hinweis mit der Fehlermeldung und „Erneut versuchen"; der Haupt-Screen lädt nicht, damit neuer Code nicht auf ein altes Schema trifft
 - **Neuere Datenbank als App** (z. B. nach einem Downgrade per Dev-Build): Die App migriert nicht rückwärts, verändert nichts und zeigt denselben Hinweis
@@ -98,3 +99,4 @@ Kein eigener Lade-Screen und keine neue Route: Das Gate sitzt im Root-Layout, da
 |-------|----------|------|
 | 2026-10-08 | Spec geschrieben | — |
 | 2026-10-08 | Architektur freigegeben | — |
+| 2026-10-08 | Backend gebaut: `lib/db/` (leere Migrationsliste), Migrations-Test grün (30 Tests) | — |

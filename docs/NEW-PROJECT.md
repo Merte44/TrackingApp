@@ -12,7 +12,7 @@
 ## 2. Repo
 - [ ] Template geklont, `git remote` auf das neue Repo gesetzt
 - [x] `npm install`, `npx expo-doctor` grün
-- [ ] `.env.local` aus `.env.local.example` angelegt (nie committen)
+- [x] `.env.local` — entfällt: keine Secrets (on-device, siehe PRD)
 
 ## 3. Supabase (dev + prod) — entfällt: on-device (`expo-sqlite`), siehe PRD
 - [ ] Zwei Projekte anlegen: `<app>-dev` und `<app>-prod`
@@ -24,7 +24,7 @@
 - [ ] `eas init` (erzeugt `projectId`), `eas.json` mit `development` / `preview` / `production`
 - [ ] Apple-Developer-Account, App in App Store Connect anlegen (gleiche Bundle-ID)
 - [ ] `expo-dev-client` installiert; erster **Dev-Client-Build** (`eas build --profile development --platform ios`) — der Standard für QA und Release-Check
-- [ ] EAS-Secrets gesetzt (`EXPO_PUBLIC_SUPABASE_URL`, `EXPO_PUBLIC_SUPABASE_ANON_KEY`)
+- [x] EAS-Secrets — entfällt: kein Backend
 
 ## 5. Design-Kopplung
 - [ ] Erstquelle abgelegt: `docs/design/mockup.html` **oder** Claude-Design-Projekt benannt
