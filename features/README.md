@@ -25,6 +25,7 @@ Erzeugt von `/write-spec` aus [`.claude/skills/write-spec/template.md`](../.clau
 |-----------|--------------|
 | Header (Status · Release · Bereich · Stand · Design), **Was es tut**, **Dependencies**, **Regeln**, **Acceptance Criteria**, **Grenzen**, **Umgebung** | `/write-spec`, `/refine` |
 | **Screens & Komponenten**, **Daten & Server** (inkl. Verträge) | `/architecture` |
+| **Plan** (nur bis zur Abnahme) | `/architecture` schreibt, `/frontend` / `/backend` haken ab, `/qa` entfernt |
 | **Tests** | `/frontend`, `/backend` |
 | **Decision Log** | `/write-spec`, `/architecture`, `/refine` |
 | **Verlauf** (eine Zeile pro Ereignis) | `/refine`, `/frontend`, `/backend`, `/qa`, `/deploy` |
@@ -48,6 +49,25 @@ Jede Anforderung lässt sich von der Spec bis zum Prüfergebnis verfolgen: **AC 
   ```
   Tests ohne AC-Bezug (reine Technik, Regressionen) sind erlaubt. Eine AC, die kein automatischer Test belegen kann (Layout, Gerät), wird in der QA manuell belegt — mit Methode
 - **Abdeckung prüfen:** `grep -rn "AC-[0-9]" --include="*.test.ts*" <Pfade des Features>`
+
+### Plan: Arbeit in Häppchen
+`/architecture` zerlegt das Design in Aufgaben und schreibt sie in `## Plan`; der User gibt Plan und Design gemeinsam frei.
+
+```markdown
+| # | Aufgabe | ACs | Ebene | Nach | Status |
+|---|---------|-----|-------|------|--------|
+| T1 | Migration `<NNNN>_<id>_…` + Upgrade-Fall im Migrations-Test | AC-1, AC-4 | Backend | — | offen |
+| T2 | `lib/<feature>.ts` nach Verträgen + Tests | AC-2, AC-3 | Backend | T1 | erledigt `a1b2c3d` |
+| T3 | Liste mit Leer- und Fehlerzustand | AC-5, AC-6 | Frontend | — (Vertrag reicht) | offen |
+| U1 | API-Key bei EAS setzen (Name, Wert-Quelle) | — | **Du** | — | offen |
+```
+
+- **Größe:** eine Aufgabe = ein Agent-Lauf mit frischem Kontext — etwa ein Screen, ein `lib`-Modul oder eine Migration, jeweils mit ihren Tests. Kleinkram wird mit der Nachbar-Aufgabe zusammengelegt
+- **Bezug:** jede Aufgabe nennt ihre ACs; **jede AC steckt in mindestens einer Aufgabe** — sonst ist der Plan lückenhaft, bevor gebaut wird
+- **Nach:** Abhängigkeiten. Aufgaben ohne gegenseitige Abhängigkeit und ohne gemeinsame Dateien dürfen parallel laufen
+- **Ebene Du (`U…`):** was nur der User kann (Dashboards, Keys, Konten) — mit Ort und Wert-Quelle; kein Agent baut oder hakt sie ab
+- **Status:** `offen` → `erledigt <commit>`. `/backend` und `/frontend` arbeiten ihre Ebene **eine Aufgabe nach der anderen** ab, mit **einem Commit pro Aufgabe** (sicherer Haltepunkt). Ein neuer Chat macht bei der ersten offenen Aufgabe weiter
+- **Lebensdauer:** Der Plan ist Arbeitsstand. Bei READY entfernt `/qa` den Abschnitt; die Git-Historie hält ihn fest. Der QA-Agent sieht ihn nie (`scripts/spec-brief.py`)
 
 ### Lebenszyklus der Acceptance Criteria
 Bis zur Abnahme sind die ACs **Checkboxen** — `/qa` arbeitet sie ab. Beim Deploy entfernt `/deploy` die Checkboxen, der Block **bleibt** als Prüfvertrag stehen: Die Tests verweisen dauerhaft auf ihn, und ein späterer `/refine` ergänzt ihn mit neuen IDs. Was die ACs als Ganzes sagen, steht zusätzlich verdichtet in `Regeln`.

@@ -62,6 +62,13 @@
      Sonst: "Kein Per-Env-Setup". -->
 - Kein Per-Env-Setup
 
+## Plan
+<!-- Füllt /architecture; /frontend und /backend haken ab; /qa entfernt den Abschnitt bei READY.
+     Regeln: features/README.md → Plan. Jede AC in mindestens einer Aufgabe. -->
+
+| # | Aufgabe | ACs | Ebene | Nach | Status |
+|---|---------|-----|-------|------|--------|
+
 ## Tests
 - **Jest:** `lib/<feature>.test.ts`
 - **Rollback-Probe:** `supabase/tests/projX_….sql`

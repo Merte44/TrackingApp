@@ -37,12 +37,16 @@ Ins **Decision Log** der Spec — nur Entscheidungen mit verworfener Alternative
 ### 4. Abdeckung prüfen
 Jede AC einem Teil des Designs zuordnen (Screen, Vertrag, Migration oder Regel). Eine AC ohne Träger ist eine Lücke im Design — schließen oder unter `Grenzen` benennen, nie still übergehen. Die Zuordnung gehört ins Review, nicht in die Spec.
 
-### 5. Review
-Design zeigen, mit der Abdeckung als kurzer Liste (`AC-1 → listEntries()`, `AC-2 → Leerzustand in EntryList` …): „Ergibt das Sinn? Fragen?" Auf Freigabe warten.
+### 5. Plan
+Das Design in Aufgaben zerlegen und in `## Plan` der Spec schreiben (Regeln: `features/README.md` → Plan): Größe eines Agent-Laufs, ACs je Aufgabe, Abhängigkeiten, Ebene Backend / Frontend / **Du**. Prüfen, bevor du zeigst: Steckt jede AC in einer Aufgabe? Hat jede Aufgabe einen Abschluss, den ein Test oder Blick belegen kann?
+
+### 6. Review
+Design und Plan zeigen, mit der Abdeckung als kurzer Liste (`AC-1 → listEntries()`, `AC-2 → Leerzustand in EntryList` …): „Ergibt das Sinn? Fragen?" Auf Freigabe warten — **eine** Freigabe für beides.
 
 ## Abschluss
 - [ ] `Screens & Komponenten`, `Daten & Server` (inkl. Verträge), `Regeln`, `Umgebung` in der Spec gefüllt
 - [ ] Jede AC hat einen Träger im Design (oder steht als Lücke unter `Grenzen`)
+- [ ] `## Plan` gefüllt; jede AC steckt in mindestens einer Aufgabe; User-Aufgaben (`U…`) mit Ort und Wert-Quelle
 - [ ] Decision Log ergänzt; offene Punkte unter `Grenzen`
 - [ ] INDEX-Status → Architected; Verlauf-Zeile „Architektur freigegeben"
 - [ ] User hat freigegeben

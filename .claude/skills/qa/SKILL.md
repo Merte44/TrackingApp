@@ -85,6 +85,7 @@ Ein Abschnitt „Offen" im Report, der nirgendwo sonst auftaucht, ist ein Fehler
 - **Nur bei Bugs** ein Report `docs/qa/<ID>-qa-YYYY-MM-DD.md` ([test-template.md](test-template.md)) — aus Gate-Findings und der Agenten-Tabelle, unverändert übernommen; Abweichungen vom Agenten mit Begründung
 - Spec **Verlauf**: eine Zeile — `YYYY-MM-DD | QA | READY — AC 12/12 (Test 9 · Simulator 2 · Review 1)` oder `NOT READY: n Bugs (AC-3, AC-7) → docs/qa/…`
 - Spec **Acceptance Criteria**: bei READY die bestandenen ACs abhaken (`- [x]`)
+- Spec **Plan**: bei READY den Abschnitt `## Plan` entfernen — er war Arbeitsstand; offene `U…`-Aufgaben vorher nach `docs/ENVIRONMENTS.md` bzw. `docs/RELEASES.md` (Ungereleast) übertragen
 - INDEX: **Approved** bei READY, sonst bleibt **In Review** (Write-Then-Verify)
 - **Nach READY aufräumen:** Screenshots aus `docs/qa/shots/` löschen und den Report der Vorrunde entfernen, sobald seine Bugs behoben sind. Belege sind Arbeitsmaterial, kein Archiv — die Git-Historie hält sie fest
 - **Links mitziehen:** Verlauf-Zeilen, die auf einen gelöschten Report zeigen, bekommen statt des Links den letzten Commit, der ihn enthält: `Report: Commit <hash>` (`git rev-parse --short HEAD` vor dem Löschen). Sonst hinterlässt jede zweite QA-Runde einen toten Verweis — `python3 scripts/check-spec-refs.py` muss danach so grün sein wie vorher
