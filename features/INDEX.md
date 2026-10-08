@@ -17,7 +17,7 @@
 
 | ID | Feature | Beschreibung | Prio | Deps | Status | Release |
 |----|---------|--------------|------|------|--------|---------|
-| PROJ-1 | Lokale Datenbank | SQLite on-device: Grundgerüst, Schema-Migrationen bei neuen App-Versionen | P0 | – | Planned | |
+| PROJ-1 | Lokale Datenbank | SQLite on-device: Grundgerüst, Schema-Migrationen bei neuen App-Versionen | P0 | – | Architected | |
 | PROJ-2 | Eigene Lebensmittel | Anlegen, bearbeiten, löschen; Nährwerte pro 100 g, optional Stückgewicht und Barcode | P0 | PROJ-1 | Roadmap | |
 | PROJ-3 | Ernährungstagebuch | Mahlzeiten (Bereich 4), Hinzufügen-Sheet (Verwendet/Lebensmittel), Mengenabfrage, Detail, Wisch-Löschen | P0 | PROJ-2 | Roadmap | |
 | PROJ-4 | Produktsuche & Barcode-Scan | Open Food Facts per Name und Kamera, offline speichern; nicht gefunden → Neues Lebensmittel | P0 | PROJ-2, PROJ-3 | Roadmap | |
