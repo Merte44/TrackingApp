@@ -2,6 +2,7 @@ import "../global.css";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useState } from "react";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { DatabaseError } from "@/components/db/DatabaseError";
 import { DB_INIT_MESSAGES, initDatabase, type DbInitError } from "@/lib/db";
@@ -56,5 +57,22 @@ export default function RootLayout() {
   if (db.status === "error") {
     return <DatabaseError error={db.error} retrying={retrying} onRetry={retry} />;
   }
-  return <Stack />;
+  return (
+    // style statt className: GestureHandlerRootView ist kein von NativeWind gemappter Baustein.
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <Stack>
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        {/* Unter-Screens als formSheet (PRD); food-form ergänzt PROJ-2 T4. */}
+        <Stack.Screen
+          name="foods"
+          options={{
+            presentation: "formSheet",
+            headerShown: false,
+            sheetAllowedDetents: [1],
+            sheetGrabberVisible: true,
+          }}
+        />
+      </Stack>
+    </GestureHandlerRootView>
+  );
 }
