@@ -184,6 +184,17 @@ describe("Startwerte", () => {
     });
     expect(foodToFormValues(data!).pieceGrams).toBe("40");
   });
+
+  it("AC-12 (BUG-5): sehr kleiner Wert wird ohne Exponent geladen und lässt sich unverändert sichern", async () => {
+    const { data } = await createFood({ ...base, fat: 0.0000001 });
+    const loaded = await loadFoodForm(data!.id);
+    if (loaded.status !== "ready") throw new Error(`unerwartet: ${loaded.status}`);
+    expect(loaded.values.fat).toBe("0,0000001");
+    expect(canSaveFoodForm(validateFoodForm(loaded.values))).toBe(true);
+    expect(await saveFoodForm(data!.id, loaded.values)).toEqual({ status: "saved" });
+    const { data: after } = await getFood(data!.id);
+    expect(after!.fat).toBe(0.0000001);
+  });
 });
 
 describe("Sichern", () => {

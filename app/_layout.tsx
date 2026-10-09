@@ -11,12 +11,23 @@ import { DB_INIT_MESSAGES, initDatabase, type DbInitError } from "@/lib/db";
 // GestureHandlerRootView ist kein von NativeWind gemappter Baustein — className auf style abbilden.
 cssInterop(GestureHandlerRootView, { className: "style" });
 
-/** Einheitliche Darstellung aller Unter-Screens als formSheet (PRD). */
+/**
+ * Einheitliche Darstellung aller Unter-Screens als formSheet (PRD).
+ *
+ * `contentStyle.bottom: 0`: react-native-screens (4.x, iOS) legt den Inhalt eines formSheets
+ * absichtlich nur oben/links/rechts fest (`position: absolute` ohne `bottom`, wegen
+ * `fitToContents`). Der Inhalt ist dann nur so hoch wie er selbst — `flex-1` greift nicht,
+ * unter dem Inhalt erscheint die Theme-Farbe des Screens, und Listen/ScrollViews kennen
+ * ihre sichtbare Höhe nicht. Bei festem Detent `[1]` ändert sich die Sheet-Höhe nie, also
+ * darf der Inhalt bis zum unteren Rand gespannt werden: `bg-background` der Screens reicht
+ * dann bis unten, ganz ohne Farbwert im JS.
+ */
 const FORM_SHEET_OPTIONS = {
   presentation: "formSheet" as const,
   headerShown: false,
   sheetAllowedDetents: [1],
   sheetGrabberVisible: true,
+  contentStyle: { bottom: 0 },
 };
 
 // Splash bleibt stehen, bis die Datenbank bereit ist (kein eigener Lade-Screen).

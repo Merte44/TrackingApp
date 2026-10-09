@@ -76,8 +76,31 @@ function macroSum(v: { carbs: number; fat: number; protein: number }): number {
   return Math.round((v.carbs + v.fat + v.protein) * 1e6) / 1e6;
 }
 
-function formatGrams(value: number): string {
-  return String(value).replace(".", ",");
+/**
+ * Zahl mit Dezimalkomma für Anzeige und Formular — nie in Exponentenschreibweise
+ * (0.0000001 → „0,0000001“, 12.5 → „12,5“, 100 → „100“), ohne abschließende Nullen.
+ * Auf 15 signifikante Stellen gerundet: so viele hält ein Double sicher; das entfernt
+ * Rechenrauschen aus Summen (100.10000000000001 → „100,1“), getippte Werte bleiben exakt.
+ * Das Ergebnis liest `parseDecimal` wieder ein.
+ */
+export function formatDecimal(value: number): string {
+  if (!Number.isFinite(value)) return String(value);
+  const text = String(Number(value.toPrecision(15)));
+  const e = text.indexOf("e");
+  if (e === -1) return text.replace(".", ",");
+
+  // Exponent ausschreiben: Ziffern der Mantisse, Komma um den Exponenten verschoben.
+  const negative = text.startsWith("-");
+  const mantissa = text.slice(negative ? 1 : 0, e);
+  const exponent = Number(text.slice(e + 1));
+  const [intPart, fracPart = ""] = mantissa.split(".");
+  const digits = intPart + fracPart;
+  const point = intPart.length + exponent;
+  let plain: string;
+  if (point <= 0) plain = `0,${"0".repeat(-point)}${digits}`;
+  else if (point >= digits.length) plain = digits + "0".repeat(point - digits.length);
+  else plain = `${digits.slice(0, point)},${digits.slice(point)}`;
+  return negative ? `-${plain}` : plain;
 }
 
 /**
@@ -114,7 +137,7 @@ export const foodInputSchema = z
       path: ["protein"],
       error: (issue) => {
         const v = issue.input as { carbs: number; fat: number; protein: number };
-        return `C + F + E zusammen höchstens 100 g (jetzt ${formatGrams(macroSum(v))} g)`;
+        return `C + F + E zusammen höchstens 100 g (jetzt ${formatDecimal(macroSum(v))} g)`;
       },
       // Auch prüfen, wenn andere Felder fehlerhaft sind — Hauptsache, C/F/E sind Zahlen.
       when: (payload) => {

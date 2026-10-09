@@ -8,6 +8,7 @@ import {
   createFood,
   deleteFood,
   foodInputSchema,
+  formatDecimal,
   getFood,
   listFoods,
   normalizeFoodName,
@@ -82,6 +83,28 @@ describe("PROJ-2 lib/foods", () => {
         data!.id,
       ]);
       expect(row!.carbs).toBe(12.5);
+    });
+  });
+
+  describe("formatDecimal (BUG-5)", () => {
+    it("BUG-5: kleine und große Werte ohne Exponent, mit Dezimalkomma und ohne abschließende Nullen", () => {
+      expect(formatDecimal(0.0000001)).toBe("0,0000001");
+      expect(formatDecimal(0.00000015)).toBe("0,00000015");
+      expect(formatDecimal(-0.0000001)).toBe("-0,0000001");
+      expect(formatDecimal(12.5)).toBe("12,5");
+      expect(formatDecimal(100)).toBe("100");
+      expect(formatDecimal(0)).toBe("0");
+      expect(formatDecimal(1e21)).toBe("1000000000000000000000");
+    });
+
+    it("BUG-5: Rechenrauschen aus Summen wird nicht angezeigt", () => {
+      expect(formatDecimal(100.10000000000001)).toBe("100,1");
+    });
+
+    it("BUG-5: parseDecimal liest das Ergebnis wieder als denselben Wert", () => {
+      for (const value of [0.0000001, 1.5e-7, 12.5, 100, 0.25, 58.7, 899.999, 1e-12]) {
+        expect(parseDecimal(formatDecimal(value))).toBe(value);
+      }
     });
   });
 

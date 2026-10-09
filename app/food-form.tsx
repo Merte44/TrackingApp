@@ -21,6 +21,7 @@ import {
 } from "@/components/foods/foodFormValues";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { useSingleFlight } from "@/hooks/useSingleFlight";
 import { FOOD_MESSAGES } from "@/lib/foods";
 import { cn } from "@/lib/utils";
 
@@ -56,6 +57,9 @@ export default function FoodFormScreen() {
   const [closing, setClosing] = useState(false);
   const [banner, setBanner] = useState<string | null>(null);
   const [serverErrors, setServerErrors] = useState<ServerErrors | null>(null);
+  // Synchrone Sperre: Sichern und Löschen laufen nie doppelt oder gleichzeitig (Doppel-Tipp),
+  // Abbrechen/Herunterwischen greifen nicht, solange eins davon läuft.
+  const flight = useSingleFlight();
 
   const form = useForm<FoodFormValues>({
     defaultValues: initial.mode === "create" ? initial.values : emptyFoodFormValues(),
@@ -87,7 +91,9 @@ export default function FoodFormScreen() {
   }, [editId, reloadKey, form]);
 
   // Abbrechen und Herunterwischen mit Änderungen abfangen (ohne Änderungen schließt das Sheet sofort).
-  usePreventRemove(isDirty && !closing, ({ data }) => {
+  // Während Sichern/Löschen bleibt das Sheet offen: kein Verwerfen-Dialog, die Geste wird ignoriert.
+  usePreventRemove((isDirty || saving || deleting) && !closing, ({ data }) => {
+    if (flight.isRunning()) return;
     Alert.alert("Änderungen verwerfen?", "Deine Eingaben gehen verloren.", [
       { text: "Weiter bearbeiten", style: "cancel" },
       { text: "Verwerfen", style: "destructive", onPress: () => navigation.dispatch(data.action) },
@@ -110,7 +116,7 @@ export default function FoodFormScreen() {
     ...visibleFieldErrors(values, dirtyFields, validation),
   };
 
-  const save = form.handleSubmit(async (submitted) => {
+  const submit = form.handleSubmit(async (submitted) => {
     setSaving(true);
     setBanner(null);
     setServerErrors(null);
@@ -118,9 +124,11 @@ export default function FoodFormScreen() {
       const outcome = await saveFoodForm(editId, submitted);
       switch (outcome.status) {
         case "saved":
+          flight.close();
           setClosing(true);
           return;
         case "not_found":
+          flight.close();
           Alert.alert(outcome.message, undefined, [{ text: "OK", onPress: () => setClosing(true) }]);
           return;
         case "fields":
@@ -135,6 +143,8 @@ export default function FoodFormScreen() {
     }
     setSaving(false);
   });
+  // Auch die Prüfung in handleSubmit ist asynchron — die Sperre umfasst den ganzen Ablauf.
+  const save = () => void flight.run(submit);
 
   const remove = async () => {
     if (editId === null) return;
@@ -145,6 +155,7 @@ export default function FoodFormScreen() {
       const outcome = await deleteFoodFromForm(editId);
       if (outcome.status === "deleted") {
         deleted = true;
+        flight.close();
         setClosing(true);
       } else {
         setBanner(outcome.message);
@@ -163,7 +174,7 @@ export default function FoodFormScreen() {
       `„${savedName}“ wird endgültig gelöscht. Bereits eingetragene Tage bleiben unverändert.`,
       [
         { text: "Abbrechen", style: "cancel" },
-        { text: "Löschen", style: "destructive", onPress: remove },
+        { text: "Löschen", style: "destructive", onPress: () => void flight.run(remove) },
       ],
     );
   };
@@ -177,11 +188,15 @@ export default function FoodFormScreen() {
     <SafeAreaView edges={["bottom"]} className="flex-1 bg-background">
       <View className="h-12 flex-row items-center justify-between px-2">
         <Pressable
-          onPress={() => router.back()}
-          className="h-11 min-w-11 items-center justify-center px-2 active:opacity-50"
+          onPress={() => {
+            if (!flight.isRunning()) router.back();
+          }}
+          disabled={busy}
+          className={cn("h-11 min-w-11 items-center justify-center px-2 active:opacity-50", busy && "opacity-50")}
           accessibilityRole="button"
           accessibilityLabel="Abbrechen"
           accessibilityHint="Schließt das Formular; bei Änderungen wird nachgefragt"
+          accessibilityState={{ disabled: busy }}
         >
           <Text className="text-body text-primary">Abbrechen</Text>
         </Pressable>

@@ -90,7 +90,9 @@ export function DecimalField({
           accessibilityHint={error ? `Fehler: ${error}` : undefined}
           aria-invalid={error ? true : undefined}
           className={cn(
-            "h-11 min-w-20 flex-none border-0 bg-transparent px-0 py-0 text-right text-body tabular-nums shadow-none dark:bg-transparent",
+            // `w-auto` hebt das `w-full` des Input-Primitives auf (sonst nimmt das Feld die ganze Zeile
+            // und drückt Beschriftung und Einheit hinaus); wächst mit dem Wert ab 80 pt wie im Entwurf.
+            "h-11 w-auto min-w-20 max-w-32 flex-none border-0 bg-transparent px-0 py-0 text-right text-body tabular-nums shadow-none dark:bg-transparent",
             error ? "text-destructive" : "text-foreground",
           )}
         />
