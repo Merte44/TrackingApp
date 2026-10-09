@@ -50,7 +50,7 @@ Pro berührter Grenze: Eintrittspunkt (Datei:Zeile), was ein Angreifer kontrolli
 
 ## 3. Angreifen — nach Grenze
 - **Eingaben:** jede betroffene `lib/`-Funktion per Jest mit Bösem füttern — SQL-Fragmente (`'); DROP TABLE x;--`), 1 MB-Strings, leere/Whitespace-Strings, negative, `NaN`/`Infinity`, sehr große Zahlen, Unicode-Sonderfälle, falsche Typen. Erwartung: Zod lehnt ab, `{ error }` statt Absturz, DB unverändert. Test-DB wie im Migrations-Test
-- **Fremddaten:** die API-Antwort mocken — fehlende Felder, falsche Typen, riesige Arrays, Skript-Strings, negative Nährwerte o. Ä. Erwartung: wird geparst und abgelehnt, nicht gespeichert oder angezeigt
+- **Fremddaten:** die API-Antwort mocken — fehlende Felder, falsche Typen, riesige Arrays, Skript-Strings, unmögliche Werte (negative Mengen, Datum im Jahr 9999) Erwartung: wird geparst und abgelehnt, nicht gespeichert oder angezeigt
 - **Deep-Links** (Simulator bereit): `xcrun simctl openurl booted "<scheme>://<route>?<manipulierte Parameter>"` — fremde IDs, Pfad-Tricks, überlange Werte, unbekannte Routen. Erwartung: abgelehnt oder harmlos, kein Absturz, keine fremden Daten
 - **Rechte (Modus supabase, dev):** als zweiter Test-Account Daten des ersten lesen, ändern, löschen; RPCs und Tabellen als `anon` ansprechen; Felder setzen, die der Server setzen sollte (`user_id`, Rollen). Erwartung: RLS verweigert. `get_advisors` security
 - **Geheimnisse:** `grep` nach Schlüsseln, Tokens, Passwörtern in Code und `app.json`; `EXPO_PUBLIC_*` darf nur Öffentliches tragen; Logs (`console.*`) ohne Tokens/PII; sensible Werte nur in `secure-store`
