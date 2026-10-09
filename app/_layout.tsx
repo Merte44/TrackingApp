@@ -62,9 +62,18 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
-        {/* Unter-Screens als formSheet (PRD); food-form ergänzt PROJ-2 T4. */}
+        {/* Unter-Screens als formSheet (PRD). */}
         <Stack.Screen
           name="foods"
+          options={{
+            presentation: "formSheet",
+            headerShown: false,
+            sheetAllowedDetents: [1],
+            sheetGrabberVisible: true,
+          }}
+        />
+        <Stack.Screen
+          name="food-form"
           options={{
             presentation: "formSheet",
             headerShown: false,

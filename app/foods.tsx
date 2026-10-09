@@ -1,4 +1,4 @@
-import { router, type Href } from "expo-router";
+import { router } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -11,9 +11,7 @@ import type { Food } from "@/lib/foods";
 
 /** Formular-Sheet: `id` → Bearbeiten, `name` → Neu (vorausgefüllt), ohne → leeres Neu-Formular. */
 function openForm(params?: { id: string } | { name: string }) {
-  // TODO(PROJ-2 T4): app/food-form.tsx entsteht in T4; bis dahin kennen die typed routes
-  // die Route nicht — der Cast kann weg, sobald sie existiert.
-  router.push({ pathname: "/food-form", params } as unknown as Href);
+  router.push({ pathname: "/food-form", params });
 }
 
 /**

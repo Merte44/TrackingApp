@@ -124,7 +124,7 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 |---|---------|-----|-------|------|--------|
 | T1 | Migration `0001_proj-2_foods` + Frisch/Upgrade/Idempotenz im Migrations-Test | AC-21 | Backend | — | erledigt `64f57fb` |
 | T2 | `lib/foods.ts` nach Verträgen (Schema, `parseDecimal`, Normalisierung, CRUD, `subscribeFoods`) + `lib/foods.test.ts` | AC-6, AC-7, AC-8, AC-9, AC-17, AC-18, AC-19, AC-20 | Backend | T1 | erledigt `e3b8cf6` |
-| T3 | Liste: `FoodList`, `FoodRow` (Wisch-Löschen), `FoodEmptyState`, `hooks/useFoods.ts`, Route `foods`, Zugang auf `index` | AC-1, AC-8, AC-9, AC-10, AC-15 | Frontend | — (Vertrag reicht) | offen |
+| T3 | Liste: `FoodList`, `FoodRow` (Wisch-Löschen), `FoodEmptyState`, `hooks/useFoods.ts`, Route `foods`, Zugang auf `index` | AC-1, AC-8, AC-9, AC-10, AC-15 | Frontend | — (Vertrag reicht) | erledigt `b8053d1` |
 | T4 | Formular: `FoodForm`, `DecimalField`, Route `food-form` (Neu/Bearbeiten/vorausgefüllt), Verwerfen-Dialog, Löschen im Sheet, Speicherfehler | AC-2, AC-3, AC-4, AC-5, AC-6, AC-11, AC-12, AC-13, AC-14, AC-16, AC-17, AC-19, AC-20 | Frontend | T3 | offen |
 
 ## Tests
