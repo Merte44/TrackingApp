@@ -1,7 +1,7 @@
 # PROJ-2: Eigene Lebensmittel
 
-**Status:** Architected · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-08
-**Design:** `docs/design/screens/PROJ-2.html` (Liste) · `docs/design/screens/PROJ-2-form.html` (Formular) — noch nicht vorhanden, vor `/frontend` per `/design screen PROJ-2`
+**Status:** Architected · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-09
+**Design:** Entwurf https://claude.ai/artifact/MFE3SJzKcoTB3ZT5S9N5NA · Dateien `docs/design/screens/PROJ-2-*.html` — Liste: `liste`, `liste-leer`, `liste-kein-treffer`, `liste-wischen`, `liste-ladefehler` · Formular: `form-neu`, `form-fehler`, `form-bearbeiten`, `form-speicherfehler` · Dialoge: `dialog-verwerfen`, `dialog-loeschen` (Design-Component-Quelltext: Layout und Inhalt im Markup, Daten im `renderVals()`-Block)
 
 ## Was es tut
 Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und lösche sie — damit ich später beim Eintragen nur noch die Menge tippe. Ein eigenes Lebensmittel hat Name, kcal sowie Kohlenhydrate (C), Fett (F) und Eiweiß (E) pro 100 g, optional ein Stückgewicht und einen Barcode. PROJ-2 liefert die Liste der eigenen Lebensmittel und das Formular-Sheet zum Anlegen/Bearbeiten als wiederverwendbare Bausteine; PROJ-3 setzt die Liste als Reiter „Lebensmittel“ ins Hinzufügen-Sheet. Bis dahin erreicht man die Liste über einen vorläufigen Zugang auf dem Start-Screen.
@@ -69,13 +69,13 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 - **Doppelte Namen** sind erlaubt (z. B. gleiche Sorte, zwei Marken)
 - **Liste:** alphabetisch nach Name, ohne Beachtung der Groß-/Kleinschreibung. Zeile: Name, darunter klein „kcal · C · F · E pro 100 g“. Tipp → Bearbeiten-Sheet (in PROJ-3: Mengenabfrage)
 - **Filter:** Teilstring im Namen, unabhängig von Groß-/Kleinschreibung und Umlauten
-- **Leer:** „Noch keine eigenen Lebensmittel“ + „Neues Lebensmittel“ · **Kein Treffer:** „Kein Lebensmittel gefunden“ + „Neues Lebensmittel“, Suchbegriff als Name vorausgefüllt
+- **Leer:** „Noch keine eigenen Lebensmittel“, eine Zeile Erklärtext, „Neues Lebensmittel“ · **Kein Treffer:** „Kein Lebensmittel gefunden“ + „Neues Lebensmittel“, Suchbegriff als Name vorausgefüllt
 - **Formular:** formSheet mit „Abbrechen“ (links) und „Sichern“ (rechts). „Sichern“ ist deaktiviert, solange ein Pflichtfeld leer oder ein Wert ungültig ist; Fehlertext direkt am Feld. Numerisches Tastenfeld mit Dezimalkomma, „Weiter“ springt zum nächsten Feld
 - **Verwerfen:** Abbrechen oder Herunterwischen mit ungespeicherten Änderungen fragt „Änderungen verwerfen?“; ohne Änderungen schließt das Sheet sofort. Herunterwischen wird abgefangen, solange das Formular geändert ist (Navigation verhindert das Entfernen und zeigt den Dialog)
 - **Nach dem Sichern** schließt das Sheet, die Liste zeigt den neuen Stand sofort — sie hört auf `subscribeFoods`, nicht auf Navigations-Ereignisse
 - **Speicherfehler:** Sheet bleibt offen mit Eingaben, Fehlerhinweis erscheint. `barcode_taken` zeigt den Text der Datenschicht, `validation` die Fehler am Feld, `db` den allgemeinen Hinweis
 - **Bearbeiten eines inzwischen gelöschten Lebensmittels** (`not_found`): Hinweis „Lebensmittel nicht mehr vorhanden“, Sheet schließt
-- **Liste lädt nicht** (`db`): Hinweis „Lebensmittel konnten nicht geladen werden“ statt Leerzustand
+- **Liste lädt nicht** (`db`): Hinweis „Lebensmittel konnten nicht geladen werden“ statt Leerzustand, darunter „Erneut versuchen“ (lädt neu)
 - **Löschen:** Wischen nach links → roter Papierkorb → löscht sofort ohne Rückfrage. Im Bearbeiten-Sheet „Lebensmittel löschen“ mit Bestätigung. Endgültig, kein Rückgängig
 - **Schnappschüsse:** Ändern oder Löschen eines eigenen Lebensmittels ändert keine bereits eingetragenen Tage (PRD)
 - Alle Unter-Screens als `formSheet`; Tokens, nie Hex; C türkis, F lila, E orange
@@ -113,7 +113,6 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 - iPad nicht berücksichtigt (nur iPhone)
 - Höchstens 500 Lebensmittel in der Liste/Trefferliste; bei Bedarf später Nachladen
 - AC-20 (Speicherfehler) lässt sich im Dev-Client nicht auslösen — belegt durch Jest (`db`-Fehler der Datenschicht) plus Review des Formulars
-- Design-Dateien fehlen noch: vor T3 per `/design screen PROJ-2`, ohne Claude-Design-Projekt schlichte Vorlage nach PRD-Design-Regeln (offen)
 - Sicherheit (Modus lokal): keine Fremd-API, keine Kamera, keine destruktive Migration — kein `/security-review`-Sonderbedarf
 
 ## Umgebung
@@ -155,3 +154,5 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 |-------|----------|------|
 | 2026-10-08 | Spec geschrieben | — |
 | 2026-10-08 | Architektur freigegeben | — |
+| 2026-10-09 | Screen exportiert (11 Artboards, Design-Artifact) | [Entwurf](https://claude.ai/artifact/MFE3SJzKcoTB3ZT5S9N5NA) |
+| 2026-10-09 | Design-Paket freigegeben | — |
