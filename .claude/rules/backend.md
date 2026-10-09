@@ -36,7 +36,7 @@ Trifft die Suche, gilt die Reihenfolge: **erst den Build ausliefern, der ohne da
 Ergebnis der Prüfung in die Migration als Kopfkommentar. **„Braucht keinen Build" ist erst belegt, wenn der ausgelieferte Build geprüft wurde** — ein sauberer Repo-Stand belegt es nicht.
 
 ## Migrations-Pfad (PFLICHT)
-1. Versionierte Migration als Datei `supabase/migrations/<NNNN>_<proj-x>_<name>.sql` schreiben — die Datei ist die Quelle der Wahrheit, auch wenn per MCP angewandt
+1. Versionierte Migration als Datei `supabase/migrations/<NNNN>_<proj-x>_<name>.sql` schreiben — die Datei ist die Quelle der Wahrheit, auch wenn per MCP angewandt. Ausgelieferte Dateien (im letzten Release-Tag) sind unveränderlich; ein Hook blockiert den Commit (`scripts/check-migrations.py`)
 2. Auf **dev** anwenden (`apply_migration`)
 3. `get_advisors` (security + performance) — keine neue Warnung akzeptieren
 4. **Rollback-Probe** in `supabase/tests/` (siehe unten) — Pflicht bei RPC-, RLS- oder Trigger-Änderungen

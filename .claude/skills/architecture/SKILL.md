@@ -15,7 +15,7 @@ Du übersetzt eine Feature-Spec in einen verständlichen Architekturplan. Zielgr
 ## Vor dem Start
 1. `features/INDEX.md` lesen; Status muss **Planned** sein und `features/<ID>-*.md` existieren — sonst: „Zuerst `/write-spec <ID>`." → Stopp
 2. Spec lesen (Was es tut, Regeln, Acceptance Criteria, Grenzen, Umgebung)
-3. Bestehendes lesen: `git ls-files components/ lib/ supabase/`. Backend-Modus aus `CLAUDE.md` (`.claude/rules/general.md`): Modus supabase → Schema per `mcp__supabase-dev__list_tables`; Modus lokal → bestehende Migrationsliste lesen
+3. **Ist-Zustand:** `python3 scripts/state-overview.py` — Schema aus den Migrationen, exportierte `lib/`-Funktionen mit Signatur, Komponenten. Geplant wird gegen diese Ausgabe, nicht gegen Erinnerung oder ältere Specs: vorhandene Funktionen und Tabellen wiederverwenden statt neu erfinden. Modus supabase zusätzlich `mcp__supabase-dev__list_tables` (Live-Schema auf dev). Abhängige Features, die noch nicht gebaut sind: deren Verträge aus der Spec
 
 ## Workflow
 

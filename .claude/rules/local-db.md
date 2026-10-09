@@ -13,7 +13,7 @@ Die App hat keinen Server: Daten liegen in `expo-sqlite` auf dem Gerät. Gesiche
 ## Schema-Migrationen (PFLICHT)
 - **Eine** append-only-Liste von Migrationen im Repo (Ort legt die Architektur des Datenbank-Features fest, z. B. `lib/db/migrations.ts`). Sie ist die Quelle der Wahrheit für das Schema
 - Versionsstand über `PRAGMA user_version`. Beim App-Start werden alle Migrationen oberhalb der aktuellen Version der Reihe nach ausgeführt, jede in **einer Transaktion** zusammen mit dem Hochsetzen von `user_version`
-- **Nie eine ausgelieferte Migration ändern** — nur neue anhängen. Ausgeliefert ist, was in einem Build aus `docs/RELEASES.md` steckt
+- **Nie eine ausgelieferte Migration ändern** — nur neue anhängen. Ausgeliefert ist, was in einem Build aus `docs/RELEASES.md` steckt (Release-Tag). Erzwungen: ein Hook in `.claude/settings.json` blockiert jeden `git commit`, der ausgelieferte Einträge ändert (`scripts/check-migrations.py`)
 - Dateiname bzw. Eintrag trägt die Feature-ID (`<NNNN>_<id>_<name>`), damit `git log` und QA sie zuordnen
 - Foreign Keys einschalten (`PRAGMA foreign_keys = ON` pro Verbindung), Indizes auf Spalten in WHERE / ORDER BY / JOIN
 

@@ -33,6 +33,7 @@ Nur was Spec und Screen-Datei offen lassen: Interaktionen (Gesten, Haptik), Offl
 Aufgaben der Ebene Frontend aus `## Plan` der Reihe nach (Regeln: `features/README.md` → Plan). Pro Aufgabe:
 - **Frontend-Agent (`.claude/agents/frontend-dev.md`)** per Agent-Tool mit `isolation: "worktree"` mit **genau dieser Aufgabe** starten — frischer Kontext pro Aufgabe. Auftrag: Spec-Pfad, Aufgaben-ID, Screen-Datei, Verträge, Zielordner, freigegebene Entscheidungen. Sehr kleine Aufgabe oder noch in Klärung → inline
 - Prüfen (`npx tsc --noEmit && npm run lint && npm test`); dann Status `erledigt <commit>` in der Tabelle und **ein Commit pro Aufgabe**: `feat(<ID>): T<n> <Aufgabe>` — sicherer Haltepunkt
+- Jeder neue AC-Test hat einen **Rot-Nachweis** im Agent-Ergebnis (Agent → „Test zuerst"); fehlt er, nachfordern — der Test könnte grün sein, ohne etwas zu prüfen
 - Unabhängige Aufgaben (keine Abhängigkeit, keine gemeinsamen Dateien) dürfen parallel laufen
 - Merkt der Agent, dass die Aufgabe nicht zur Spec passt → Stopp und an den User, nie die Spec still anpassen
 

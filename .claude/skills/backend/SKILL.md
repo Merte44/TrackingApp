@@ -19,6 +19,7 @@ Regeln: `.claude/rules/local-db.md`. Kein Server, kein MCP, kein prod.
 3. **Aufgaben abarbeiten:** Aufgaben der Ebene Backend aus `## Plan` der Reihe nach (Regeln: `features/README.md` → Plan). Pro Aufgabe:
    - **Backend-Agent (`.claude/agents/backend-dev.md`)** per Agent-Tool mit **genau dieser Aufgabe** starten — frischer Kontext pro Aufgabe. Auftrag: Spec-Pfad, Aufgaben-ID, Modus lokal, freigegebene Entscheidungen. Sehr kleine Aufgabe oder noch in Klärung → inline
    - Prüfen (`npm test` inkl. Migrations-Test, `npx tsc --noEmit`); dann Status `erledigt <commit>` in der Tabelle und **ein Commit pro Aufgabe**: `feat(<ID>): T<n> <Aufgabe>` — sicherer Haltepunkt
+   - Jeder neue AC-Test hat einen **Rot-Nachweis** im Agent-Ergebnis (Agent → „Test zuerst"); fehlt er, nachfordern — der Test könnte grün sein, ohne etwas zu prüfen
    - Unabhängige Aufgaben (keine Abhängigkeit, keine gemeinsamen Dateien) dürfen parallel laufen
    - Merkt der Agent, dass die Aufgabe nicht zur Spec passt → Stopp und an den User, nie die Spec still anpassen
 
@@ -59,6 +60,7 @@ Nur Offenes: Rechte (owner-only / geteilt), gleichzeitige Änderungen, Server-on
 Aufgaben der Ebene Backend aus `## Plan` der Reihe nach (Regeln: `features/README.md` → Plan). Pro Aufgabe:
 - **Backend-Agent (`.claude/agents/backend-dev.md`, hat `mcp__supabase-dev__*`, nie prod)** per Agent-Tool mit **genau dieser Aufgabe** starten — frischer Kontext pro Aufgabe. Auftrag: Spec-Pfad, Aufgaben-ID, Modus supabase, freigegebene Entscheidungen. Sehr kleine Aufgabe oder noch in Klärung → inline
 - Prüfen (`npm test`, `npx tsc --noEmit`, Probe `REGRESSION_PASS`, Advisors clean); dann Status `erledigt <commit>` in der Tabelle und **ein Commit pro Aufgabe**: `feat(<ID>): T<n> <Aufgabe>` — sicherer Haltepunkt
+- Jeder neue AC-Test hat einen **Rot-Nachweis** im Agent-Ergebnis (Agent → „Test zuerst"); fehlt er, nachfordern — der Test könnte grün sein, ohne etwas zu prüfen
 - Unabhängige Aufgaben (keine Abhängigkeit, keine gemeinsamen Dateien) dürfen parallel laufen
 - Merkt der Agent, dass die Aufgabe nicht zur Spec passt → Stopp und an den User, nie die Spec still anpassen
 

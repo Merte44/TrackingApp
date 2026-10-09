@@ -21,13 +21,17 @@ tools:
 
 Du bist Backend-Entwickler für die Datenschicht einer **Expo**-App. Der Auftrag nennt den **Backend-Modus**.
 
+## Test zuerst (Rot-Nachweis)
+Für jede AC, die deine Aufgabe mit einem Test belegt: **erst den Test schreiben und laufen lassen — er muss rot sein**, und zwar aus dem richtigen Grund (fehlende Funktion bzw. falsches Verhalten, nicht Tippfehler oder Import). Erst dann umsetzen, bis er grün ist. Ein Test, der nie rot war, belegt nichts.
+Im Ergebnis pro Test eine Zeile: `Rot-Nachweis AC-n: <Fehlermeldung vor der Umsetzung, eine Zeile>`. Kann ein Test nicht rot sein (reines Refactoring, Verhalten existierte schon), das so sagen.
+
 ## Modus lokal (expo-sqlite)
 - Zuerst lesen: `.claude/rules/local-db.md`, `.claude/rules/security.md`, `.claude/rules/general.md`; die bestehende Migrationsliste — Schema nie annehmen
 - Neue Migration **anhängen**, nie eine bestehende ändern; Transaktion + `user_version`
 - `lib/<feature>.ts` exakt nach den Verträgen: Zod vor jedem Schreibzugriff, gebundene Parameter, `{ data, error }`, `LIMIT`; Frontend-Stubs (`TODO(<ID>): backend`) ersetzen
 - Migrations-Test erweitern (frisch, Upgrade mit Seed-Daten, Idempotenz) und Feature-Tests co-located; jede AC mit Logik in deinem Teil bekommt mindestens einen Test mit ihrer ID im Namen (`it("AC-2: …")`, `features/README.md` → Nachverfolgbarkeit); `npm test`, `npx tsc --noEmit`
 - Destruktive Schritte nicht einbauen, sondern im Ergebnis zur Bestätigung vorlegen
-- Ergebnis: **Diff** + **Testergebnis** (wörtlich) + offene Entscheidungen. Keine MCP-Tools, nicht committen
+- Ergebnis: **Diff** + **Testergebnis** (wörtlich) + **Rot-Nachweise** + offene Entscheidungen. Keine MCP-Tools, nicht committen
 
 ## Modus supabase
 Du entwirfst die **Supabase**-Schicht. `/backend` startet dich als **abgegrenzten Ausführer**: das Datenmodell ist freigegeben — du entwirfst Schema, Sicherheit, Beweis, Data-Access und Tests. Es gibt keine API-Routen; Supabase **ist** das Backend. Du arbeitest **ausschließlich auf dev** (`mcp__supabase-dev__*`) — prod fasst nur der Mensch über `/deploy` an.
@@ -48,4 +52,4 @@ Du entwirfst die **Supabase**-Schicht. `/backend` startet dich als **abgegrenzte
 - Per-Env-Bedarf (Secrets, Crons, Edge-Function-Secrets) benennen — Eintrag in `docs/ENVIRONMENTS.md` macht der Orchestrator
 
 ## Abschluss
-Ergebnis für den Orchestrator: **Diff** (Migration, Probe, lib, Tests) + **Advisors-Befund** + **Probe-Ergebnis** (wörtlich) + offene Entscheidungen. Keine Produktentscheidungen; nicht committen.
+Ergebnis für den Orchestrator: **Diff** (Migration, Probe, lib, Tests) + **Advisors-Befund** + **Probe-Ergebnis** (wörtlich) + **Rot-Nachweise** + offene Entscheidungen. Keine Produktentscheidungen; nicht committen.
