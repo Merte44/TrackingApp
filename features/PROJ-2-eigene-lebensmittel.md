@@ -122,7 +122,7 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 
 | # | Aufgabe | ACs | Ebene | Nach | Status |
 |---|---------|-----|-------|------|--------|
-| T1 | Migration `0001_proj-2_foods` + Frisch/Upgrade/Idempotenz im Migrations-Test | AC-21 | Backend | — | offen |
+| T1 | Migration `0001_proj-2_foods` + Frisch/Upgrade/Idempotenz im Migrations-Test | AC-21 | Backend | — | erledigt `64f57fb` |
 | T2 | `lib/foods.ts` nach Verträgen (Schema, `parseDecimal`, Normalisierung, CRUD, `subscribeFoods`) + `lib/foods.test.ts` | AC-6, AC-7, AC-8, AC-9, AC-17, AC-18, AC-19, AC-20 | Backend | T1 | offen |
 | T3 | Liste: `FoodList`, `FoodRow` (Wisch-Löschen), `FoodEmptyState`, `hooks/useFoods.ts`, Route `foods`, Zugang auf `index` | AC-1, AC-8, AC-9, AC-10, AC-15 | Frontend | — (Vertrag reicht) | offen |
 | T4 | Formular: `FoodForm`, `DecimalField`, Route `food-form` (Neu/Bearbeiten/vorausgefüllt), Verwerfen-Dialog, Löschen im Sheet, Speicherfehler | AC-2, AC-3, AC-4, AC-5, AC-6, AC-11, AC-12, AC-13, AC-14, AC-16, AC-17, AC-19, AC-20 | Frontend | T3 | offen |
@@ -147,6 +147,10 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | Ein Zod-Schema für Formular und Datenschicht | Grenzen können nicht auseinanderlaufen (AC-4/5 vs. AC-7) | getrennte Schemas | 2026-10-08 |
 | Liste aktualisiert sich über `subscribeFoods` | funktioniert unabhängig davon, wo PROJ-3 die Liste einbettet | Neuladen bei Screen-Fokus | 2026-10-08 |
 | Komponenten ohne Navigation (`onSelect`/`onCreate`) | PROJ-3 hängt eigene Ziele an (Mengenabfrage) | Navigation fest in der Liste | 2026-10-08 |
+| **Annahme (Buildchef):** `name_key` macht aus ß „ss“ | „Strasse“ findet „Straße“; Name und Suchbegriff gleich behandelt | ß beibehalten | 2026-10-09 |
+| **Annahme (Buildchef):** keine Höchstlänge für den Namen | Spec nennt keine | z. B. 100 Zeichen | 2026-10-09 |
+| **Annahme (Buildchef):** eigene `db`-Texte für Löschen („Löschen fehlgeschlagen …“) und Lesen („… konnten nicht geladen werden.“) | passender als der Speichertext | überall Speichertext | 2026-10-09 |
+| **Annahme (Buildchef):** Summenfehler C + F + E am Feld Eiweiß | letztes der drei Felder, wie im Entwurf `form-fehler` | eigener Formularfehler | 2026-10-09 |
 
 ## Verlauf
 
