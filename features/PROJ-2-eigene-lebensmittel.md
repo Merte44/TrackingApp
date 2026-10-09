@@ -1,6 +1,6 @@
 # PROJ-2: Eigene Lebensmittel
 
-**Status:** Architected · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-09
+**Status:** In Progress · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-09
 **Design:** Entwurf https://claude.ai/artifact/MFE3SJzKcoTB3ZT5S9N5NA · Dateien `docs/design/screens/PROJ-2-*.html` — Liste: `liste`, `liste-leer`, `liste-kein-treffer`, `liste-wischen`, `liste-ladefehler` · Formular: `form-neu`, `form-fehler`, `form-bearbeiten`, `form-speicherfehler` · Dialoge: `dialog-verwerfen`, `dialog-loeschen` (Design-Component-Quelltext: Layout und Inhalt im Markup, Daten im `renderVals()`-Block)
 
 ## Was es tut
@@ -123,7 +123,7 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | # | Aufgabe | ACs | Ebene | Nach | Status |
 |---|---------|-----|-------|------|--------|
 | T1 | Migration `0001_proj-2_foods` + Frisch/Upgrade/Idempotenz im Migrations-Test | AC-21 | Backend | — | erledigt `64f57fb` |
-| T2 | `lib/foods.ts` nach Verträgen (Schema, `parseDecimal`, Normalisierung, CRUD, `subscribeFoods`) + `lib/foods.test.ts` | AC-6, AC-7, AC-8, AC-9, AC-17, AC-18, AC-19, AC-20 | Backend | T1 | offen |
+| T2 | `lib/foods.ts` nach Verträgen (Schema, `parseDecimal`, Normalisierung, CRUD, `subscribeFoods`) + `lib/foods.test.ts` | AC-6, AC-7, AC-8, AC-9, AC-17, AC-18, AC-19, AC-20 | Backend | T1 | erledigt `e3b8cf6` |
 | T3 | Liste: `FoodList`, `FoodRow` (Wisch-Löschen), `FoodEmptyState`, `hooks/useFoods.ts`, Route `foods`, Zugang auf `index` | AC-1, AC-8, AC-9, AC-10, AC-15 | Frontend | — (Vertrag reicht) | offen |
 | T4 | Formular: `FoodForm`, `DecimalField`, Route `food-form` (Neu/Bearbeiten/vorausgefüllt), Verwerfen-Dialog, Löschen im Sheet, Speicherfehler | AC-2, AC-3, AC-4, AC-5, AC-6, AC-11, AC-12, AC-13, AC-14, AC-16, AC-17, AC-19, AC-20 | Frontend | T3 | offen |
 
@@ -160,3 +160,4 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | 2026-10-08 | Architektur freigegeben | — |
 | 2026-10-09 | Screen exportiert (11 Artboards, Design-Artifact) | [Entwurf](https://claude.ai/artifact/MFE3SJzKcoTB3ZT5S9N5NA) |
 | 2026-10-09 | Design-Paket freigegeben | — |
+| 2026-10-09 | Backend gebaut: Migration 0001, Migrations-Test grün; Review-Fix Summe C+F+E ohne Gleitkomma-Rest | — |

@@ -45,7 +45,7 @@ export const migrations: readonly Migration[] = [
                       DEFAULT (CAST(round((julianday('now') - 2440587.5) * 86400000) AS INTEGER)),
           updated_at  INTEGER NOT NULL
                       DEFAULT (CAST(round((julianday('now') - 2440587.5) * 86400000) AS INTEGER)),
-          CHECK (carbs + fat + protein <= 100)
+          CHECK (round(carbs + fat + protein, 6) <= 100)
         );
         CREATE INDEX foods_name_key_idx ON foods (name_key);
         CREATE UNIQUE INDEX foods_barcode_uidx ON foods (barcode) WHERE barcode IS NOT NULL;

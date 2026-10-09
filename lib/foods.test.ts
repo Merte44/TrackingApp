@@ -149,6 +149,20 @@ describe("PROJ-2 lib/foods", () => {
       });
     });
 
+    it("AC-4: Summe genau 100 g trotz Gleitkomma-Rest (0,2 + 83,9 + 15,9) ist gültig und speicherbar", async () => {
+      const input = { ...base, carbs: 0.2, fat: 83.9, protein: 15.9 };
+      expect(0.2 + 83.9 + 15.9).toBeGreaterThan(100); // Gleitkomma-Rest
+      expect(foodInputSchema.safeParse(input).success).toBe(true);
+      const { error } = await createFood(input);
+      expect(error).toBeNull();
+    });
+
+    it("AC-4: Summenfehler nennt die Summe so genau, dass sie über 100 g liegt", () => {
+      expect(fieldErrors({ ...base, carbs: 33.34, fat: 33.33, protein: 33.37 }).protein).toBe(
+        "C + F + E zusammen höchstens 100 g (jetzt 100,04 g)",
+      );
+    });
+
     it("AC-7: Barcode-Grenzen 8–14 Ziffern", () => {
       expect(fieldErrors({ ...base, barcode: "1234567" }).barcode).toBeDefined();
       expect(fieldErrors({ ...base, barcode: "123456789012345" }).barcode).toBeDefined();
@@ -160,6 +174,7 @@ describe("PROJ-2 lib/foods", () => {
       expect(normalizeFoodName("Äpfel")).toBe("apfel");
       expect(normalizeFoodName("  Crème Brûlée ")).toBe("creme brulee");
       expect(normalizeFoodName("STRAẞE Straße")).toBe("strasse strasse");
+      expect(normalizeFoodName("Konﬁtüre")).toBe("konfiture");
     });
   });
 

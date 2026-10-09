@@ -71,8 +71,13 @@ function numberField() {
 const NEGATIVE = "Darf nicht negativ sein";
 const macro = () => numberField().min(0, NEGATIVE).max(100, "Höchstens 100 g");
 
+/** Summe C + F + E ohne Gleitkomma-Rest (0,2 + 83,9 + 15,9 = 100, nicht 100,00000000000001). */
+function macroSum(v: { carbs: number; fat: number; protein: number }): number {
+  return Math.round((v.carbs + v.fat + v.protein) * 1e6) / 1e6;
+}
+
 function formatGrams(value: number): string {
-  return String(Math.round(value * 10) / 10).replace(".", ",");
+  return String(value).replace(".", ",");
 }
 
 /**
@@ -103,13 +108,13 @@ export const foodInputSchema = z
       .transform((v) => (v ? v : null)),
   })
   .refine(
-    // Gleiche Reihenfolge wie der CHECK der Tabelle: carbs + fat + protein.
-    (v) => v.carbs + v.fat + v.protein <= 100,
+    // Wie der CHECK der Tabelle: round(carbs + fat + protein, 6) <= 100.
+    (v) => macroSum(v) <= 100,
     {
       path: ["protein"],
       error: (issue) => {
         const v = issue.input as { carbs: number; fat: number; protein: number };
-        return `C + F + E zusammen höchstens 100 g (jetzt ${formatGrams(v.carbs + v.fat + v.protein)} g)`;
+        return `C + F + E zusammen höchstens 100 g (jetzt ${formatGrams(macroSum(v))} g)`;
       },
       // Auch prüfen, wenn andere Felder fehlerhaft sind — Hauptsache, C/F/E sind Zahlen.
       when: (payload) => {
@@ -144,13 +149,13 @@ export function parseDecimal(text: string): number | null {
 }
 
 /**
- * Such-/Sortierschlüssel: getrimmt, ohne Akzente/Umlaute (NFD + kombinierende
- * Zeichen entfernen), kleingeschrieben, ß → ss (damit „Strasse“ „Straße“ findet).
+ * Such-/Sortierschlüssel: getrimmt, ohne Akzente/Umlaute und Ligaturen (NFKD +
+ * kombinierende Zeichen entfernen), kleingeschrieben, ß → ss (damit „Strasse“ „Straße“ findet).
  */
 export function normalizeFoodName(text: string): string {
   return text
     .trim()
-    .normalize("NFD")
+    .normalize("NFKD")
     .replace(/\p{M}/gu, "")
     .toLowerCase()
     .replace(/ß/g, "ss");

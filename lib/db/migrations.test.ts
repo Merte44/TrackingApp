@@ -318,12 +318,13 @@ describe("PROJ-2 Migration 0001_proj-2_foods (echte App-Liste)", () => {
   });
 
   it("AC-21: Frisch: legt foods mit Spalten, Indizes und user_version an", async () => {
-    const result = await runMigrations(db, appMigrations);
-
-    expect(result).toEqual({ data: { from: 0, to: appMigrations.length }, error: null });
+    // Schema auf dem Stand von 0001 festhalten — spätere Migrationen dürfen foods erweitern.
     expect(appMigrations.length).toBeGreaterThanOrEqual(1);
     expect(appMigrations[0].name).toBe("0001_proj-2_foods");
-    expect(await userVersion(db)).toBe(appMigrations.length);
+    const result = await runMigrations(db, appMigrations.slice(0, 1));
+
+    expect(result).toEqual({ data: { from: 0, to: 1 }, error: null });
+    expect(await userVersion(db)).toBe(1);
     expect(await tableNames(db)).toContain("foods");
 
     const cols = await db.getAll<ColumnInfo>(
