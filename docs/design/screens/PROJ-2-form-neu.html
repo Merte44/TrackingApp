@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Neues Lebensmittel — Tastatur</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#007AFF}a:hover{color:#0062CC}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #000000; font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif; color: #000000;">
+<div style="position: absolute; left: 24px; right: 24px; top: 40px; height: 30px; border-radius: 12px; background: linear-gradient(to bottom, #E1F1FB, #EBEBF0); opacity: 0.35;"></div>
+<div style="position: absolute; left: 12px; right: 12px; top: 50px; height: 30px; border-radius: 12px; background: #EBEBF0; opacity: 0.6;"></div>
+<div style="position: absolute; left: 0; right: 0; top: 62px; bottom: 0; border-radius: 12px 12px 0 0; background: #EBEBF0; display: flex; flex-direction: column;">
+<div style="display: flex; justify-content: center; padding-top: 6px;"><div style="width: 36px; height: 5px; border-radius: 3px; background: #C6C6C8;"></div></div>
+<div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 8px;">
+<button style="min-width: 44px; height: 44px; padding: 0 8px; border: 0; background: transparent; color: #007AFF; font: inherit; font-size: 17px; cursor: pointer;">Abbrechen</button>
+<h1 style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 600;">Neues Lebensmittel</h1>
+<button disabled="disabled" style="min-width: 44px; height: 44px; padding: 0 8px; border: 0; background: transparent; color: #8A8A8E; opacity: 0.6; font: inherit; font-size: 17px; font-weight: 600;">Sichern</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 8px 16px 0;">
+<div style="border-radius: 14px; background: #FFFFFF; padding: 0 16px;">
+<div style="display: flex; align-items: center; min-height: 44px;">
+<input value="Hüttenkäse" aria-label="Name" placeholder="Name" style="flex: 1; border: 0; background: transparent; font: inherit; font-size: 17px; color: #000000; outline: none; padding: 0;">
+</div>
+</div>
+<p style="margin: 16px 16px 0; font-size: 13px; line-height: 18px; color: #8A8A8E; text-transform: uppercase;">Nährwerte pro 100 g</p>
+<div style="border-radius: 14px; background: #FFFFFF; padding-left: 16px;">
+<sc-for list="{{fields}}" as="x" hint-placeholder-count="4">
+<div style="display: flex; align-items: center; gap: 8px; min-height: 44px; padding-right: 16px; border-bottom: {{x.border}};">
+<span style="width: 14px; font-size: 13px; font-weight: 700; color: {{x.tagColor}};">{{x.tag}}</span>
+<label style="flex: 1; font-size: 17px;">{{x.label}}</label>
+<span style="display: flex; align-items: center; justify-content: flex-end; min-width: 80px; font-size: 17px; font-variant-numeric: tabular-nums; color: {{x.valColor}};">{{x.shown}}<sc-if value="{{x.focused}}" hint-placeholder-val="{{false}}"><span style="display: inline-block; width: 2px; height: 22px; margin-left: 1px; border-radius: 1px; background: #007AFF;"></span></sc-if></span>
+<span style="width: 30px; font-size: 15px; color: #8A8A8E;">{{x.unit}}</span>
+</div>
+</sc-for>
+</div>
+<p style="margin: 16px 16px 0; font-size: 13px; line-height: 18px; color: #8A8A8E; text-transform: uppercase;">Stück</p>
+<div style="border-radius: 14px; background: #FFFFFF; padding: 0 16px;">
+<div style="display: flex; align-items: center; gap: 8px; min-height: 44px;">
+<label style="flex: 1; font-size: 17px;">Stückgewicht</label>
+<span style="font-size: 17px; color: #8A8A8E;">optional</span>
+<span style="width: 30px; font-size: 15px; color: #8A8A8E;">g</span>
+</div>
+</div>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; display: flex; flex-direction: column; background: #E5E5EA;">
+<div style="display: flex; justify-content: flex-end; align-items: center; height: 44px; padding: 0 8px; background: #F2F2F7; border-top: 0.5px solid #C6C6C8;">
+<button style="min-width: 44px; height: 44px; padding: 0 8px; border: 0; background: transparent; color: #007AFF; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer;">Weiter</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 6px 6px 34px;">
+<sc-for list="{{keys}}" as="k" hint-placeholder-count="12">
+<button style="height: 46px; border: 0; border-radius: 6px; background: {{k.bg}}; color: #000000; font: inherit; font-size: 25px; display: flex; align-items: center; justify-content: center; box-shadow: {{k.shadow}};">{{k.label}}</button>
+</sc-for>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const f = [
+{ tag: '', tagColor: '#000000', label: 'Kalorien', unit: 'kcal', value: '98', focused: true },
+{ tag: 'C', tagColor: '#30B0C7', label: 'Kohlenhydrate', unit: 'g', value: '', focused: false },
+{ tag: 'F', tagColor: '#AF52DE', label: 'Fett', unit: 'g', value: '', focused: false },
+{ tag: 'E', tagColor: '#FF9500', label: 'Eiweiß', unit: 'g', value: '', focused: false }
+];
+const keys = ['1','2','3','4','5','6','7','8','9',',','0','⌫'];
+return {
+fields: f.map((x, i) => ({ ...x, shown: x.value || (x.focused ? '' : '0'), valColor: x.value ? '#000000' : '#8A8A8E', border: i === f.length - 1 ? '0' : '0.5px solid #C6C6C8' })),
+keys: keys.map((k) => ({ label: k, bg: (k === ',' || k === '⌫') ? 'transparent' : '#FFFFFF', shadow: (k === ',' || k === '⌫') ? 'none' : '0 1px 0 #8A8A8E' }))
+};
+}
+}
+</script>
+</body>
+</html>

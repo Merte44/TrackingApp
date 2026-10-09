@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Neues Lebensmittel — Speicherfehler</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+a{color:#007AFF}a:hover{color:#0062CC}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #000000; font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif; color: #000000;">
+<div style="position: absolute; left: 24px; right: 24px; top: 40px; height: 30px; border-radius: 12px; background: linear-gradient(to bottom, #E1F1FB, #EBEBF0); opacity: 0.35;"></div>
+<div style="position: absolute; left: 12px; right: 12px; top: 50px; height: 30px; border-radius: 12px; background: #EBEBF0; opacity: 0.6;"></div>
+<div style="position: absolute; left: 0; right: 0; top: 62px; bottom: 0; border-radius: 12px 12px 0 0; background: #EBEBF0; display: flex; flex-direction: column;">
+<div style="display: flex; justify-content: center; padding-top: 6px;"><div style="width: 36px; height: 5px; border-radius: 3px; background: #C6C6C8;"></div></div>
+<div style="display: flex; align-items: center; justify-content: space-between; height: 48px; padding: 0 8px;">
+<button style="min-width: 44px; height: 44px; padding: 0 8px; border: 0; background: transparent; color: #007AFF; font: inherit; font-size: 17px; cursor: pointer;">Abbrechen</button>
+<h1 style="margin: 0; font-size: 17px; line-height: 22px; font-weight: 600;">{{title}}</h1>
+<button style="min-width: 44px; height: 44px; padding: 0 8px; border: 0; background: transparent; color: {{saveColor}}; opacity: {{saveOpacity}}; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer;">Sichern</button>
+</div>
+<div style="display: flex; flex-direction: column; gap: 6px; padding: 8px 16px 0;">
+<sc-if value="{{banner}}" hint-placeholder-val="{{false}}">
+<div role="alert" style="display: flex; gap: 10px; align-items: flex-start; padding: 12px 14px; margin-bottom: 10px; border-radius: 14px; background: #FFFFFF; border: 1px solid #FF3B30; color: #000000;">
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="#FF3B30" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 1px;"><circle cx="10" cy="10" r="8"></circle><path d="M10 6v5M10 14v.5"></path></svg>
+<span style="font-size: 15px; line-height: 20px;">{{banner}}</span>
+</div>
+</sc-if>
+<div style="border-radius: 14px; background: #FFFFFF; padding: 0 16px;">
+<div style="display: flex; align-items: center; min-height: 44px;">
+<input value="{{name}}" aria-label="Name" placeholder="Name" style="flex: 1; border: 0; background: transparent; font: inherit; font-size: 17px; color: #000000; outline: none; padding: 0;">
+</div>
+</div>
+<p style="margin: 16px 16px 0; font-size: 13px; line-height: 18px; color: #8A8A8E; text-transform: uppercase;">Nährwerte pro 100 g</p>
+<div style="border-radius: 14px; background: #FFFFFF; padding-left: 16px;">
+<sc-for list="{{fields}}" as="x" hint-placeholder-count="4">
+<div style="padding-right: 16px; border-bottom: {{x.border}};">
+<div style="display: flex; align-items: center; gap: 8px; min-height: 44px;">
+<span style="width: 14px; font-size: 13px; font-weight: 700; color: {{x.tagColor}};">{{x.tag}}</span>
+<label style="flex: 1; font-size: 17px;">{{x.label}}</label>
+<span style="min-width: 80px; text-align: right; font-size: 17px; font-variant-numeric: tabular-nums; color: {{x.valColor}};">{{x.value}}</span>
+<span style="width: 30px; font-size: 15px; color: #8A8A8E;">{{x.unit}}</span>
+</div>
+</div>
+</sc-for>
+</div>
+<p style="margin: 16px 16px 0; font-size: 13px; line-height: 18px; color: #8A8A8E; text-transform: uppercase;">Stück</p>
+<div style="border-radius: 14px; background: #FFFFFF; padding: 0 16px;">
+<div style="display: flex; align-items: center; gap: 8px; min-height: 44px;">
+<label style="flex: 1; font-size: 17px;">Stückgewicht</label>
+<span style="min-width: 80px; text-align: right; font-size: 17px; color: #8A8A8E;">optional</span>
+<span style="width: 30px; font-size: 15px; color: #8A8A8E;">g</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const f = [
+{ tag: '', tagColor: '#000000', label: 'Kalorien', unit: 'kcal', value: '67' },
+{ tag: 'C', tagColor: '#30B0C7', label: 'Kohlenhydrate', unit: 'g', value: '4' },
+{ tag: 'F', tagColor: '#AF52DE', label: 'Fett', unit: 'g', value: '0,3' },
+{ tag: 'E', tagColor: '#FF9500', label: 'Eiweiß', unit: 'g', value: '12' }
+];
+return {
+title: 'Neues Lebensmittel',
+saveColor: '#007AFF',
+saveOpacity: '1',
+banner: 'Speichern fehlgeschlagen. Bitte erneut versuchen.',
+name: 'Magerquark',
+fields: f.map((x, i) => ({ ...x, valColor: '#000000', border: i === f.length - 1 ? '0' : '0.5px solid #C6C6C8' }))
+};
+}
+}
+</script>
+</body>
+</html>
