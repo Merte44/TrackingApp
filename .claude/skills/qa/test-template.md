@@ -3,7 +3,7 @@
 ```markdown
 # <ID> — QA YYYY-MM-DD — NOT READY
 
-**Gates:** /code-review <n Findings> · /security-review <n Findings> · Rollback-Probe <PASS/FAIL/—> · tsc/Jest <grün/rot>
+**Gates:** Floor-Guard <sauber/n Funde> · /code-review <n Findings> · Rollback-Probe <PASS/FAIL/—> · tsc/Jest <grün/rot>
 **ACs:** <x/y bestanden> (Screenshots `docs/qa/shots/<ID>-*.png`)
 
 ## Ergebnis pro AC

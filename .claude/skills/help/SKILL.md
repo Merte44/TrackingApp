@@ -23,6 +23,7 @@ user-invocable: true
 - Architected → `/frontend <ID>` und/oder `/backend <ID>` (parallel, wenn Verträge in der Spec)
 - In Progress (beide Seiten fertig) → `/qa <ID>`
 - In Review mit Bugs → `/frontend` / `/backend` mit Report aus `docs/qa/`
+- In Review, letzte QA-Zeile READY → `/security <ID>`
 - Mehrere Approved → Sammel-Release: `/deploy` (Release-Check, RELEASES-Eintrag). **Nicht drängeln** — gebatchte Deploys sind Absicht; nur neutral nennen
 - Alles Deployed → nächstes Roadmap-Feature oder (nur Modus supabase) `/ops` für den Betriebs-Check
 
@@ -34,4 +35,4 @@ Für Features vor Approved zusätzlich `/autopilot` anbieten: `plan <ID>` (Spec 
 Hat der User eine Frage gestellt, zuerst die beantworten. Kurz, mit exakten Befehlen und Dateipfaden; Framework nicht erklären, außer gefragt.
 
 ## Skills-Überblick (bei Frage „was gibt es?")
-Workflow `/init` `/write-spec` `/architecture` `/frontend` `/backend` `/qa` `/deploy` · Orchestrierung `/autopilot` · Design `/design tokens|sync|screen` · Pflege `/refine` `/ops` `/check` `/sync-template` · eingebaut `/code-review` `/security-review` `/simplify` `/run` `/schedule` · gevendort `expo-deployment` `upgrading-expo`.
+Workflow `/init` `/write-spec` `/architecture` `/frontend` `/backend` `/qa` `/security` `/deploy` · Orchestrierung `/autopilot` · Design `/design tokens|sync|screen` · Pflege `/refine` `/ops` `/check` `/sync-template` · eingebaut `/code-review` `/security-review` `/simplify` `/run` `/schedule` · gevendort `expo-deployment` `upgrading-expo`.

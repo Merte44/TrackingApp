@@ -29,7 +29,7 @@ OWN_SKILLS=$(ls -d .claude/skills/*/ | grep -vE "$(echo $VENDORED | tr ' ' '|')"
 SCOPE=".claude/rules $OWN_SKILLS .claude/agents CLAUDE.md"
 
 # 1. Veraltete Muster (Lehren aus v2)
-grep -rnE -- '--read-only|mcp__supabase__[a-z]|\.maestro/|qa-engineer|Mockup-Screen|## QA Test Results|## Deployment$|`/security`' $SCOPE \
+grep -rnE -- '--read-only|mcp__supabase__[a-z]|\.maestro/|qa-engineer|Mockup-Screen|## QA Test Results|## Deployment$' $SCOPE \
   | grep -v 'skills/check/' | sed 's/^/STALE  /'
 
 # 2. Relative Markdown-Links in Skills/Rules/Agents → Datei muss existieren

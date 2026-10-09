@@ -84,8 +84,8 @@ Status steht im Spec-Header **und** in `INDEX.md` — beide müssen übereinstim
 | Planned | `/write-spec` |
 | Architected | `/architecture` |
 | In Progress | `/frontend` oder `/backend` |
-| In Review | `/qa` startet |
-| Approved | `/qa` READY |
+| In Review | `/qa` startet (bis `/security` durch ist) |
+| Approved | `/qa` READY und `/security` SICHER |
 | Deployed | im Release enthalten (`docs/RELEASES.md`, Spalte Release in INDEX) |
 
 ## Zusammengeführte Features

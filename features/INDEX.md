@@ -9,8 +9,8 @@
 - **Planned** — `/write-spec` erledigt, Spec geschrieben
 - **Architected** — `/architecture` erledigt, Design freigegeben
 - **In Progress** — `/frontend` oder `/backend` läuft oder ist fertig, noch keine Abnahme
-- **In Review** — `/qa` läuft
-- **Approved** — `/qa` bestanden, bereit für ein Release
+- **In Review** — `/qa` bzw. `/security` läuft
+- **Approved** — `/qa` und `/security` bestanden, bereit für ein Release
 - **Deployed** — in einem Release enthalten (Spalte **Release** = Build aus `docs/RELEASES.md`)
 
 ## Features

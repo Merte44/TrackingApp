@@ -86,7 +86,8 @@ Alle Wege erzeugen `docs/PRD.md` + `features/INDEX.md`, legen `docs/ENVIRONMENTS
 | `/architecture PROJ-X` | Architect | Technisches Design, kein Code | Komponentenbaum, Datenmodell, **Verträge** (lib-Funktionen, Tabellen, RPCs) → Frontend und Backend laufen parallel |
 | `/frontend PROJ-X` | Frontend-Dev | UI aus `docs/design/screens/PROJ-X.html` | Screens/Kompositionen; ab 2 Screens Frontend-Agent im Worktree, Diff-Review |
 | `/backend PROJ-X` | Backend-Dev | Supabase-Schicht auf dev | Migration + RLS, Rollback-Probe, `lib/<feature>.ts`, Jest; Backend-Agent mit dev-MCP |
-| `/qa PROJ-X` | Abnahme | `/code-review` + `/security-review` über den Diff; ein **unabhängiger QA-Agent** (frischer Kontext, kennt den Build-Verlauf nicht) belegt jede AC per Test, Migrations-Test/Probe oder Dev-Client | READY / NOT READY, Bug-Routing an `/frontend` / `/backend` |
+| `/qa PROJ-X` | Abnahme | Floor-Guard + `/code-review` über den Diff; ein **unabhängiger QA-Agent** (frischer Kontext, kennt den Build-Verlauf nicht) belegt jede AC |
+| `/security PROJ-X` · `/security release` | Sicherheit | `/security-review` + **Security-Agent**, der selbst erkennt, ob er gebraucht wird, und die App angreift; setzt Approved |
 | `/deploy` | Release-Orchestrator | Sammel-Release: Release-Check per `/run`, prod-Migrationen verifizieren, EAS via `expo-deployment` | Eintrag in `docs/RELEASES.md`, alle enthaltenen Features → Deployed |
 
 ### Jederzeit-Helfer
@@ -103,7 +104,7 @@ Alle Wege erzeugen `docs/PRD.md` + `features/INDEX.md`, legen `docs/ENVIRONMENTS
 /init …  →  /design tokens  →  /design sync
    →  /write-spec PROJ-1  →  /architecture PROJ-1
    →  /design screen PROJ-1  →  /frontend PROJ-1 ‖ /backend PROJ-1
-   →  /qa PROJ-1  →  (weitere Features)  →  /deploy
+   →  /qa PROJ-1  →  /security PROJ-1  →  (weitere Features)  →  /deploy
 ```
 
 Jeder Schritt endet mit einem Handoff-Vorschlag — **Übergänge stößt immer du an, nie die KI automatisch.** Ein Release bündelt in der Regel mehrere Features; „Deployed" heißt „im Release enthalten".

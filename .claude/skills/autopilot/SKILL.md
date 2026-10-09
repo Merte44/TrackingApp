@@ -15,7 +15,7 @@ Zwei Modi, getrennt durch **eine** Freigabe — das **Design-Paket**:
 | Modus | Was | Rückfragen |
 |-------|-----|------------|
 | `plan [<ID>]` | Spec, Architektur, Plan, Screen-Entwurf → Design-Paket | ja — Interview und Klärungsfragen wie von Hand; endet mit der Freigabe |
-| `build [<ID>]` | ein Feature bauen, QA, Fix-Runden → Approved, dann Bericht | nein — nur harte Stopps; am Feature-Ende: „Nächstes bauen?“ |
+| `build [<ID>]` | ein Feature bauen, QA, Security, Fix-Runden → Approved, dann Bericht | nein — nur harte Stopps; am Feature-Ende: „Nächstes bauen?“ |
 | `<ID>` | `plan`, nach der Freigabe direkt `build` für dieses Feature | wie die beiden Modi |
 
 So lassen sich mehrere Features nacheinander durchplanen und später eins nach dem anderen bauen — nach jedem Feature schaut der User drauf und entscheidet, ob das nächste startet. Die Freigabe des Design-Pakets ist die **Vorab-Freigabe** für alle Bauphasen bis `/qa` dieses Features (`.claude/rules/general.md`, Human-in-the-Loop).
@@ -73,7 +73,9 @@ Ausgabe: „Autopilot build <ID> — <Feature>. Danach freigegeben und baubar: <
 | offene Backend-Aufgaben im Plan | `/backend <ID> --auto` |
 | offene Frontend-Aufgaben im Plan | `/frontend <ID> --auto` |
 | alle Aufgaben erledigt, Status In Progress | `/qa <ID> --auto` |
-| In Review, letzte Runde NOT READY | Fix-Runde: `/backend` bzw. `/frontend <ID> --auto` mit dem Report aus `docs/qa/`, dann erneut `/qa <ID> --auto` (neuer QA-Agent) |
+| In Review, letzte QA-Runde NOT READY | Fix-Runde: `/backend` bzw. `/frontend <ID> --auto` mit dem Report aus `docs/qa/`, dann erneut `/qa <ID> --auto` (neuer QA-Agent) |
+| In Review, letzte QA-Runde READY, noch keine Security-Zeile danach | `/security <ID> --auto` |
+| In Review, letzte Security-Runde NICHT SICHER | Fix-Runde mit dem Security-Report, dann erneut `/security <ID> --auto` (neuer Security-Agent) |
 | Approved | → **Feature-Ende** |
 
 Spec ohne `## Plan` (älter angelegt): Routing nach Verlauf („Backend gebaut", „Frontend gebaut").
@@ -97,7 +99,7 @@ Der Bericht endet immer mit der kopierbaren Zeile für ein neues Fenster: `Näch
 | Skill | statt Rückfrage | so |
 |-------|-----------------|----|
 | `/backend`, `/frontend` | Klären, Diff-Review mit User | Offenes mit der Empfehlung entscheiden und als **Annahme (Autopilot)** ins Decision Log; statt Diff-Review `/code-review` über die Phase — Critical/High beheben, bevor committet wird |
-| `/qa` | Fix-Runde starten? | Automatisch Fix-Runde, jedes Mal mit neuem QA-Agent |
+| `/qa`, `/security` | Fix-Runde starten? | Automatisch Fix-Runde, jedes Mal mit neuem Agenten |
 
 Eine Annahme ist kein Stopp — sie steht im Decision Log und im Abschlussbericht.
 
@@ -106,7 +108,7 @@ Eine Annahme ist kein Stopp — sie steht im Decision Log und im Abschlussberich
 | Stopp | Warum |
 |-------|-------|
 | **Destruktive Migration** (Tabelle/Spalte weg, Typ verengen) | Modus lokal: die Datei auf dem Gerät ist die einzige Kopie der Daten |
-| **Zweiter QA-Fehlschlag an derselben Stelle** (Abbruchregel aus `/qa`) | Entwurfsproblem — Vorschlag `/refine <ID>` |
+| **Zweiter Fehlschlag an derselben Stelle** in `/qa` oder `/security` (Abbruchregel) | Entwurfsproblem — Vorschlag `/refine <ID>` |
 | **Aufgabe der Ebene Du** (`U…`), die eine Folgeaufgabe blockiert | nur der User kann sie erledigen; nicht blockierende sammeln und am Ende nennen |
 | Spec widerspricht dem Code · Phase bewegt nichts | Befund im Bericht |
 
