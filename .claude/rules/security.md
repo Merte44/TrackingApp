@@ -29,6 +29,7 @@ paths:
 - Auth-Mail-Links laufen über eine `https`-Confirmation-URL und werden in der App eingelöst — kein App-Schema direkt im Mail-Template
 
 ## Gates
+- **Security-Agent** (`.claude/agents/security.md`): greift die App aktiv an (Eingaben, Fremddaten, Deep-Links, im Modus supabase RLS auf dev) — in `/qa` bei jeder Code-Änderung (er entscheidet selbst, ob er gebraucht wird) und in `/deploy` einmal über das ganze Release. Nie prod
 - Modus lokal: es gibt keine prod-Migration und keine Advisors — der erste und dritte Punkt unten entfallen bis auf das Release-Gate; Migrationen sichert der Migrations-Test (`.claude/rules/local-db.md`)
 - **`/security-review`** (eingebaut) ist Pflicht **vor jeder prod-Migration mit `SECURITY DEFINER`-Funktionen, neuen RLS-Policies oder neuen Edge Functions** — und als Release-Gate vor TestFlight External / App Store über den ganzen Branch
 - **`get_advisors`** (security + performance) nach **jeder** Migration auf dev und prod; keine neue Warnung akzeptieren

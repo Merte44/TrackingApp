@@ -83,6 +83,9 @@ def main():
             return 0
         if "git commit" not in cmd:
             return 0
+    if git("rev-parse", "--git-dir") is None:
+        print("check-migrations: konnte Git nicht lesen — Commit blockiert, bis die Prüfung läuft.", file=sys.stderr)
+        return 2 if hook else 1
     tag = latest_release_tag()
     if not tag:
         if not hook:
