@@ -29,7 +29,7 @@ docs/                PRD, RELEASES, ENVIRONMENTS, NEW-PROJECT, RELEASE-CHECK, MC
 
 ## Workflow
 `/init` → `/write-spec` → `/architecture` → `/frontend` ‖ `/backend` → `/qa` → `/deploy`
-- **`/autopilot [PROJ-X]`** fährt ein Feature bis Approved mit **einem** Stopp: dem Design-Paket (Screen-Entwurf als Link, ACs, Annahmen, Plan) — davor und danach automatisch; harte Stopps nur bei destruktiver Migration, zweitem QA-Fehlschlag am selben Ort, blockierender User-Aufgabe
+- **`/autopilot plan [PROJ-X]`** plant ein Feature mit Rückfragen bis zum Design-Paket (Screen-Entwurf als Link, ACs, Plan) und holt die Freigabe · **`/autopilot build`** baut alle freigegebenen Features nacheinander ohne Rückfragen bis Approved; harte Stopps nur bei destruktiver Migration, zweitem QA-Fehlschlag am selben Ort, blockierender User-Aufgabe · `/autopilot PROJ-X` beides
 - `/design tokens | sync | screen PROJ-X` · `/refine PROJ-X` · `/help` · `/ops` · `/check` · `/sync-template`
 - Gevendorte Expo-Skills: `expo-deployment`, `upgrading-expo`, `native-data-fetching`, `eas-update-insights`
 

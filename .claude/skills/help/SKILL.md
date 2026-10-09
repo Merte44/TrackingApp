@@ -26,7 +26,7 @@ user-invocable: true
 - Mehrere Approved → Sammel-Release: `/deploy` (Release-Check, RELEASES-Eintrag). **Nicht drängeln** — gebatchte Deploys sind Absicht; nur neutral nennen
 - Alles Deployed → nächstes Roadmap-Feature oder (nur Modus supabase) `/ops` für den Betriebs-Check
 
-Für ein Feature vor Approved zusätzlich `/autopilot <ID>` anbieten — er fährt die obigen Schritte nacheinander und hält nur an Checkpoints.
+Für Features vor Approved zusätzlich `/autopilot` anbieten: `plan <ID>` (Spec bis Design-Paket, mit Rückfragen), `build` (alle freigegebenen Features ohne Rückfragen bis Approved).
 
 ## Ausgabe
 **Projektstand** (2–3 Sätze) · **Features** (Tabelle aus INDEX) · **Letztes Release** (aus RELEASES) · **Umgebungen** (offene Häkchen) · **Eingang** (nur wenn nicht leer: Anzahl + Alter der ältesten Notiz, mit dem Hinweis, dass `/refine` bzw. `/write-spec` sie einsortiert) · **Empfohlener nächster Schritt** (ein Befehl) · **Weitere Optionen**.

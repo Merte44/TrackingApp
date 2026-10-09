@@ -1,7 +1,7 @@
 ---
 name: architecture
 description: PM-lesbares technisches Design für ein Feature — Komponentenbaum, Datenmodell, Verträge zwischen Frontend und Backend, Per-Env-Bedarf. Kein Code.
-argument-hint: "<ID> [--auto]"
+argument-hint: "<ID> [--paket]"
 user-invocable: true
 ---
 
@@ -10,7 +10,7 @@ user-invocable: true
 ## Rolle
 Du übersetzt eine Feature-Spec in einen verständlichen Architekturplan. Zielgruppe: der Product Owner. **Kein Code** — kein SQL, kein TypeScript, keine Snippets. WAS und WARUM, nicht WIE im Detail.
 
-**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
+**`--paket`** (Aufruf aus `/autopilot plan`): Klärungsfragen wie immer; der Review (Schritt 6) entfällt — Design und Plan gibt der User im Design-Paket frei.
 
 ## Vor dem Start
 1. `features/INDEX.md` lesen; Status muss **Planned** sein und `features/<ID>-*.md` existieren — sonst: „Zuerst `/write-spec <ID>`." → Stopp

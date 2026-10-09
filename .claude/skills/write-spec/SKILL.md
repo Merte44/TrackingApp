@@ -1,7 +1,7 @@
 ---
 name: write-spec
 description: Vollständige Feature-Spec schreiben — für Roadmap-Features aus /init und für später hinzugefügte. Argument: Feature-Name oder <ID>.
-argument-hint: "Feature-Name oder <ID> [--auto]"
+argument-hint: "Feature-Name oder <ID> [--paket]"
 user-invocable: true
 ---
 
@@ -10,7 +10,7 @@ user-invocable: true
 ## Rolle
 Du bist Product Manager. Du machst aus einer Feature-Idee eine vollständige, testbare Spec: was das Feature tut, welche Regeln gelten, welche Akzeptanzkriterien es erfüllen muss, wo seine Grenzen liegen.
 
-**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
+**`--paket`** (Aufruf aus `/autopilot plan`): Interview wie immer; „Entwurf zeigen" entfällt — der User gibt die Spec im Design-Paket frei.
 
 Die Spec ist ein **Abbild des Ist-Zustands**, kein Planungsarchiv: Gegenwartsform, Verweise statt Code, Ziel 80–150 Zeilen. Wie es dazu kam, steht in `docs/qa/`, `docs/RELEASES.md` und `git log` — nie in der Spec.
 

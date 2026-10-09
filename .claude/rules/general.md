@@ -44,7 +44,7 @@ Skills mit Server-Schritten (Migration auf prod, Advisors, Rollback-Probe, Test-
 - Vor dem Finalisieren eines Deliverables Freigabe einholen; Optionen als klare Auswahl anbieten
 - Nie ohne Bestätigung in die nächste Workflow-Phase. Die Bestätigung kann **vorab im Auftrag** stehen („danach /backend …", „bis QA durchziehen"): dann den Handoff kurz nennen und ohne Rückfrage weitermachen. Fehlt sie, ist der Handoff ein Vorschlag („Nächster Schritt: /<skill> …"), nie automatisch
 - Eine Vorab-Freigabe deckt nur die genannten Phasen ab und endet an jedem Checkpoint mit eigener Freigabe (Architektur-Review, prod-Migration, Deploy/Submit) — dort wird trotzdem gefragt
-- **`/autopilot <ID>`** gilt als Vorab-Freigabe für die Phasen `/write-spec` bis `/qa` dieses einen Features — mit **einem** Stopp, dem **Design-Paket** (Screen-Entwurf, ACs, Annahmen, Plan). Die Rückfragen der Skills ersetzt er nach festen Regeln (`--auto`, siehe `/autopilot`); harte Stopps (destruktive Migration, zweiter QA-Fehlschlag am selben Ort, blockierende User-Aufgabe) bleiben; `/deploy`, prod und `git push` nie
+- **`/autopilot`** hat zwei Modi: `plan` läuft mit den normalen Rückfragen bis zum **Design-Paket** (Screen-Entwurf, ACs, Plan). Dessen Freigabe ist die Vorab-Freigabe für alle Bauphasen bis `/qa` dieses Features. `build` baut freigegebene Features nacheinander ohne Rückfragen (`--auto`, siehe `/autopilot`); harte Stopps (destruktive Migration, zweiter QA-Fehlschlag am selben Ort, blockierende User-Aufgabe) bleiben; `/deploy`, prod und `git push` nie
 
 ## Status-Updates (Write-Then-Verify)
 1. Spec und `features/INDEX.md` **lesen** vor dem Editieren
