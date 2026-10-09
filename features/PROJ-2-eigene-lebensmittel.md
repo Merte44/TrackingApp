@@ -1,6 +1,6 @@
 # PROJ-2: Eigene Lebensmittel
 
-**Status:** In Review · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-09
+**Status:** Approved · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-09
 **Design:** Entwurf https://claude.ai/artifact/MFE3SJzKcoTB3ZT5S9N5NA · Dateien `docs/design/screens/PROJ-2-*.html` — Liste: `liste`, `liste-leer`, `liste-kein-treffer`, `liste-wischen`, `liste-ladefehler` · Formular: `form-neu`, `form-fehler`, `form-bearbeiten`, `form-speicherfehler` · Dialoge: `dialog-verwerfen`, `dialog-loeschen` (Design-Component-Quelltext: Layout und Inhalt im Markup, Daten im `renderVals()`-Block)
 
 ## Was es tut
@@ -117,6 +117,7 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 - Offen aus QA (Low): SF Symbols übernehmen ihre Token-Farbe nicht (`components/common/SymbolIcon.tsx`, cssInterop → `tintColor`) — Papierkorb blau statt weiß auf Rot
 - Offen aus dem Code-Gate (Medium/Low): `food-form` schließt per `router.back()` ohne History-Prüfung (Start direkt per Deep-Link bleibt hängen) · Summe C+F+E rundet in JS und SQLite an der 6. Nachkommastelle unterschiedlich (nur bei Halbschritten) · `deleteFood` prüft die id ohne Zod · Suche ohne Debounce · Name ohne Höchstlänge
 - AC-18 nur auf der Datenschicht belegt; der Ablauf in der UI kommt mit PROJ-4 · Hinweis „nicht mehr vorhanden“ und Ladefehler der Liste haben keine eigene AC (nur Jest)
+- Aus Security (Härtung, kein Angriffsweg): Name ohne Höchstlänge spätestens mit PROJ-4 (Fremdtext) begrenzen, Zod + CHECK · NUL-Zeichen in Namen nur mit better-sqlite3 geprüft, nicht nativ · unbekannte Routen zeigen Expo-Router-Standardscreen (eigenes `+not-found` fehlt) · `npm audit`: 1 critical/33 high im Expo/Metro/Jest-Tooling, nicht aus diesem Feature — vor `/security release` ansehen
 
 ## Umgebung
 - Kein Per-Env-Setup
@@ -164,3 +165,4 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | 2026-10-09 | Frontend gebaut: `foods` (Liste), `food-form` (Formular), Zugang auf `index`. Abweichungen: SF Symbols statt SVG, native Tastatur/Alerts; Review-Fixes (Tastatur-Insets, Retry, Löschfehler) | — |
 | 2026-10-09 | QA | NOT READY: 5 Bugs (2 High: Formularfelder, Doppel-Tipp) — AC 17/21, 4 nicht prüfbar | Report: Commit `906db8a` |
 | 2026-10-09 | QA | READY — AC 21/21 (Test 8 · Simulator 11 · Test + Review 2); BUG-1–5 behoben, BUG-6 (Low) offen unter Grenzen | — |
+| 2026-10-09 | Security | SICHER — 18 Angriffe abgewehrt (SQL, Massenzuweisung, Deep-Link-Parameter, Lieferkette); `/security-review` ohne Befund | — |
