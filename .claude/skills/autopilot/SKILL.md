@@ -1,7 +1,7 @@
 ---
 name: autopilot
 description: Zwei Modi — `plan` (Spec, Architektur, Plan, Screen-Entwurf mit den Rückfragen bis zur Freigabe des Design-Pakets) und `build` (ein freigegebenes Feature ohne Rückfragen bis Approved bauen, dann Bericht und fragen, ob das nächste drankommt). Ohne Modus beides für ein Feature. Nie /deploy, nie prod.
-argument-hint: "plan [<ID>] | build [<ID>] | <ID>"
+argument-hint: "plan [<ID>] | build [<ID> …] | <ID>"
 user-invocable: true
 ---
 
@@ -15,7 +15,7 @@ Zwei Modi, getrennt durch **eine** Freigabe — das **Design-Paket**:
 | Modus | Was | Rückfragen |
 |-------|-----|------------|
 | `plan [<ID>]` | Spec, Architektur, Plan, Screen-Entwurf → Design-Paket | ja — Interview und Klärungsfragen wie von Hand; endet mit der Freigabe |
-| `build [<ID>]` | ein Feature bauen, QA, Fix-Runden → Approved, dann Bericht | nein — nur harte Stopps; am Feature-Ende: „Nächstes bauen?“ |
+| `build [<ID> …]` | ein Feature (oder die genannten nacheinander) bauen, QA, Fix-Runden → Approved, dann Bericht | nein — nur harte Stopps; am Feature-Ende: „Nächstes bauen?“ |
 | `<ID>` | `plan`, nach der Freigabe direkt `build` für dieses Feature | wie die beiden Modi |
 
 So lassen sich mehrere Features nacheinander durchplanen und später eins nach dem anderen bauen — nach jedem Feature schaut der User drauf und entscheidet, ob das nächste startet. Die Freigabe des Design-Pakets ist die **Vorab-Freigabe** für alle Bauphasen bis `/qa` dieses Features (`.claude/rules/general.md`, Human-in-the-Loop).
@@ -64,9 +64,10 @@ Eine Nachricht, kurz:
 
 **Feature wählen:**
 - mit `<ID>`: dieses — es muss freigegeben sein, sonst Stopp: „<ID> ist nicht freigegeben. Erst `/autopilot plan <ID>`."
+- mit mehreren IDs (`build <ID> <ID>`): diese **nacheinander** in einem Lauf, Deps zuerst — jede muss freigegeben sein; Deps, die weder Approved noch in der Liste sind → Stopp vor dem Start
 - ohne: das erste freigegebene Feature unter Approved, dessen Deps alle Approved sind — nach Prio, dann ID
 
-Ausgabe: „Autopilot build <ID> — <Feature>. Danach freigegeben und baubar: <ID>, … (oder keins)"
+Ausgabe: „Autopilot build <ID>[, <ID>] — <Feature>. Danach freigegeben und baubar: <ID>, … (oder keins)"
 
 | Zustand | Phase |
 |---------|-------|
@@ -74,16 +75,20 @@ Ausgabe: „Autopilot build <ID> — <Feature>. Danach freigegeben und baubar: <
 | offene Frontend-Aufgaben im Plan | `/frontend <ID> --auto` |
 | alle Aufgaben erledigt, Status In Progress | `/qa <ID> --auto` |
 | In Review, letzte Runde NOT READY | Fix-Runde: `/backend` bzw. `/frontend <ID> --auto` mit dem Report aus `docs/qa/`, dann erneut `/qa <ID> --auto` (neuer QA-Agent) |
-| Approved | → **Feature-Ende** |
+| Approved | nächste ID der Liste von vorn (alles neu aus den Dateien lesen) · sonst → **Feature-Ende** |
 
 Spec ohne `## Plan` (älter angelegt): Routing nach Verlauf („Backend gebaut", „Frontend gebaut").
 
 Daten vor UI und nacheinander statt parallel: das Frontend nutzt echte `lib/`-Funktionen statt Stubs, und es gibt nur eine Arbeitskopie.
 
+Harter Stopp bei einem Feature der Liste: es und die Features der Liste, die davon abhängen, auslassen; mit den übrigen weitermachen.
+
 ### 🛑 Feature-Ende
-Bei **Approved** oder einem harten Stopp: **Bericht** (unten), dann `AskUserQuestion`: „Nächstes Feature bauen?" — Optionen: **<nächste baubare ID> bauen** · **Stopp** (gibt es keins: nur der Bericht und „Nichts mehr freigegeben. Planen: `/autopilot plan`.").
+Nach dem letzten Feature des Laufs (Approved oder harter Stopp): **Bericht** (unten), dann `AskUserQuestion`: „Nächstes Feature bauen?" — Optionen: **<nächste baubare ID> bauen** · **Stopp** (gibt es keins: nur der Bericht und „Nichts mehr freigegeben. Planen: `/autopilot plan`.").
 
 Nie ohne diese Antwort ins nächste Feature. Bei „bauen" nichts aus dem vorigen Feature mitnehmen — alles neu aus den Dateien lesen und `build <ID>` von vorn.
+
+Der Bericht endet immer mit der kopierbaren Zeile für ein neues Fenster: `Nächstes: /autopilot build <ID>` (sind mehrere baubar: `… build <ID> <ID>` als Alternative) — oder `Nichts mehr freigegeben: /autopilot plan <ID>`.
 
 ### Nach jeder Phase prüfen
 - Status in INDEX und Spec-Header stimmen überein und haben sich wie erwartet bewegt; Plan-Tabelle abgehakt
@@ -111,10 +116,10 @@ Eine Annahme ist kein Stopp — sie steht im Decision Log und im Abschlussberich
 ## Nie automatisch
 - `/deploy`, alles auf prod, EAS-Builds, `git push`
 - `/refine` — außer für Änderungen, die der User am Design-Paket verlangt
-- Ein nicht freigegebenes Feature bauen · ein zweites Feature ohne Antwort am Feature-Ende
+- Ein nicht freigegebenes Feature bauen · ein Feature, das weder genannt noch am Feature-Ende bestätigt wurde
 
 ## Bericht am Feature-Ende (`build`)
-Kurz, damit der User das Feature ansehen kann:
+Kurz, pro Feature des Laufs, damit der User es ansehen kann:
 - **Ergebnis:** Approved, oder angehalten — wo, warum und der exakte Befehl zum Fortsetzen
 - **Ansehen:** welche Screens im Dev-Client, wo erreichbar; was gebaut wurde in zwei Sätzen
 - **Commits** je Aufgabe, **QA-Runden** mit gefundenen und behobenen Bugs, Ergebnis pro AC (Kurzform)
