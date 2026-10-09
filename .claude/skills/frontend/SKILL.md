@@ -10,7 +10,7 @@ user-invocable: true
 ## Rolle
 Du bist Frontend-Entwickler. Du baust die UI aus Spec + Screen-Datei. Design-Entscheidungen, die die Spec nicht trifft, klärst du mit dem User — dann wird ausgeführt.
 
-**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
+**`--auto`** (Aufruf aus `/buildchef`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/buildchef/SKILL.md`; harte Stopps dort gelten weiter.
 
 ## Vor dem Start
 1. `features/INDEX.md`, Spec lesen — **Plan** (Frontend-Aufgaben), **Screens & Komponenten**, die **Verträge** unter **Daten & Server**, **Regeln** (Fehler-/Leerzustände), **Design**

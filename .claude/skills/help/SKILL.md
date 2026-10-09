@@ -27,7 +27,7 @@ user-invocable: true
 - Mehrere Approved → Sammel-Release: `/deploy` (Release-Check, RELEASES-Eintrag). **Nicht drängeln** — gebatchte Deploys sind Absicht; nur neutral nennen
 - Alles Deployed → nächstes Roadmap-Feature oder (nur Modus supabase) `/ops` für den Betriebs-Check
 
-Für Features vor Approved zusätzlich `/autopilot` anbieten: `plan <ID>` (Spec bis Design-Paket, mit Rückfragen), `build` (ein freigegebenes Feature ohne Rückfragen bis Approved, danach Bericht und Frage nach dem nächsten).
+Für Features vor Approved zusätzlich anbieten: `/planchef <ID>` (Spec bis Design-Paket, mit Rückfragen), `/buildchef <ID>` (freigegebenes Feature ohne Rückfragen bis Approved, danach Bericht und Befehl fürs nächste).
 
 ## Ausgabe
 **Projektstand** (2–3 Sätze) · **Features** (Tabelle aus INDEX) · **Letztes Release** (aus RELEASES) · **Umgebungen** (offene Häkchen) · **Eingang** (nur wenn nicht leer: Anzahl + Alter der ältesten Notiz, mit dem Hinweis, dass `/refine` bzw. `/write-spec` sie einsortiert) · **Empfohlener nächster Schritt** (ein Befehl) · **Weitere Optionen**.
@@ -35,4 +35,4 @@ Für Features vor Approved zusätzlich `/autopilot` anbieten: `plan <ID>` (Spec 
 Hat der User eine Frage gestellt, zuerst die beantworten. Kurz, mit exakten Befehlen und Dateipfaden; Framework nicht erklären, außer gefragt.
 
 ## Skills-Überblick (bei Frage „was gibt es?")
-Workflow `/init` `/write-spec` `/architecture` `/frontend` `/backend` `/qa` `/security` `/deploy` · Orchestrierung `/autopilot` · Design `/design tokens|sync|screen` · Pflege `/refine` `/ops` `/check` `/sync-template` · eingebaut `/code-review` `/security-review` `/simplify` `/run` `/schedule` · gevendort `expo-deployment` `upgrading-expo`.
+Workflow `/init` `/write-spec` `/architecture` `/frontend` `/backend` `/qa` `/security` `/deploy` · Orchestrierung `/planchef` `/buildchef` · Design `/design tokens|sync|screen` · Pflege `/refine` `/ops` `/check` `/sync-template` · eingebaut `/code-review` `/security-review` `/simplify` `/run` `/schedule` · gevendort `expo-deployment` `upgrading-expo`.

@@ -10,7 +10,7 @@ user-invocable: true
 ## Rolle
 `/qa` fragt: Tut das Feature, was die Spec verlangt? Du fragst: **Kann man es missbrauchen?** Du fährst `/security-review`, startest den **Security-Agent** (`.claude/agents/security.md`) in einem frischen Kontext, entscheidest und routest. Du greifst nicht selbst an und **fixst nichts**.
 
-**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
+**`--auto`** (Aufruf aus `/buildchef`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/buildchef/SKILL.md`; harte Stopps dort gelten weiter.
 
 ## Modi
 | Aufruf | Bereich | Danach |

@@ -10,7 +10,7 @@ user-invocable: true
 ## Modus zuerst
 Backend-Modus aus `CLAUDE.md` bestimmen (`.claude/rules/general.md`, Backend-Modus). **Modus lokal → nur Abschnitt „Modus lokal" unten**, die übrigen Abschnitte gelten für Modus supabase.
 
-**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
+**`--auto`** (Aufruf aus `/buildchef`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/buildchef/SKILL.md`; harte Stopps dort gelten weiter.
 
 ## Modus lokal (expo-sqlite)
 Regeln: `.claude/rules/local-db.md`. Kein Server, kein MCP, kein prod.

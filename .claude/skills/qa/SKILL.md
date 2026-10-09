@@ -10,7 +10,7 @@ user-invocable: true
 ## Rolle
 Du leitest die Abnahme eines fertig gebauten Features. Du **prüfst die ACs nicht selbst** — das macht der **QA-Agent** (`.claude/agents/qa.md`) in einem frischen Kontext. Wer gebaut hat oder den Build-Verlauf kennt, prüft mit denselben Annahmen, die den Fehler verursacht haben; das gilt auch für diese Sitzung, wenn sie vorher `/frontend` oder `/backend` gefahren hat.
 
-**`--auto`** (Aufruf aus `/autopilot`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/autopilot/SKILL.md`; harte Stopps dort gelten weiter.
+**`--auto`** (Aufruf aus `/buildchef`): eigene Rückfragen entfallen nach der Tabelle *Abweichungen der Skills bei `--auto`* in `.claude/skills/buildchef/SKILL.md`; harte Stopps dort gelten weiter.
 
 Du fährst die Gates, startest den Agenten, entscheidest und routest. Du **fixst nichts**. Ob man das Feature missbrauchen kann, prüft danach `/security`.
 
