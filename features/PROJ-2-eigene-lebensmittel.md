@@ -1,6 +1,6 @@
 # PROJ-2: Eigene Lebensmittel
 
-**Status:** In Progress · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-09
+**Status:** In Review · **Release:** — · **Bereich:** Kernfunktion · **Stand:** 2026-10-09
 **Design:** Entwurf https://claude.ai/artifact/MFE3SJzKcoTB3ZT5S9N5NA · Dateien `docs/design/screens/PROJ-2-*.html` — Liste: `liste`, `liste-leer`, `liste-kein-treffer`, `liste-wischen`, `liste-ladefehler` · Formular: `form-neu`, `form-fehler`, `form-bearbeiten`, `form-speicherfehler` · Dialoge: `dialog-verwerfen`, `dialog-loeschen` (Design-Component-Quelltext: Layout und Inhalt im Markup, Daten im `renderVals()`-Block)
 
 ## Was es tut
@@ -166,3 +166,4 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | 2026-10-09 | Design-Paket freigegeben | — |
 | 2026-10-09 | Backend gebaut: Migration 0001, Migrations-Test grün; Review-Fix Summe C+F+E ohne Gleitkomma-Rest | — |
 | 2026-10-09 | Frontend gebaut: `foods` (Liste), `food-form` (Formular), Zugang auf `index`. Abweichungen: SF Symbols statt SVG, native Tastatur/Alerts; Review-Fixes (Tastatur-Insets, Retry, Löschfehler) | — |
+| 2026-10-09 | QA | NOT READY: 5 Bugs (2 High: Formularfelder, Doppel-Tipp) — AC 17/21, 4 nicht prüfbar | [Report](../docs/qa/PROJ-2-qa-2026-10-09.md) |
