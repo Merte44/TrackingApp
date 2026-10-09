@@ -125,7 +125,7 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | T1 | Migration `0001_proj-2_foods` + Frisch/Upgrade/Idempotenz im Migrations-Test | AC-21 | Backend | — | erledigt `64f57fb` |
 | T2 | `lib/foods.ts` nach Verträgen (Schema, `parseDecimal`, Normalisierung, CRUD, `subscribeFoods`) + `lib/foods.test.ts` | AC-6, AC-7, AC-8, AC-9, AC-17, AC-18, AC-19, AC-20 | Backend | T1 | erledigt `e3b8cf6` |
 | T3 | Liste: `FoodList`, `FoodRow` (Wisch-Löschen), `FoodEmptyState`, `hooks/useFoods.ts`, Route `foods`, Zugang auf `index` | AC-1, AC-8, AC-9, AC-10, AC-15 | Frontend | — (Vertrag reicht) | erledigt `b8053d1` |
-| T4 | Formular: `FoodForm`, `DecimalField`, Route `food-form` (Neu/Bearbeiten/vorausgefüllt), Verwerfen-Dialog, Löschen im Sheet, Speicherfehler | AC-2, AC-3, AC-4, AC-5, AC-6, AC-11, AC-12, AC-13, AC-14, AC-16, AC-17, AC-19, AC-20 | Frontend | T3 | offen |
+| T4 | Formular: `FoodForm`, `DecimalField`, Route `food-form` (Neu/Bearbeiten/vorausgefüllt), Verwerfen-Dialog, Löschen im Sheet, Speicherfehler | AC-2, AC-3, AC-4, AC-5, AC-6, AC-11, AC-12, AC-13, AC-14, AC-16, AC-17, AC-19, AC-20 | Frontend | T3 | erledigt `89ea065` |
 
 ## Tests
 - **Jest:** `lib/foods.test.ts` (Validierung, Sortierung, Filter, Barcode-Eindeutigkeit) · Migrations-Test `lib/db/migrations.test.ts`
@@ -151,6 +151,10 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | **Annahme (Buildchef):** keine Höchstlänge für den Namen | Spec nennt keine | z. B. 100 Zeichen | 2026-10-09 |
 | **Annahme (Buildchef):** eigene `db`-Texte für Löschen („Löschen fehlgeschlagen …“) und Lesen („… konnten nicht geladen werden.“) | passender als der Speichertext | überall Speichertext | 2026-10-09 |
 | **Annahme (Buildchef):** Summenfehler C + F + E am Feld Eiweiß | letztes der drei Felder, wie im Entwurf `form-fehler` | eigener Formularfehler | 2026-10-09 |
+| **Annahme (Buildchef):** eigener Zod-Resolver statt `@hookform/resolvers` | keine neue Abhängigkeit; Text → `parseDecimal` → Schema | Paket nachinstallieren | 2026-10-09 |
+| **Annahme (Buildchef):** Feldfehler erst nach Eingabe/Berührung sichtbar; „Sichern“ trotzdem deaktiviert | Entwurf `form-neu` zeigt leeres Formular ohne Fehler | Fehler sofort an allen leeren Feldern | 2026-10-09 |
+| **Annahme (Buildchef):** Ladefehler im Bearbeiten-Sheet zeigt Meldung + „Erneut versuchen“ | analog zur Liste; Spec regelt nur die Liste | Sheet schließen | 2026-10-09 |
+| **Annahme (Buildchef):** Start-Screen ohne Kopfzeile (`headerShown: false`) | Standard-Kopfzeile „index“ stört; PROJ-7 baut den Screen neu | Kopfzeile behalten | 2026-10-09 |
 
 ## Verlauf
 
@@ -161,3 +165,4 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | 2026-10-09 | Screen exportiert (11 Artboards, Design-Artifact) | [Entwurf](https://claude.ai/artifact/MFE3SJzKcoTB3ZT5S9N5NA) |
 | 2026-10-09 | Design-Paket freigegeben | — |
 | 2026-10-09 | Backend gebaut: Migration 0001, Migrations-Test grün; Review-Fix Summe C+F+E ohne Gleitkomma-Rest | — |
+| 2026-10-09 | Frontend gebaut: `foods` (Liste), `food-form` (Formular), Zugang auf `index`. Abweichungen: SF Symbols statt SVG, native Tastatur/Alerts; Review-Fixes (Tastatur-Insets, Retry, Löschfehler) | — |

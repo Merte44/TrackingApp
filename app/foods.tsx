@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { useState } from "react";
-import { KeyboardAvoidingView, Pressable, View } from "react-native";
+import { Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { SearchField } from "@/components/common/SearchField";
@@ -27,33 +27,34 @@ export default function FoodsScreen() {
   };
 
   return (
+    // Kein KeyboardAvoidingView: im formSheet stimmen dessen Frames wegen des Sheet-Versatzes nicht,
+    // und die FlatList in FoodList gleicht die Tastatur schon über automaticallyAdjustKeyboardInsets aus
+    // (beides zusammen würde doppelt einrücken).
     <SafeAreaView edges={["bottom"]} className="flex-1 bg-background">
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
-        <View className="h-12 flex-row items-center justify-between pl-4 pr-2">
-          <View className="w-11" />
-          <Text className="text-headline font-semibold text-foreground" accessibilityRole="header">
-            Eigene Lebensmittel
-          </Text>
-          <Pressable
-            onPress={() => create("")}
-            className="h-11 w-11 items-center justify-center active:opacity-50"
-            accessibilityRole="button"
-            accessibilityLabel="Neues Lebensmittel"
-            accessibilityHint="Legt ein eigenes Lebensmittel an"
-          >
-            <SymbolIcon name="plus" size={22} weight="semibold" className="text-primary" />
-          </Pressable>
-        </View>
-        <View className="px-4 pb-3">
-          <SearchField value={query} onChangeText={setQuery} accessibilityLabel="Lebensmittel suchen" />
-        </View>
-        <FoodList
-          query={query}
-          onSelect={(food: Food) => openForm({ id: String(food.id) })}
-          onCreate={create}
-          selectHint="Öffnet das Lebensmittel zum Bearbeiten"
-        />
-      </KeyboardAvoidingView>
+      <View className="h-12 flex-row items-center justify-between pl-4 pr-2">
+        <View className="w-11" />
+        <Text className="text-headline font-semibold text-foreground" accessibilityRole="header">
+          Eigene Lebensmittel
+        </Text>
+        <Pressable
+          onPress={() => create("")}
+          className="h-11 w-11 items-center justify-center active:opacity-50"
+          accessibilityRole="button"
+          accessibilityLabel="Neues Lebensmittel"
+          accessibilityHint="Legt ein eigenes Lebensmittel an"
+        >
+          <SymbolIcon name="plus" size={22} weight="semibold" className="text-primary" />
+        </Pressable>
+      </View>
+      <View className="px-4 pb-3">
+        <SearchField value={query} onChangeText={setQuery} accessibilityLabel="Lebensmittel suchen" />
+      </View>
+      <FoodList
+        query={query}
+        onSelect={(food: Food) => openForm({ id: String(food.id) })}
+        onCreate={create}
+        selectHint="Öffnet das Lebensmittel zum Bearbeiten"
+      />
     </SafeAreaView>
   );
 }

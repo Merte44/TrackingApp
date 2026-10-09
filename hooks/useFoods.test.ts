@@ -6,7 +6,7 @@ import { migrations } from "@/lib/db/migrations";
 import { createTestDb, type TestDb } from "@/lib/db/testing";
 import { createFood, deleteFood, type FoodInput } from "@/lib/foods";
 
-import { createFoodsLoader, selectFoodListView, type FoodsState } from "./useFoods";
+import { createFoodsLoader, foodListCreateName, selectFoodListView, type FoodsState } from "./useFoods";
 
 // expo-sqlite ist nativ — in Jest steckt hinter getDb() die In-Memory-DB.
 jest.mock("@/lib/db/expo", () => ({ openExpoDatabase: jest.fn() }));
@@ -165,6 +165,34 @@ describe("PROJ-2 hooks/useFoods — createFoodsLoader", () => {
     expect(run.names()).toEqual(["Skyr"]);
     run.loader.dispose();
   });
+
+  it("Ladefehler: während des Neuladens zeigt die Liste „loading“ statt „error“", async () => {
+    breakReads();
+    const run = start();
+    await flush();
+    expect(selectFoodListView(run.last())).toBe("error");
+    setDbForTesting(db);
+    run.loader.reload();
+    expect(selectFoodListView(run.last())).toBe("loading");
+    run.loader.dispose();
+  });
+
+  it("Ladefehler: mehrfaches „Erneut versuchen“ ist harmlos (nur die letzte Antwort zählt)", async () => {
+    await seed("Skyr");
+    breakReads();
+    const run = start();
+    await flush();
+    setDbForTesting(db);
+    run.loader.reload();
+    run.loader.reload();
+    run.loader.reload();
+    await flush();
+    const settled = run.states.filter((s) => !s.loading);
+    expect(settled).toHaveLength(2); // Fehler beim Start + genau ein Ergebnis nach dem Neuladen
+    expect(run.last().error).toBeNull();
+    expect(run.names()).toEqual(["Skyr"]);
+    run.loader.dispose();
+  });
 });
 
 describe("PROJ-2 hooks/useFoods — selectFoodListView", () => {
@@ -199,5 +227,21 @@ describe("PROJ-2 hooks/useFoods — selectFoodListView", () => {
   it("Treffer → list (auch während ein neuer Suchbegriff lädt)", () => {
     expect(selectFoodListView({ foods: [food], loading: false, error: null, query: "" })).toBe("list");
     expect(selectFoodListView({ foods: [food], loading: true, error: null, query: "sk" })).toBe("list");
+  });
+});
+
+describe("PROJ-2 hooks/useFoods — foodListCreateName", () => {
+  it("AC-11: „Neues Lebensmittel“ im Kein-Treffer-Zustand übernimmt den Suchbegriff des angezeigten Ergebnisses", () => {
+    // Die Prop kann schon weiter sein (Tippen läuft), angezeigt wird das Ergebnis zu state.query.
+    expect(foodListCreateName({ foods: [], loading: true, error: null, query: "Quarkkeulchen" })).toBe("Quarkkeulchen");
+  });
+
+  it("AC-1: Leerzustand ohne Suchbegriff → leerer Name", () => {
+    expect(foodListCreateName({ foods: [], loading: false, error: null, query: "  " })).toBe("");
+  });
+
+  it("Liste mit Treffern → leerer Name", () => {
+    const food = { id: 1, name: "Skyr", kcal: 63, carbs: 4, fat: 0.2, protein: 11, pieceGrams: null, barcode: null };
+    expect(foodListCreateName({ foods: [food], loading: false, error: null, query: "sk" })).toBe("");
   });
 });

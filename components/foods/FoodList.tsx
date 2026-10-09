@@ -4,7 +4,7 @@ import { SymbolIcon } from "@/components/common/SymbolIcon";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Text } from "@/components/ui/text";
-import { useFoods } from "@/hooks/useFoods";
+import { foodListCreateName, useFoods } from "@/hooks/useFoods";
 import { deleteFood, type Food } from "@/lib/foods";
 
 import { FoodEmptyState } from "./FoodEmptyState";
@@ -15,7 +15,7 @@ interface FoodListProps {
   query: string;
   /** Tipp auf eine Zeile. */
   onSelect: (food: Food) => void;
-  /** „Neues Lebensmittel“ im Leer- bzw. Kein-Treffer-Zustand; bekommt den aktuellen Suchbegriff. */
+  /** „Neues Lebensmittel“ im Leer- bzw. Kein-Treffer-Zustand; bekommt den Suchbegriff des angezeigten Ergebnisses (leer im Leerzustand). */
   onCreate: (query: string) => void;
   /** VoiceOver-Hinweis für den Tipp auf eine Zeile. */
   selectHint?: string;
@@ -26,7 +26,8 @@ interface FoodListProps {
  * Kein-Treffer-Zustand und Wisch-Löschen. Kennt keine Navigation.
  */
 export function FoodList({ query, onSelect, onCreate, selectHint = "Öffnet das Lebensmittel" }: FoodListProps) {
-  const { foods, view, reload } = useFoods(query);
+  const foodsState = useFoods(query);
+  const { foods, view, reload } = foodsState;
 
   const remove = async (food: Food) => {
     // Sofort, ohne Rückfrage; die Liste lädt über subscribeFoods neu.
@@ -65,7 +66,14 @@ export function FoodList({ query, onSelect, onCreate, selectHint = "Öffnet das 
   }
 
   if (view === "empty" || view === "no_match") {
-    return <FoodEmptyState variant={view} query={query} onCreate={() => onCreate(view === "no_match" ? query : "")} />;
+    // Suchbegriff des angezeigten Ergebnisses, nicht die (evtl. schon weitergetippte) Prop.
+    return (
+      <FoodEmptyState
+        variant={view}
+        query={foodsState.query}
+        onCreate={() => onCreate(foodListCreateName(foodsState))}
+      />
+    );
   }
 
   return (

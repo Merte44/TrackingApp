@@ -83,26 +83,22 @@ describe("Prüfung und Sichern-Knopf", () => {
   it("AC-3: ein leeres Pflichtfeld deaktiviert „Sichern“", () => {
     for (const field of ["name", "kcal", "carbs", "fat", "protein"] as const) {
       const values = { ...filled, [field]: field === "name" ? "   " : "" };
-      expect(canSaveFoodForm(values, false)).toBe(false);
+      expect(canSaveFoodForm(validateFoodForm(values))).toBe(false);
     }
-    expect(canSaveFoodForm(filled, false)).toBe(true);
+    expect(canSaveFoodForm(validateFoodForm(filled))).toBe(true);
   });
 
   it("AC-3: das leere Neu-Formular ist nicht sicherbar und zeigt noch keine Fehler", () => {
     const values = emptyFoodFormValues();
-    expect(canSaveFoodForm(values, false)).toBe(false);
+    expect(canSaveFoodForm(validateFoodForm(values))).toBe(false);
     expect(visibleFieldErrors(values, {})).toEqual({});
-  });
-
-  it("AC-3: während des Speicherns ist „Sichern“ deaktiviert", () => {
-    expect(canSaveFoodForm(filled, true)).toBe(false);
   });
 
   it("AC-4: C + F + E über 100 g → Fehler am Feld Eiweiß und „Sichern“ deaktiviert", () => {
     const values = { ...filled, carbs: "60", fat: "0", protein: "48" };
     const errors = visibleFieldErrors(values, {});
     expect(errors.protein).toBe("C + F + E zusammen höchstens 100 g (jetzt 108 g)");
-    expect(canSaveFoodForm(values, false)).toBe(false);
+    expect(canSaveFoodForm(validateFoodForm(values))).toBe(false);
   });
 
   it("AC-5: kcal über 900, negativer Wert und Stückgewicht 0 zeigen je einen Fehler am Feld", () => {
@@ -111,7 +107,7 @@ describe("Prüfung und Sichern-Knopf", () => {
     expect(errors.kcal).toBe("Höchstens 900 kcal pro 100 g");
     expect(errors.fat).toBe("Darf nicht negativ sein");
     expect(errors.pieceGrams).toBe("Muss größer als 0 g sein");
-    expect(canSaveFoodForm(values, false)).toBe(false);
+    expect(canSaveFoodForm(validateFoodForm(values))).toBe(false);
   });
 
   it("AC-5: unlesbare Zahl zeigt „Bitte eine Zahl eingeben“", () => {

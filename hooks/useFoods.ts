@@ -53,7 +53,9 @@ export function createFoodsLoader(initialQuery: string, onState: (state: FoodsSt
     if (disposed) return;
     const id = ++request;
     const forQuery = query;
-    emit({ ...state, loading: true });
+    // Fehler zurücksetzen: nach „Erneut versuchen“ zeigt die Liste „loading“ statt weiter „error“.
+    // Mehrfach-Tipps sind harmlos — nur die Antwort zur letzten Anfrage wird übernommen.
+    emit({ ...state, loading: true, error: null });
     listFoods(forQuery).then(({ data, error }) => {
       if (disposed || id !== request) return;
       emit(
@@ -87,6 +89,14 @@ export function selectFoodListView(state: FoodsState): FoodListView {
   if (state.foods === null) return "loading";
   if (state.foods.length > 0) return "list";
   return state.query.trim() === "" ? "empty" : "no_match";
+}
+
+/**
+ * Name für „Neues Lebensmittel“ aus dem Leer-/Kein-Treffer-Zustand: der Suchbegriff des
+ * angezeigten Ergebnisses (`state.query`), nicht der evtl. schon weiter getippte aktuelle.
+ */
+export function foodListCreateName(state: FoodsState): string {
+  return selectFoodListView(state) === "no_match" ? state.query : "";
 }
 
 export interface UseFoodsResult extends FoodsState {

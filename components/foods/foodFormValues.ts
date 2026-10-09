@@ -91,7 +91,9 @@ export function toFoodInput(values: FoodFormValues): FoodInput {
 }
 
 /** Prüft per `foodInputSchema`; erster Fehlertext je Feld. */
-export function validateFoodForm(values: FoodFormValues): { input: ParsedFoodInput | null; errors: FoodFieldErrors } {
+export type FoodFormValidation = { input: ParsedFoodInput | null; errors: FoodFieldErrors };
+
+export function validateFoodForm(values: FoodFormValues): FoodFormValidation {
   const parsed = foodInputSchema.safeParse(toFoodInput(values));
   if (parsed.success) return { input: parsed.data, errors: {} };
   const errors: FoodFieldErrors = {};
@@ -110,8 +112,10 @@ export function validateFoodForm(values: FoodFormValues): { input: ParsedFoodInp
 export function visibleFieldErrors(
   values: FoodFormValues,
   changed: Partial<Record<FoodField, boolean>>,
+  /** Bereits berechnete Prüfung derselben Werte (einmal pro Render), sonst wird hier geprüft. */
+  validation: FoodFormValidation = validateFoodForm(values),
 ): FoodFieldErrors {
-  const { errors } = validateFoodForm(values);
+  const { errors } = validation;
   const visible: FoodFieldErrors = {};
   for (const field of FOOD_TEXT_FIELDS) {
     const message = errors[field];
@@ -120,9 +124,9 @@ export function visibleFieldErrors(
   return visible;
 }
 
-/** „Sichern“ nur bei gültigem Formular und nicht während des Speicherns. */
-export function canSaveFoodForm(values: FoodFormValues, saving: boolean): boolean {
-  return !saving && validateFoodForm(values).input !== null;
+/** „Sichern“ nur bei gültigem Formular (Speichern/Löschen sperrt der Screen über `busy`). */
+export function canSaveFoodForm(validation: FoodFormValidation): boolean {
+  return validation.input !== null;
 }
 
 /** react-hook-form-Resolver auf Basis von `foodInputSchema` (ohne @hookform/resolvers). */

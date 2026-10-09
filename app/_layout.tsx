@@ -2,10 +2,22 @@ import "../global.css";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback, useEffect, useState } from "react";
+import { cssInterop } from "nativewind";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { DatabaseError } from "@/components/db/DatabaseError";
 import { DB_INIT_MESSAGES, initDatabase, type DbInitError } from "@/lib/db";
+
+// GestureHandlerRootView ist kein von NativeWind gemappter Baustein — className auf style abbilden.
+cssInterop(GestureHandlerRootView, { className: "style" });
+
+/** Einheitliche Darstellung aller Unter-Screens als formSheet (PRD). */
+const FORM_SHEET_OPTIONS = {
+  presentation: "formSheet" as const,
+  headerShown: false,
+  sheetAllowedDetents: [1],
+  sheetGrabberVisible: true,
+};
 
 // Splash bleibt stehen, bis die Datenbank bereit ist (kein eigener Lade-Screen).
 SplashScreen.preventAutoHideAsync().catch(() => {});
@@ -58,29 +70,12 @@ export default function RootLayout() {
     return <DatabaseError error={db.error} retrying={retrying} onRetry={retry} />;
   }
   return (
-    // style statt className: GestureHandlerRootView ist kein von NativeWind gemappter Baustein.
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView className="flex-1">
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         {/* Unter-Screens als formSheet (PRD). */}
-        <Stack.Screen
-          name="foods"
-          options={{
-            presentation: "formSheet",
-            headerShown: false,
-            sheetAllowedDetents: [1],
-            sheetGrabberVisible: true,
-          }}
-        />
-        <Stack.Screen
-          name="food-form"
-          options={{
-            presentation: "formSheet",
-            headerShown: false,
-            sheetAllowedDetents: [1],
-            sheetGrabberVisible: true,
-          }}
-        />
+        <Stack.Screen name="foods" options={FORM_SHEET_OPTIONS} />
+        <Stack.Screen name="food-form" options={FORM_SHEET_OPTIONS} />
       </Stack>
     </GestureHandlerRootView>
   );

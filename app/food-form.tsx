@@ -2,7 +2,7 @@ import { usePreventRemove } from "@react-navigation/native";
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { useForm, useFormState, useWatch } from "react-hook-form";
-import { ActivityIndicator, Alert, KeyboardAvoidingView, Pressable, View } from "react-native";
+import { ActivityIndicator, Alert, Pressable, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { FoodForm } from "@/components/foods/FoodForm";
@@ -14,6 +14,7 @@ import {
   initialFoodForm,
   loadFoodForm,
   saveFoodForm,
+  validateFoodForm,
   visibleFieldErrors,
   type FoodFieldErrors,
   type FoodFormValues,
@@ -101,10 +102,12 @@ export default function FoodFormScreen() {
 
   const busy = saving || deleting || closing;
   const ready = load.status === "ready";
-  const canSave = ready && !busy && canSaveFoodForm(values, saving);
+  // Einmal pro Render prüfen; Sichern-Knopf und sichtbare Feldfehler leiten sich daraus ab.
+  const validation = validateFoodForm(values);
+  const canSave = ready && !busy && canSaveFoodForm(validation);
   const errors: FoodFieldErrors = {
     ...(serverErrors && sameValues(serverErrors.values, values) ? serverErrors.errors : {}),
-    ...visibleFieldErrors(values, dirtyFields),
+    ...visibleFieldErrors(values, dirtyFields, validation),
   };
 
   const save = form.handleSubmit(async (submitted) => {
@@ -137,13 +140,21 @@ export default function FoodFormScreen() {
     if (editId === null) return;
     setDeleting(true);
     setBanner(null);
-    const outcome = await deleteFoodFromForm(editId);
-    if (outcome.status === "deleted") {
-      setClosing(true);
-      return;
+    let deleted = false;
+    try {
+      const outcome = await deleteFoodFromForm(editId);
+      if (outcome.status === "deleted") {
+        deleted = true;
+        setClosing(true);
+      } else {
+        setBanner(outcome.message);
+      }
+    } catch {
+      setBanner(FOOD_MESSAGES.delete_failed);
+    } finally {
+      // Nach Erfolg bleibt das Formular gesperrt, bis das Sheet zu ist.
+      if (!deleted) setDeleting(false);
     }
-    setBanner(outcome.message);
-    setDeleting(false);
   };
 
   const confirmDelete = () => {
@@ -160,72 +171,73 @@ export default function FoodFormScreen() {
   const title = editId === null ? "Neues Lebensmittel" : "Lebensmittel bearbeiten";
 
   return (
+    // Kein KeyboardAvoidingView: im formSheet stimmen dessen Frames wegen des Sheet-Versatzes nicht,
+    // und die ScrollView in FoodForm gleicht die Tastatur schon über automaticallyAdjustKeyboardInsets aus
+    // (beides zusammen würde doppelt einrücken).
     <SafeAreaView edges={["bottom"]} className="flex-1 bg-background">
-      <KeyboardAvoidingView behavior="padding" className="flex-1">
-        <View className="h-12 flex-row items-center justify-between px-2">
-          <Pressable
-            onPress={() => router.back()}
-            className="h-11 min-w-11 items-center justify-center px-2 active:opacity-50"
-            accessibilityRole="button"
-            accessibilityLabel="Abbrechen"
-            accessibilityHint="Schließt das Formular; bei Änderungen wird nachgefragt"
+      <View className="h-12 flex-row items-center justify-between px-2">
+        <Pressable
+          onPress={() => router.back()}
+          className="h-11 min-w-11 items-center justify-center px-2 active:opacity-50"
+          accessibilityRole="button"
+          accessibilityLabel="Abbrechen"
+          accessibilityHint="Schließt das Formular; bei Änderungen wird nachgefragt"
+        >
+          <Text className="text-body text-primary">Abbrechen</Text>
+        </Pressable>
+        <Text className="text-headline font-semibold text-foreground" accessibilityRole="header">
+          {title}
+        </Text>
+        <Pressable
+          onPress={save}
+          disabled={!canSave}
+          className="h-11 min-w-11 items-center justify-center px-2 active:opacity-50"
+          accessibilityRole="button"
+          accessibilityLabel="Sichern"
+          accessibilityHint="Speichert das Lebensmittel und schließt das Formular"
+          accessibilityState={{ disabled: !canSave, busy: saving }}
+        >
+          <Text
+            className={cn("text-headline font-semibold", canSave ? "text-primary" : "text-muted-foreground opacity-60")}
           >
-            <Text className="text-body text-primary">Abbrechen</Text>
-          </Pressable>
-          <Text className="text-headline font-semibold text-foreground" accessibilityRole="header">
-            {title}
+            Sichern
           </Text>
-          <Pressable
-            onPress={save}
-            disabled={!canSave}
-            className="h-11 min-w-11 items-center justify-center px-2 active:opacity-50"
-            accessibilityRole="button"
-            accessibilityLabel="Sichern"
-            accessibilityHint="Speichert das Lebensmittel und schließt das Formular"
-            accessibilityState={{ disabled: !canSave, busy: saving }}
-          >
-            <Text
-              className={cn("text-headline font-semibold", canSave ? "text-primary" : "text-muted-foreground opacity-60")}
-            >
-              Sichern
-            </Text>
-          </Pressable>
-        </View>
+        </Pressable>
+      </View>
 
-        {load.status === "loading" ? (
-          <View className="flex-1 items-center justify-center pb-40">
-            <ActivityIndicator accessibilityLabel="Lebensmittel wird geladen" />
-          </View>
-        ) : load.status === "error" ? (
-          <View className="flex-1 items-center justify-center gap-3 px-10 pb-40">
-            <Text className="text-center text-title3 font-semibold text-foreground" accessibilityRole="header">
-              {load.message}
-            </Text>
-            <Button
-              variant="ghost"
-              onPress={() => {
-                setLoad({ status: "loading" });
-                setReloadKey((k) => k + 1);
-              }}
-              className="mt-2 h-11 px-4"
-              accessibilityLabel="Erneut versuchen"
-              accessibilityHint="Lädt das Lebensmittel neu"
-            >
-              <Text className="text-headline font-semibold text-primary">Erneut versuchen</Text>
-            </Button>
-          </View>
-        ) : (
-          <FoodForm
-            control={form.control}
-            errors={errors}
-            barcode={values.barcode}
-            onRemoveBarcode={() => form.setValue("barcode", null, { shouldDirty: true })}
-            banner={banner}
-            onDelete={editId === null ? undefined : confirmDelete}
-            busy={busy}
-          />
-        )}
-      </KeyboardAvoidingView>
+      {load.status === "loading" ? (
+        <View className="flex-1 items-center justify-center pb-40">
+          <ActivityIndicator accessibilityLabel="Lebensmittel wird geladen" />
+        </View>
+      ) : load.status === "error" ? (
+        <View className="flex-1 items-center justify-center gap-3 px-10 pb-40">
+          <Text className="text-center text-title3 font-semibold text-foreground" accessibilityRole="header">
+            {load.message}
+          </Text>
+          <Button
+            variant="ghost"
+            onPress={() => {
+              setLoad({ status: "loading" });
+              setReloadKey((k) => k + 1);
+            }}
+            className="mt-2 h-11 px-4"
+            accessibilityLabel="Erneut versuchen"
+            accessibilityHint="Lädt das Lebensmittel neu"
+          >
+            <Text className="text-headline font-semibold text-primary">Erneut versuchen</Text>
+          </Button>
+        </View>
+      ) : (
+        <FoodForm
+          control={form.control}
+          errors={errors}
+          barcode={values.barcode}
+          onRemoveBarcode={() => form.setValue("barcode", null, { shouldDirty: true })}
+          banner={banner}
+          onDelete={editId === null ? undefined : confirmDelete}
+          busy={busy}
+        />
+      )}
     </SafeAreaView>
   );
 }
