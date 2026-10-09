@@ -6,7 +6,7 @@ import { migrations as appMigrations } from "./migrations";
 import { createTestDb, type TestDb } from "./testing";
 import type { Migration } from "./types";
 
-// Eigene Test-Listen — die echte Liste startet leer (PROJ-2 ff. hängen an).
+// Eigene Test-Listen für runMigrations; die echte App-Liste wird unten separat geprüft.
 const m1: Migration = {
   version: 1,
   name: "0001_test-1_parents",
@@ -280,6 +280,204 @@ describe("PROJ-1 App-Migrationsliste (lib/db/migrations.ts)", () => {
     } finally {
       await db.close();
     }
+  });
+});
+
+describe("PROJ-2 Migration 0001_proj-2_foods (echte App-Liste)", () => {
+  type ColumnInfo = { name: string; type: string; notnull: number; pk: number };
+  type IndexInfo = { name: string; unique: number; partial: number };
+
+  const validFood = {
+    name: "Haferflocken",
+    name_key: "haferflocken",
+    kcal: 370,
+    carbs: 58.7,
+    fat: 7,
+    protein: 13.5,
+    piece_grams: null as number | null,
+    barcode: null as string | null,
+  };
+
+  async function insertFood(db: TestDb, overrides: Partial<typeof validFood> = {}) {
+    const f = { ...validFood, ...overrides };
+    return db.run(
+      `INSERT INTO foods (name, name_key, kcal, carbs, fat, protein, piece_grams, barcode)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [f.name, f.name_key, f.kcal, f.carbs, f.fat, f.protein, f.piece_grams, f.barcode],
+    );
+  }
+
+  let db: TestDb;
+
+  beforeEach(() => {
+    db = createTestDb();
+  });
+
+  afterEach(async () => {
+    await db.close();
+  });
+
+  it("AC-21: Frisch: legt foods mit Spalten, Indizes und user_version an", async () => {
+    const result = await runMigrations(db, appMigrations);
+
+    expect(result).toEqual({ data: { from: 0, to: appMigrations.length }, error: null });
+    expect(appMigrations.length).toBeGreaterThanOrEqual(1);
+    expect(appMigrations[0].name).toBe("0001_proj-2_foods");
+    expect(await userVersion(db)).toBe(appMigrations.length);
+    expect(await tableNames(db)).toContain("foods");
+
+    const cols = await db.getAll<ColumnInfo>(
+      "SELECT name, type, \"notnull\", pk FROM pragma_table_info('foods') LIMIT 100",
+    );
+    expect(cols).toEqual([
+      { name: "id", type: "INTEGER", notnull: 0, pk: 1 },
+      { name: "name", type: "TEXT", notnull: 1, pk: 0 },
+      { name: "name_key", type: "TEXT", notnull: 1, pk: 0 },
+      { name: "kcal", type: "REAL", notnull: 1, pk: 0 },
+      { name: "carbs", type: "REAL", notnull: 1, pk: 0 },
+      { name: "fat", type: "REAL", notnull: 1, pk: 0 },
+      { name: "protein", type: "REAL", notnull: 1, pk: 0 },
+      { name: "piece_grams", type: "REAL", notnull: 0, pk: 0 },
+      { name: "barcode", type: "TEXT", notnull: 0, pk: 0 },
+      { name: "created_at", type: "INTEGER", notnull: 1, pk: 0 },
+      { name: "updated_at", type: "INTEGER", notnull: 1, pk: 0 },
+    ]);
+
+    const indexes = await db.getAll<IndexInfo>(
+      "SELECT name, \"unique\", partial FROM pragma_index_list('foods') ORDER BY name LIMIT 100",
+    );
+    expect(indexes).toEqual([
+      { name: "foods_barcode_uidx", unique: 1, partial: 1 },
+      { name: "foods_name_key_idx", unique: 0, partial: 0 },
+    ]);
+    expect(
+      await db.getAll<{ name: string }>(
+        "SELECT name FROM pragma_index_info('foods_name_key_idx') LIMIT 10",
+      ),
+    ).toEqual([{ name: "name_key" }]);
+    expect(
+      await db.getAll<{ name: string }>(
+        "SELECT name FROM pragma_index_info('foods_barcode_uidx') LIMIT 10",
+      ),
+    ).toEqual([{ name: "barcode" }]);
+  });
+
+  it("AC-21: Frisch: gültige Zeile wird gespeichert, Zeitstempel als ms gesetzt", async () => {
+    await runMigrations(db, appMigrations);
+    const before = Date.now();
+
+    const { lastInsertRowId } = await insertFood(db, { piece_grams: 40, barcode: "40000000" });
+
+    const row = await db.getFirst<Record<string, unknown>>(
+      "SELECT * FROM foods WHERE id = ?",
+      [lastInsertRowId],
+    );
+    expect(row).toMatchObject({ ...validFood, piece_grams: 40, barcode: "40000000" });
+    expect(typeof row!.created_at).toBe("number");
+    expect(row!.created_at as number).toBeGreaterThanOrEqual(before - 1000);
+    expect(row!.created_at as number).toBeLessThanOrEqual(Date.now() + 1000);
+    expect(row!.updated_at).toBe(row!.created_at);
+  });
+
+  it("AC-21: Frisch: Grenzwerte sind erlaubt (kcal 0/900, C+F+E = 100, 8/14-stelliger Barcode)", async () => {
+    await runMigrations(db, appMigrations);
+
+    await expect(insertFood(db, { kcal: 0, carbs: 0, fat: 0, protein: 0 })).resolves.toBeDefined();
+    await expect(
+      insertFood(db, { kcal: 900, carbs: 0, fat: 100, protein: 0, barcode: "12345678" }),
+    ).resolves.toBeDefined();
+    await expect(
+      insertFood(db, { carbs: 50, fat: 25, protein: 25, barcode: "12345678901234" }),
+    ).resolves.toBeDefined();
+  });
+
+  it.each<[string, Partial<typeof validFood>]>([
+    ["leerer Name", { name: "   " }],
+    ["kcal negativ", { kcal: -1 }],
+    ["kcal über 900", { kcal: 900.5 }],
+    ["Carbs negativ", { carbs: -0.1 }],
+    ["Fett über 100", { carbs: 0, fat: 100.1, protein: 0 }],
+    ["Eiweiß über 100", { carbs: 0, fat: 0, protein: 101 }],
+    ["C + F + E über 100", { carbs: 50, fat: 30, protein: 20.5 }],
+    ["Stückgewicht 0", { piece_grams: 0 }],
+    ["Stückgewicht negativ", { piece_grams: -5 }],
+    ["Barcode zu kurz", { barcode: "1234567" }],
+    ["Barcode zu lang", { barcode: "123456789012345" }],
+    ["Barcode mit Buchstaben", { barcode: "1234567a" }],
+    ["Barcode leer", { barcode: "" }],
+    ["kcal als Text", { kcal: "viel" as unknown as number }],
+  ])("AC-21: Prüfregel in der Tabelle lehnt ab: %s", async (_label, overrides) => {
+    await runMigrations(db, appMigrations);
+
+    await expect(insertFood(db, overrides)).rejects.toThrow(/CHECK constraint failed/);
+    expect(await db.getAll("SELECT id FROM foods LIMIT 10")).toEqual([]);
+  });
+
+  it("AC-21: Barcode ist eindeutig, mehrere Lebensmittel ohne Barcode sind erlaubt", async () => {
+    await runMigrations(db, appMigrations);
+
+    await insertFood(db, { barcode: "4000417025005" });
+    await expect(insertFood(db, { name: "Andere", barcode: "4000417025005" })).rejects.toThrow(
+      /UNIQUE constraint failed/,
+    );
+    await insertFood(db, { barcode: null });
+    await insertFood(db, { barcode: null });
+    // Doppelte Namen sind erlaubt.
+    await insertFood(db, { barcode: null });
+    expect(await db.getFirst("SELECT count(*) AS n FROM foods")).toEqual({ n: 4 });
+  });
+
+  it("AC-21: gelöschte ids werden nicht wiederverwendet", async () => {
+    await runMigrations(db, appMigrations);
+    const first = await insertFood(db);
+    await db.run("DELETE FROM foods WHERE id = ?", [first.lastInsertRowId]);
+
+    const second = await insertFood(db);
+
+    expect(second.lastInsertRowId).toBeGreaterThan(first.lastInsertRowId);
+  });
+
+  it("AC-21: Upgrade: PROJ-1-Datenbank (user_version 0) mit Altdaten → foods neu, Altdaten unverändert", async () => {
+    // Stand PROJ-1: keine Fachtabellen, user_version 0. Eine Hilfstabelle mit
+    // Seed-Daten steht für beliebige vorhandene Inhalte, die erhalten bleiben müssen.
+    await db.exec("CREATE TABLE legacy_note (id INTEGER PRIMARY KEY, text TEXT NOT NULL)");
+    await db.run("INSERT INTO legacy_note (id, text) VALUES (?, ?)", [1, "Äpfel"]);
+    await db.run("INSERT INTO legacy_note (id, text) VALUES (?, ?)", [2, "Brot"]);
+    expect(await userVersion(db)).toBe(0);
+
+    const result = await runMigrations(db, appMigrations);
+
+    expect(result).toEqual({ data: { from: 0, to: appMigrations.length }, error: null });
+    expect(await userVersion(db)).toBe(appMigrations.length);
+    expect(await tableNames(db)).toEqual(expect.arrayContaining(["foods", "legacy_note"]));
+    expect(await db.getAll("SELECT id, text FROM legacy_note ORDER BY id LIMIT 10")).toEqual([
+      { id: 1, text: "Äpfel" },
+      { id: 2, text: "Brot" },
+    ]);
+    await insertFood(db);
+    expect(await db.getFirst("SELECT count(*) AS n FROM foods")).toEqual({ n: 1 });
+    expect(await foreignKeys(db)).toBe(1);
+  });
+
+  it("AC-21: Idempotenz: zweiter Lauf ändert weder Schema noch Daten", async () => {
+    await runMigrations(db, appMigrations);
+    await insertFood(db, { barcode: "40000000" });
+    const schemaBefore = await db.getAll(
+      "SELECT type, name, sql FROM sqlite_master ORDER BY name LIMIT 100",
+    );
+    const rowsBefore = await db.getAll("SELECT * FROM foods ORDER BY id LIMIT 10");
+
+    const result = await runMigrations(db, appMigrations);
+
+    expect(result).toEqual({
+      data: { from: appMigrations.length, to: appMigrations.length },
+      error: null,
+    });
+    expect(await userVersion(db)).toBe(appMigrations.length);
+    expect(
+      await db.getAll("SELECT type, name, sql FROM sqlite_master ORDER BY name LIMIT 100"),
+    ).toEqual(schemaBefore);
+    expect(await db.getAll("SELECT * FROM foods ORDER BY id LIMIT 10")).toEqual(rowsBefore);
   });
 });
 
