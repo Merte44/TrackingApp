@@ -81,27 +81,27 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 - Alle Unter-Screens als `formSheet`; Tokens, nie Hex; C türkis, F lila, E orange
 
 ## Acceptance Criteria
-- [ ] **AC-1** Angenommen keine eigenen Lebensmittel, wenn ich die Liste öffne, dann sehe ich „Noch keine eigenen Lebensmittel“ und „Neues Lebensmittel“
-- [ ] **AC-2** Angenommen das Formular ist ausgefüllt mit Name, kcal, C, F, E, wenn ich „Sichern“ tippe, dann schließt das Sheet und das Lebensmittel steht in der Liste
-- [ ] **AC-3** Angenommen ein Pflichtfeld ist leer, wenn ich das Formular ansehe, dann ist „Sichern“ deaktiviert
-- [ ] **AC-4** Angenommen C + F + E ergeben mehr als 100 g, wenn ich die Werte eingebe, dann erscheint ein Fehlertext am Feld und „Sichern“ ist deaktiviert
-- [ ] **AC-5** Angenommen kcal über 900, ein negativer Wert oder Stückgewicht 0, wenn ich den Wert eingebe, dann erscheint ein Fehlertext am Feld
-- [ ] **AC-6** Angenommen ich gebe „12,5“ ein, wenn ich sichere, dann ist 12.5 gespeichert
-- [ ] **AC-7** Angenommen ungültige Werte, wenn die Datenschicht sie unter Umgehung des Formulars schreiben soll, dann lehnt sie das Schreiben ab
-- [ ] **AC-8** Angenommen mehrere Lebensmittel, wenn ich die Liste öffne, dann sind sie alphabetisch ohne Beachtung der Groß-/Kleinschreibung sortiert
-- [ ] **AC-9** Angenommen ein Lebensmittel „Äpfel“, wenn ich nach „apf“ filtere, dann erscheint es
-- [ ] **AC-10** Angenommen kein Name passt zum Suchbegriff, wenn ich filtere, dann sehe ich „Kein Lebensmittel gefunden“ und „Neues Lebensmittel“
-- [ ] **AC-11** Angenommen „Kein Lebensmittel gefunden“, wenn ich „Neues Lebensmittel“ tippe, dann ist der Suchbegriff als Name vorausgefüllt
-- [ ] **AC-12** Angenommen ein Lebensmittel, wenn ich es antippe, ändere und sichere, dann zeigt die Liste die geänderten Werte
-- [ ] **AC-13** Angenommen ungespeicherte Änderungen, wenn ich „Abbrechen“ tippe oder herunterwische, dann fragt die App „Änderungen verwerfen?“
-- [ ] **AC-14** Angenommen keine Änderungen, wenn ich „Abbrechen“ tippe, dann schließt das Sheet ohne Rückfrage
-- [ ] **AC-15** Angenommen ein Lebensmittel in der Liste, wenn ich nach links wische und den Papierkorb tippe, dann ist es ohne Rückfrage gelöscht
-- [ ] **AC-16** Angenommen das Bearbeiten-Sheet, wenn ich „Lebensmittel löschen“ tippe und bestätige, dann ist es gelöscht und das Sheet geschlossen
-- [ ] **AC-17** Angenommen ein Lebensmittel mit Barcode, wenn ich ihn im Formular entferne und sichere, dann hat es keinen Barcode mehr
-- [ ] **AC-18** Angenommen ein Barcode ist schon an einem eigenen Lebensmittel, wenn die Datenschicht ihn an einem zweiten speichern soll, dann lehnt sie mit klarer Meldung ab
-- [ ] **AC-19** Angenommen zwei Lebensmittel mit gleichem Namen, wenn ich das zweite sichere, dann stehen beide in der Liste
-- [ ] **AC-20** Angenommen das Speichern schlägt fehl, wenn ich „Sichern“ tippe, dann bleibt das Sheet mit meinen Eingaben offen und ein Fehlerhinweis erscheint
-- [ ] **AC-21** Angenommen eine Datenbank von PROJ-1 ohne Fachtabellen, wenn die App mit PROJ-2 startet, dann läuft die Migration und der Migrations-Test besteht Frisch, Upgrade und Idempotenz
+- [x] **AC-1** Angenommen keine eigenen Lebensmittel, wenn ich die Liste öffne, dann sehe ich „Noch keine eigenen Lebensmittel“ und „Neues Lebensmittel“
+- [x] **AC-2** Angenommen das Formular ist ausgefüllt mit Name, kcal, C, F, E, wenn ich „Sichern“ tippe, dann schließt das Sheet und das Lebensmittel steht in der Liste
+- [x] **AC-3** Angenommen ein Pflichtfeld ist leer, wenn ich das Formular ansehe, dann ist „Sichern“ deaktiviert
+- [x] **AC-4** Angenommen C + F + E ergeben mehr als 100 g, wenn ich die Werte eingebe, dann erscheint ein Fehlertext am Feld und „Sichern“ ist deaktiviert
+- [x] **AC-5** Angenommen kcal über 900, ein negativer Wert oder Stückgewicht 0, wenn ich den Wert eingebe, dann erscheint ein Fehlertext am Feld
+- [x] **AC-6** Angenommen ich gebe „12,5“ ein, wenn ich sichere, dann ist 12.5 gespeichert
+- [x] **AC-7** Angenommen ungültige Werte, wenn die Datenschicht sie unter Umgehung des Formulars schreiben soll, dann lehnt sie das Schreiben ab
+- [x] **AC-8** Angenommen mehrere Lebensmittel, wenn ich die Liste öffne, dann sind sie alphabetisch ohne Beachtung der Groß-/Kleinschreibung sortiert
+- [x] **AC-9** Angenommen ein Lebensmittel „Äpfel“, wenn ich nach „apf“ filtere, dann erscheint es
+- [x] **AC-10** Angenommen kein Name passt zum Suchbegriff, wenn ich filtere, dann sehe ich „Kein Lebensmittel gefunden“ und „Neues Lebensmittel“
+- [x] **AC-11** Angenommen „Kein Lebensmittel gefunden“, wenn ich „Neues Lebensmittel“ tippe, dann ist der Suchbegriff als Name vorausgefüllt
+- [x] **AC-12** Angenommen ein Lebensmittel, wenn ich es antippe, ändere und sichere, dann zeigt die Liste die geänderten Werte
+- [x] **AC-13** Angenommen ungespeicherte Änderungen, wenn ich „Abbrechen“ tippe oder herunterwische, dann fragt die App „Änderungen verwerfen?“
+- [x] **AC-14** Angenommen keine Änderungen, wenn ich „Abbrechen“ tippe, dann schließt das Sheet ohne Rückfrage
+- [x] **AC-15** Angenommen ein Lebensmittel in der Liste, wenn ich nach links wische und den Papierkorb tippe, dann ist es ohne Rückfrage gelöscht
+- [x] **AC-16** Angenommen das Bearbeiten-Sheet, wenn ich „Lebensmittel löschen“ tippe und bestätige, dann ist es gelöscht und das Sheet geschlossen
+- [x] **AC-17** Angenommen ein Lebensmittel mit Barcode, wenn ich ihn im Formular entferne und sichere, dann hat es keinen Barcode mehr
+- [x] **AC-18** Angenommen ein Barcode ist schon an einem eigenen Lebensmittel, wenn die Datenschicht ihn an einem zweiten speichern soll, dann lehnt sie mit klarer Meldung ab
+- [x] **AC-19** Angenommen zwei Lebensmittel mit gleichem Namen, wenn ich das zweite sichere, dann stehen beide in der Liste
+- [x] **AC-20** Angenommen das Speichern schlägt fehl, wenn ich „Sichern“ tippe, dann bleibt das Sheet mit meinen Eingaben offen und ein Fehlerhinweis erscheint
+- [x] **AC-21** Angenommen eine Datenbank von PROJ-1 ohne Fachtabellen, wenn die App mit PROJ-2 startet, dann läuft die Migration und der Migrations-Test besteht Frisch, Upgrade und Idempotenz
 
 ## Grenzen
 - Barcode setzen (Scan), Vorausfüllen aus Open Food Facts, Konflikt „Barcode schon vergeben“ im Ablauf → PROJ-4
@@ -114,18 +114,13 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 - Höchstens 500 Lebensmittel in der Liste/Trefferliste; bei Bedarf später Nachladen
 - AC-20 (Speicherfehler) lässt sich im Dev-Client nicht auslösen — belegt durch Jest (`db`-Fehler der Datenschicht) plus Review des Formulars
 - Sicherheit (Modus lokal): keine Fremd-API, keine Kamera, keine destruktive Migration — kein `/security-review`-Sonderbedarf
+- Offen aus QA (Low): SF Symbols übernehmen ihre Token-Farbe nicht (`components/common/SymbolIcon.tsx`, cssInterop → `tintColor`) — Papierkorb blau statt weiß auf Rot
+- Offen aus dem Code-Gate (Medium/Low): `food-form` schließt per `router.back()` ohne History-Prüfung (Start direkt per Deep-Link bleibt hängen) · Summe C+F+E rundet in JS und SQLite an der 6. Nachkommastelle unterschiedlich (nur bei Halbschritten) · `deleteFood` prüft die id ohne Zod · Suche ohne Debounce · Name ohne Höchstlänge
+- AC-18 nur auf der Datenschicht belegt; der Ablauf in der UI kommt mit PROJ-4 · Hinweis „nicht mehr vorhanden“ und Ladefehler der Liste haben keine eigene AC (nur Jest)
 
 ## Umgebung
 - Kein Per-Env-Setup
 
-## Plan
-
-| # | Aufgabe | ACs | Ebene | Nach | Status |
-|---|---------|-----|-------|------|--------|
-| T1 | Migration `0001_proj-2_foods` + Frisch/Upgrade/Idempotenz im Migrations-Test | AC-21 | Backend | — | erledigt `64f57fb` |
-| T2 | `lib/foods.ts` nach Verträgen (Schema, `parseDecimal`, Normalisierung, CRUD, `subscribeFoods`) + `lib/foods.test.ts` | AC-6, AC-7, AC-8, AC-9, AC-17, AC-18, AC-19, AC-20 | Backend | T1 | erledigt `e3b8cf6` |
-| T3 | Liste: `FoodList`, `FoodRow` (Wisch-Löschen), `FoodEmptyState`, `hooks/useFoods.ts`, Route `foods`, Zugang auf `index` | AC-1, AC-8, AC-9, AC-10, AC-15 | Frontend | — (Vertrag reicht) | erledigt `b8053d1` |
-| T4 | Formular: `FoodForm`, `DecimalField`, Route `food-form` (Neu/Bearbeiten/vorausgefüllt), Verwerfen-Dialog, Löschen im Sheet, Speicherfehler | AC-2, AC-3, AC-4, AC-5, AC-6, AC-11, AC-12, AC-13, AC-14, AC-16, AC-17, AC-19, AC-20 | Frontend | T3 | erledigt `89ea065` |
 
 ## Tests
 - **Jest:** `lib/foods.test.ts` (Validierung, Sortierung, Filter, Barcode-Eindeutigkeit) · Migrations-Test `lib/db/migrations.test.ts`
@@ -155,6 +150,7 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | **Annahme (Buildchef):** Feldfehler erst nach Eingabe/Berührung sichtbar; „Sichern“ trotzdem deaktiviert | Entwurf `form-neu` zeigt leeres Formular ohne Fehler | Fehler sofort an allen leeren Feldern | 2026-10-09 |
 | **Annahme (Buildchef):** Ladefehler im Bearbeiten-Sheet zeigt Meldung + „Erneut versuchen“ | analog zur Liste; Spec regelt nur die Liste | Sheet schließen | 2026-10-09 |
 | **Annahme (Buildchef):** Start-Screen ohne Kopfzeile (`headerShown: false`) | Standard-Kopfzeile „index“ stört; PROJ-7 baut den Screen neu | Kopfzeile behalten | 2026-10-09 |
+| **Annahme (Buildchef):** Formular und Liste ohne `KeyboardAvoidingView`, stattdessen `automaticallyAdjustKeyboardInsets` | im formSheet stimmen die KAV-Frames nicht, beides zusammen rückt doppelt ein (Code-Review) | KAV laut Frontend-Regel | 2026-10-09 |
 
 ## Verlauf
 
@@ -166,4 +162,5 @@ Ich lege Lebensmittel mit ihren Nährwerten pro 100 g selbst an, bearbeite und l
 | 2026-10-09 | Design-Paket freigegeben | — |
 | 2026-10-09 | Backend gebaut: Migration 0001, Migrations-Test grün; Review-Fix Summe C+F+E ohne Gleitkomma-Rest | — |
 | 2026-10-09 | Frontend gebaut: `foods` (Liste), `food-form` (Formular), Zugang auf `index`. Abweichungen: SF Symbols statt SVG, native Tastatur/Alerts; Review-Fixes (Tastatur-Insets, Retry, Löschfehler) | — |
-| 2026-10-09 | QA | NOT READY: 5 Bugs (2 High: Formularfelder, Doppel-Tipp) — AC 17/21, 4 nicht prüfbar | [Report](../docs/qa/PROJ-2-qa-2026-10-09.md) |
+| 2026-10-09 | QA | NOT READY: 5 Bugs (2 High: Formularfelder, Doppel-Tipp) — AC 17/21, 4 nicht prüfbar | Report: Commit `906db8a` |
+| 2026-10-09 | QA | READY — AC 21/21 (Test 8 · Simulator 11 · Test + Review 2); BUG-1–5 behoben, BUG-6 (Low) offen unter Grenzen | — |
