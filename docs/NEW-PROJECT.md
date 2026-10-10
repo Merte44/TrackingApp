@@ -43,4 +43,10 @@
 - [ ] App-Privacy-Angaben in App Store Connect aus dem Datenmodell abgeleitet (`/deploy` hilft)
 - [ ] Account-Löschung in der App, wenn es Accounts gibt (Apple-Pflicht)
 
+## 8. Monitoring, Rate-Limits & Performance (vor TestFlight External / App Store) — entfällt: private App, kein Backend-Server
+- [ ] Crash-/Error-Monitoring eingebunden, mit einem Testfehler verifiziert
+- [ ] Rate-Limits im Supabase-Dashboard gesetzt (Auth, ggf. API), Fundort in `docs/ENVIRONMENTS.md`
+- [ ] `get_advisors` performance auf prod sauber
+- [ ] `/ops both` einmal sauber gelaufen, danach als `/schedule`-Routine eingerichtet
+
 Danach: `/write-spec` für das erste Feature.

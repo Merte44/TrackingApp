@@ -21,12 +21,15 @@ paths:
 ## Input & Auth
 - Alle Nutzereingaben mit Zod validieren, bevor sie gespeichert werden oder das Gerät verlassen — im Modus supabase serverseitig via RLS / Edge-Function-Checks erneut
 - Antworten von Fremd-APIs mit Zod parsen, bevor sie gespeichert oder angezeigt werden; an Fremd-APIs nur den nötigen Suchparameter senden, keine Nutzerdaten
-- Nur Modus supabase: Session vor nutzerbezogenen Operationen prüfen (RLS ist die Autorisierung, Client-Checks sind UX); Auth-Rate-Limits im Supabase-Dashboard setzen (Credential Stuffing)
+- Nur Modus supabase: Session vor nutzerbezogenen Operationen prüfen (RLS ist die Autorisierung, Client-Checks sind UX); Auth-Rate-Limits im Supabase-Dashboard setzen (Credential Stuffing) — Pflicht-Gate vor External-Release in `.claude/rules/monitoring.md`
 - Tokens und sensible Daten nur in `expo-secure-store`; nie Tokens oder PII loggen
 
 ## Deep Links
 - Jeden Parameter eines Deep-/Universal-Links validieren (untrusted input); Schemes und Routen explizit in `app.json`, unbekannte Pfade ablehnen
 - Auth-Mail-Links laufen über eine `https`-Confirmation-URL und werden in der App eingelöst — kein App-Schema direkt im Mail-Template
+
+## Diagnostischer Lesezugriff auf prod
+Lesende Diagnose auf prod (`/ops`, Fehlersuche, Rollback-Probe) gibt nie rohe Nutzerzeilen zurück — nur `EXISTS`/`COUNT`/Boolean, nie `SELECT *` oder PII-Spalten (E-Mail, Name, Inhalte). Tool-Ergebnisse landen im KI-Kontext; echte Personendaten gehören da nicht hinein. Migrationen, RLS-Policies und `get_advisors` sind davon ausgenommen — rein strukturell, enthalten keine Nutzerdaten. Details: `.claude/rules/backend.md`.
 
 ## Gates
 - **Security-Agent** (`.claude/agents/security.md`): greift die App aktiv an (Eingaben, Fremddaten, Deep-Links, im Modus supabase RLS auf dev) — über `/security`: pro Feature nach `/qa` (er entscheidet selbst, ob er gebraucht wird) und als `/security release` vor `/deploy`. Nie prod

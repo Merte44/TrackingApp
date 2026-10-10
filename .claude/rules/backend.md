@@ -46,7 +46,10 @@ Ergebnis der Prüfung in die Migration als Kopfkommentar. **„Braucht keinen Bu
 ## Rollback-Probe (`supabase/tests/<proj-x>_<name>.sql`)
 - Ein `DO $$ … $$`-Block: seedet in einer Transaktion, impersoniert Nutzer per `set_config('request.jwt.claims', …, true)` und `set local role authenticated`, assertet mit `RAISE EXCEPTION 'FAIL: …'`, endet mit `RAISE EXCEPTION 'REGRESSION_PASS …'` — die Exception rollt alles zurück, nichts persistiert
 - **Jeder Pfad endet mit einem unbedingten RAISE** — auch nach dem letzten Assert, auch bei „nichts zu prüfen". Ein Pfad ohne RAISE committet den Seed
-- Nutzer dynamisch aus `auth.users` wählen → portabel dev/prod
+- Nutzer dynamisch aus `auth.users` wählen (nur die ID, nie E-Mail/Name) → portabel dev/prod
+
+## Diagnostischer Lesezugriff auf prod (PFLICHT)
+Strukturelle Operationen (Migrationen, RLS-Policies, `get_advisors`) enthalten nie Nutzerdaten und sind davon ausgenommen. Aber jede Abfrage, die zu Debug-/Prüfzwecken auf **prod** liest — Rollback-Probe, `/ops`, Fehlersuche — darf **nie rohe Zeilen mit Personendaten** zurückgeben. Ergebnis immer auf `EXISTS(...)`/`COUNT(...)`/Boolean zuschneiden, nie `SELECT *` oder einzelne PII-Spalten (E-Mail, Name, Inhalte). Grund: Tool-Ergebnisse landen im Kontext, der an die KI geht — echte Personendaten dürfen dort nicht auftauchen.
 - **Auf prod nur Proben, die am selben Tag auf dev grün waren** (`REGRESSION_PASS`); nie eine Probe zuerst auf prod fahren
 - **Nie auf prod:** Proben, die Funktionen mit externen Nebenwirkungen anstoßen (Mail, Admin-API, HTTP via pg_net, Push). Ein Rollback holt keine gesendete Mail zurück — solche Proben bleiben dev-only und werden im Kopfkommentar als `DEV_ONLY` markiert
 - Deckt die Server-Grenze ab, die Jest mit gemocktem Client nie sieht: RLS-Sichtbarkeit, RPC-Ablehnung (`42501`), Trigger-Verhalten
